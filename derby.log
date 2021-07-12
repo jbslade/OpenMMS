@@ -1,0 +1,19 @@
+----------------------------------------------------------------
+Mon Jul 12 15:24:45 CAT 2021:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.14.2.0 - (1828579): instance a816c00e-017a-9ae4-3557-000000658030 
+on database directory C:\Users\administrator.CAPECOOKIES\Documents\NetBeansProjects\OpenMMS\target\OpenMMS_DB with class loader sun.misc.Launcher$AppClassLoader@1d16e93 
+Loaded from file:/C:/Users/administrator.CAPECOOKIES/.m2/repository/org/apache/derby/derby/10.14.2.0/derby-10.14.2.0.jar
+java.vendor=Oracle Corporation
+java.runtime.version=1.8.0_171-b11
+user.dir=C:\Users\administrator.CAPECOOKIES\Documents\NetBeansProjects\OpenMMS\target\
+os.name=Windows Server 2012 R2
+os.arch=x86
+os.version=6.3
+derby.system.home=C:\Users\administrator.CAPECOOKIES\Documents\NetBeansProjects\OpenMMS\target\
+Database Class Loader started - derby.database.classpath=''
+----------------------------------------------------------------
+Mon Jul 12 15:25:22 CAT 2021: Shutting down Derby engine
+----------------------------------------------------------------
+Mon Jul 12 15:25:22 CAT 2021:
+Shutting down instance a816c00e-017a-9ae4-3557-000000658030 on database directory C:\Users\administrator.CAPECOOKIES\Documents\NetBeansProjects\OpenMMS\target\OpenMMS_DB with class loader sun.misc.Launcher$AppClassLoader@1d16e93 
+----------------------------------------------------------------
