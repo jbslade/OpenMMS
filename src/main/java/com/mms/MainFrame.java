@@ -640,7 +640,7 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_newButtonActionPerformed
 
     private void newButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newButton2ActionPerformed
-        LocationDialog l = new LocationDialog((DefaultTableModel)locationTable.getModel(), false);
+        LocationDialog l = new LocationDialog((DefaultTableModel)locationTable.getModel());
         desktopPane.add(l);
         desktopPane.setLayer(l, 1);
         l.setLocation(desktopPane.getWidth()/2-l.getWidth()/2, desktopPane.getHeight()/2-l.getHeight()/2-50);
@@ -648,7 +648,7 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_newButton2ActionPerformed
 
     private void editButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editButton2ActionPerformed
-        LocationDialog l = new LocationDialog((DefaultTableModel)locationTable.getModel(), true);
+        LocationDialog l = new LocationDialog((DefaultTableModel)locationTable.getModel(), locationTable.getSelectedRow());
         desktopPane.add(l);
         desktopPane.setLayer(l, 1);
         l.setLocation(desktopPane.getWidth()/2-l.getWidth()/2, desktopPane.getHeight()/2-l.getHeight()/2-50);

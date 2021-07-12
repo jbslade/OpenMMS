@@ -4,20 +4,22 @@ import javax.swing.table.DefaultTableModel;
 
 public class LocationDialog extends javax.swing.JInternalFrame {
     
-    private final boolean edit;
+    private int row = -1;
     
-    public LocationDialog(DefaultTableModel m, boolean e) {
+    public LocationDialog(DefaultTableModel m) {
         initComponents();
-        edit = e;
-        if(edit){
-            setTitle("Edit Location");
+    }
+    
+    public LocationDialog(DefaultTableModel m, int r) {
+        initComponents();
+        row = r;
+        setTitle("Edit Location");
             button.setText("Save");
             //Fill data from table
             nameField.requestFocus();
             nameField.selectAll();
-        }
     }
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -110,7 +112,7 @@ public class LocationDialog extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonActionPerformed
-        if(!edit){
+        if(row != -1){ //If not edit
             //Add new location
         }
         else{
