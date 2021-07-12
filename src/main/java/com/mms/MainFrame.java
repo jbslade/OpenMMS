@@ -1,9 +1,10 @@
 package com.mms;
 
-import com.mms.locations.Locations;
+import com.mms.locations.LocationDialog;
 import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableModel;
 
 public class MainFrame extends javax.swing.JFrame {
     
@@ -67,13 +68,15 @@ public class MainFrame extends javax.swing.JFrame {
         filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
         jLabel2 = new javax.swing.JLabel();
         locationPanel = new javax.swing.JPanel();
-        workOrderTools2 = new javax.swing.JToolBar();
+        locationTools = new javax.swing.JToolBar();
         newButton2 = new javax.swing.JButton();
         editButton2 = new javax.swing.JButton();
         deleteButton2 = new javax.swing.JButton();
         archiveButton2 = new javax.swing.JButton();
         filler3 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
         jLabel3 = new javax.swing.JLabel();
+        locationScroll = new javax.swing.JScrollPane();
+        locationTable = new javax.swing.JTable();
         assetPanel = new javax.swing.JPanel();
         workOrderTools3 = new javax.swing.JToolBar();
         newButton3 = new javax.swing.JButton();
@@ -129,8 +132,6 @@ public class MainFrame extends javax.swing.JFrame {
                 tabbedPaneStateChanged(evt);
             }
         });
-
-        workOrderPanel.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(204, 204, 204)));
 
         workOrderScroll.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 0, 0, 0, new java.awt.Color(204, 204, 204)));
 
@@ -217,7 +218,7 @@ public class MainFrame extends javax.swing.JFrame {
             .addGroup(workOrderPanelLayout.createSequentialGroup()
                 .addComponent(workOrderTools, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(workOrderScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 485, Short.MAX_VALUE))
+                .addComponent(workOrderScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 486, Short.MAX_VALUE))
         );
 
         tabbedPane.addTab("Work Orders", workOrderPanel);
@@ -274,9 +275,9 @@ public class MainFrame extends javax.swing.JFrame {
 
         tabbedPane.addTab("Schedule", schedulePanel);
 
-        workOrderTools2.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        workOrderTools2.setFloatable(false);
-        workOrderTools2.setRollover(true);
+        locationTools.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        locationTools.setFloatable(false);
+        locationTools.setRollover(true);
 
         newButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/new.png"))); // NOI18N
         newButton2.setText("New");
@@ -285,7 +286,7 @@ public class MainFrame extends javax.swing.JFrame {
                 newButton2ActionPerformed(evt);
             }
         });
-        workOrderTools2.add(newButton2);
+        locationTools.add(newButton2);
 
         editButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/edit.png"))); // NOI18N
         editButton2.setText("Edit");
@@ -294,32 +295,66 @@ public class MainFrame extends javax.swing.JFrame {
                 editButton2ActionPerformed(evt);
             }
         });
-        workOrderTools2.add(editButton2);
+        locationTools.add(editButton2);
 
         deleteButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/delete.png"))); // NOI18N
         deleteButton2.setText("Delete");
-        workOrderTools2.add(deleteButton2);
+        locationTools.add(deleteButton2);
 
         archiveButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/archive.png"))); // NOI18N
         archiveButton2.setText("Archive");
-        workOrderTools2.add(archiveButton2);
-        workOrderTools2.add(filler3);
+        locationTools.add(archiveButton2);
+        locationTools.add(filler3);
 
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ajax.gif"))); // NOI18N
         jLabel3.setText("  ");
-        workOrderTools2.add(jLabel3);
+        locationTools.add(jLabel3);
+
+        locationScroll.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 0, 0, 0, new java.awt.Color(204, 204, 204)));
+
+        locationTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {"TEST", "TEST", "TEST", "TEST", "TEST", "TEST", "TEST", "TEST", "TEST"},
+                {"", null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, "", null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null}
+            },
+            new String [] {
+                "No.", "Date", "Type", "Description", "Priority", "Asset", "Location", "Employee(s)", "Status"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        locationTable.setShowGrid(true);
+        locationTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                locationTableMouseReleased(evt);
+            }
+        });
+        locationScroll.setViewportView(locationTable);
 
         javax.swing.GroupLayout locationPanelLayout = new javax.swing.GroupLayout(locationPanel);
         locationPanel.setLayout(locationPanelLayout);
         locationPanelLayout.setHorizontalGroup(
             locationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(workOrderTools2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(locationTools, javax.swing.GroupLayout.DEFAULT_SIZE, 753, Short.MAX_VALUE)
+            .addComponent(locationScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 753, Short.MAX_VALUE)
         );
         locationPanelLayout.setVerticalGroup(
             locationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(locationPanelLayout.createSequentialGroup()
-                .addComponent(workOrderTools2, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 486, Short.MAX_VALUE))
+                .addComponent(locationTools, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(locationScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 448, Short.MAX_VALUE)
+                .addGap(38, 38, 38))
         );
 
         tabbedPane.addTab("Locations", locationPanel);
@@ -605,12 +640,24 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_newButtonActionPerformed
 
     private void newButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newButton2ActionPerformed
-        Locations.newLocation(desktopPane);
+        LocationDialog l = new LocationDialog((DefaultTableModel)locationTable.getModel(), false);
+        desktopPane.add(l);
+        desktopPane.setLayer(l, 1);
+        l.setLocation(desktopPane.getWidth()/2-l.getWidth()/2, desktopPane.getHeight()/2-l.getHeight()/2-50);
+        l.setVisible(true);
     }//GEN-LAST:event_newButton2ActionPerformed
 
     private void editButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editButton2ActionPerformed
-        Locations.editLocation(desktopPane, "21", "Some Location", "Some Location description!");
+        LocationDialog l = new LocationDialog((DefaultTableModel)locationTable.getModel(), true);
+        desktopPane.add(l);
+        desktopPane.setLayer(l, 1);
+        l.setLocation(desktopPane.getWidth()/2-l.getWidth()/2, desktopPane.getHeight()/2-l.getHeight()/2-50);
+        l.setVisible(true);
     }//GEN-LAST:event_editButton2ActionPerformed
+
+    private void locationTableMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_locationTableMouseReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_locationTableMouseReleased
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel adminPanel;
@@ -655,6 +702,9 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JPanel locationPanel;
+    private javax.swing.JScrollPane locationScroll;
+    private javax.swing.JTable locationTable;
+    private javax.swing.JToolBar locationTools;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem menuChangePassword;
     private javax.swing.JMenu menuEdit;
@@ -683,7 +733,6 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JScrollPane workOrderScroll;
     private javax.swing.JToolBar workOrderTools;
     private javax.swing.JToolBar workOrderTools1;
-    private javax.swing.JToolBar workOrderTools2;
     private javax.swing.JToolBar workOrderTools3;
     private javax.swing.JToolBar workOrderTools4;
     private javax.swing.JToolBar workOrderTools5;
