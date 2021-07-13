@@ -488,9 +488,10 @@ public class Setup extends javax.swing.JDialog {
     private void createDerby(){
         try {
             Statement st = MMS.getConnection().createStatement();
-            st.executeUpdate("CREATE TABLE CARS(ID INT PRIMARY KEY,"
-                    + "NAME VARCHAR(30), PRICE INT)");
-            st.executeUpdate("INSERT INTO CARS VALUES(1, 'Audi', 52642)");
+            st.executeUpdate("CREATE TABLE Locations(LocationNo INT PRIMARY KEY,"
+                    + "LocationName VARCHAR(100), LocationDescription VARCHAR(100), Archived VARCHAR(1))");
+            st.executeUpdate("CREATE TABLE Assets(AssetNo INT PRIMARY KEY,"
+                    + "AssetName VARCHAR(100), AssetDescription VARCHAR(100), LocationNo INT, Archived VARCHAR(1))");
             
             System.out.println("[DATABASE] Derby database created.");
         } catch (SQLException ex) {

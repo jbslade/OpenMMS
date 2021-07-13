@@ -857,15 +857,15 @@ public class MainFrame extends javax.swing.JFrame {
                 t.setRowCount(0);
                 PreparedStatement stat;
                 try {
-                    stat = MMS.getConnection().prepareStatement("SELECT t0.AssetNo, t0.AssetName, t0.AssetDescription, CONCAT(t0.LocationNo, ' - ', t1.LocationName), t0.Archived FROM Assets t0 JOIN Locations t1 ON t0.LocationNo = t1.LocationNo ORDER BY t0.AssetNo DESC");
+                    stat = MMS.getConnection().prepareStatement("SELECT t0.AssetNo, t0.AssetName, t0.AssetDescription, t0.LocationNo, t1.LocationName, t0.Archived FROM Assets t0 JOIN Locations t1 ON t0.LocationNo = t1.LocationNo ORDER BY t0.AssetNo DESC");
                     ResultSet rs = stat.executeQuery();
                     while(rs.next()){
                         Object [] o = new Object[5];
                         o[0] = rs.getObject(1).toString().trim();
                         o[1] = rs.getObject(2).toString().trim();
                         o[2] = rs.getObject(3).toString().trim();
-                        o[3] = rs.getObject(4).toString().trim();
-                        o[4] = rs.getObject(5).toString().trim();
+                        o[3] = rs.getObject(4).toString().trim()+" - "+rs.getObject(5).toString().trim();
+                        o[4] = rs.getObject(6).toString().trim();
                         if(o[4].equals("N")){
                             t.addRow(o);
                         }

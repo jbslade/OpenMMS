@@ -141,7 +141,7 @@ public class LocationDialog extends javax.swing.JInternalFrame {
         else{
             if(row == -1){ //New location
                     //Get next no
-                    int locNum = -1;
+                    int locNum = 0;
                     for(int i = 0; i < table.getRowCount(); i++){
                         int n = Integer.parseInt(table.getValueAt(i, 0).toString());
                         if(n > locNum) locNum = n;
@@ -150,7 +150,7 @@ public class LocationDialog extends javax.swing.JInternalFrame {
                     //Insert into DB
                     PreparedStatement stat;
                     try {
-                        stat = MMS.getConnection().prepareStatement("INSERT INTO Locations (LocationNo, LocationName, LocationDescription) VALUES (?, ?, ?)");
+                        stat = MMS.getConnection().prepareStatement("INSERT INTO Locations (LocationNo, LocationName, LocationDescription, Archived) VALUES (?, ?, ?, 'N')");
                         stat.setInt(1, locNum);
                         stat.setString(2, name);
                         stat.setString(3, desc);

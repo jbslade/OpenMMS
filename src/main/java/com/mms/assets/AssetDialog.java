@@ -167,7 +167,7 @@ public class AssetDialog extends javax.swing.JInternalFrame {
         else{
             if(row == -1){ //New asset
                     //Get next no
-                    int assNum = -1;
+                    int assNum = 0;
                     for(int i = 0; i < assetTable.getRowCount(); i++){
                         int n = Integer.parseInt(assetTable.getValueAt(i, 0).toString());
                         if(n > assNum) assNum = n;
@@ -176,7 +176,7 @@ public class AssetDialog extends javax.swing.JInternalFrame {
                     //Insert into DB
                     PreparedStatement stat;
                     try {
-                        stat = MMS.getConnection().prepareStatement("INSERT INTO Assets (AssetNo, AssetName, AssetDescription, LocationNo) VALUES (?, ?, ?, ?)");
+                        stat = MMS.getConnection().prepareStatement("INSERT INTO Assets (AssetNo, AssetName, AssetDescription, LocationNo, Archived) VALUES (?, ?, ?, ?, 'N')");
                         stat.setInt(1, assNum);
                         stat.setString(2, name);
                         stat.setString(3, desc);

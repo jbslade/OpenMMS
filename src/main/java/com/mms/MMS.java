@@ -24,7 +24,7 @@ public class MMS {
     
     //Variables
     public static final String NAME = "OpenMMS", VERSION = "1.0";
-    public static final boolean DEBUG = false;
+    public static final boolean DEBUG = true;
     private static MainFrame m;
     private static Connection conn;
     private static String user;
@@ -102,20 +102,6 @@ public class MMS {
                         p.putBoolean("firstRun", true);
                         break;
                 }
-            }
-        }
-        
-        //TEST Derby
-        if(p.get("dbType", "").equals("derby")){
-            try {
-                Statement st = conn.createStatement();
-                ResultSet rs = st.executeQuery("SELECT NAME FROM CARS");
-                rs.next();
-                System.out.println("[DEBUG] "+rs.getString(1));
-                rs.close();
-                st.close();
-            } catch (SQLException ex) {
-                Logger.getLogger(MMS.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         
