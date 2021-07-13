@@ -42,6 +42,9 @@
                 <Property name="mnemonic" type="int" value="82"/>
                 <Property name="text" type="java.lang.String" value="Refresh"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuTableRefreshActionPerformed"/>
+              </Events>
             </MenuItem>
           </SubComponents>
         </Menu>
@@ -141,9 +144,6 @@
                 <Property name="tabPlacement" type="int" value="2"/>
                 <Property name="focusable" type="boolean" value="false"/>
               </Properties>
-              <Events>
-                <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="tabbedPaneStateChanged"/>
-              </Events>
 
               <Layout class="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout"/>
               <SubComponents>
@@ -270,9 +270,6 @@
                             </Property>
                             <Property name="showGrid" type="boolean" value="true"/>
                           </Properties>
-                          <Events>
-                            <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="workOrdersTableMouseReleased"/>
-                          </Events>
                         </Component>
                       </SubComponents>
                     </Container>
@@ -296,9 +293,6 @@
                             </Property>
                             <Property name="text" type="java.lang.String" value="New"/>
                           </Properties>
-                          <Events>
-                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="newButtonActionPerformed"/>
-                          </Events>
                         </Component>
                         <Component class="javax.swing.JButton" name="editButton">
                           <Properties>
@@ -527,7 +521,7 @@
 
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBoxLayout"/>
                       <SubComponents>
-                        <Component class="javax.swing.JButton" name="newButton2">
+                        <Component class="javax.swing.JButton" name="newLocationButton">
                           <Properties>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/buttons/new.png"/>
@@ -535,10 +529,10 @@
                             <Property name="text" type="java.lang.String" value="New"/>
                           </Properties>
                           <Events>
-                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="newButton2ActionPerformed"/>
+                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="newLocationButtonActionPerformed"/>
                           </Events>
                         </Component>
-                        <Component class="javax.swing.JButton" name="editButton2">
+                        <Component class="javax.swing.JButton" name="editLocationButton">
                           <Properties>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/buttons/edit.png"/>
@@ -546,24 +540,30 @@
                             <Property name="text" type="java.lang.String" value="Edit"/>
                           </Properties>
                           <Events>
-                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="editButton2ActionPerformed"/>
+                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="editLocationButtonActionPerformed"/>
                           </Events>
                         </Component>
-                        <Component class="javax.swing.JButton" name="deleteButton2">
+                        <Component class="javax.swing.JButton" name="deleteLocationButton">
                           <Properties>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/buttons/delete.png"/>
                             </Property>
                             <Property name="text" type="java.lang.String" value="Delete"/>
                           </Properties>
+                          <Events>
+                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="deleteLocationButtonActionPerformed"/>
+                          </Events>
                         </Component>
-                        <Component class="javax.swing.JButton" name="archiveButton2">
+                        <Component class="javax.swing.JButton" name="archiveLocationButton">
                           <Properties>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/buttons/archive.png"/>
                             </Property>
                             <Property name="text" type="java.lang.String" value="Archive"/>
                           </Properties>
+                          <Events>
+                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="archiveLocationButtonActionPerformed"/>
+                          </Events>
                         </Component>
                         <Component class="javax.swing.Box$Filler" name="filler3">
                           <Properties>
@@ -575,7 +575,7 @@
                             <AuxValue name="classDetails" type="java.lang.String" value="Box.Filler.HorizontalGlue"/>
                           </AuxValues>
                         </Component>
-                        <Component class="javax.swing.JLabel" name="jLabel3">
+                        <Component class="javax.swing.JLabel" name="locationLoadLabel">
                           <Properties>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/ajax.gif"/>
@@ -604,86 +604,14 @@
                         <Component class="javax.swing.JTable" name="locationTable">
                           <Properties>
                             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                              <Table columnCount="9" rowCount="6">
-                                <Column editable="false" title="No." type="java.lang.Object">
-                                  <Data value="TEST"/>
-                                  <Data value=""/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                </Column>
-                                <Column editable="false" title="Date" type="java.lang.Object">
-                                  <Data value="TEST"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                  <Data value=""/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                </Column>
-                                <Column editable="false" title="Type" type="java.lang.Object">
-                                  <Data value="TEST"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                </Column>
-                                <Column editable="false" title="Description" type="java.lang.Object">
-                                  <Data value="TEST"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                </Column>
-                                <Column editable="false" title="Priority" type="java.lang.Object">
-                                  <Data value="TEST"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                </Column>
-                                <Column editable="false" title="Asset" type="java.lang.Object">
-                                  <Data value="TEST"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                </Column>
-                                <Column editable="false" title="Location" type="java.lang.Object">
-                                  <Data value="TEST"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                </Column>
-                                <Column editable="false" title="Employee(s)" type="java.lang.Object">
-                                  <Data value="TEST"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                </Column>
-                                <Column editable="false" title="Status" type="java.lang.Object">
-                                  <Data value="TEST"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                </Column>
+                              <Table columnCount="3" rowCount="0">
+                                <Column editable="false" title="Location No." type="java.lang.Object"/>
+                                <Column editable="false" title="Location Name" type="java.lang.Object"/>
+                                <Column editable="false" title="Location Description" type="java.lang.Object"/>
                               </Table>
                             </Property>
                             <Property name="showGrid" type="boolean" value="true"/>
                           </Properties>
-                          <Events>
-                            <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="locationTableMouseReleased"/>
-                          </Events>
                         </Component>
                       </SubComponents>
                     </Container>
@@ -701,20 +629,22 @@
                   <Layout>
                     <DimensionLayout dim="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="workOrderTools3" alignment="0" max="32767" attributes="0"/>
+                          <Component id="assetTools" pref="753" max="32767" attributes="0"/>
+                          <Component id="assetScroll" pref="753" max="32767" attributes="0"/>
                       </Group>
                     </DimensionLayout>
                     <DimensionLayout dim="1">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
-                              <Component id="workOrderTools3" min="-2" pref="25" max="-2" attributes="0"/>
-                              <EmptySpace min="0" pref="486" max="32767" attributes="0"/>
+                              <Component id="assetTools" min="-2" pref="25" max="-2" attributes="0"/>
+                              <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
+                              <Component id="assetScroll" pref="486" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
                   </Layout>
                   <SubComponents>
-                    <Container class="javax.swing.JToolBar" name="workOrderTools3">
+                    <Container class="javax.swing.JToolBar" name="assetTools">
                       <Properties>
                         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                           <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
@@ -727,37 +657,49 @@
 
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBoxLayout"/>
                       <SubComponents>
-                        <Component class="javax.swing.JButton" name="newButton3">
+                        <Component class="javax.swing.JButton" name="newAsset">
                           <Properties>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/buttons/new.png"/>
                             </Property>
                             <Property name="text" type="java.lang.String" value="New"/>
                           </Properties>
+                          <Events>
+                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="newAssetActionPerformed"/>
+                          </Events>
                         </Component>
-                        <Component class="javax.swing.JButton" name="editButton3">
+                        <Component class="javax.swing.JButton" name="editAsset">
                           <Properties>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/buttons/edit.png"/>
                             </Property>
                             <Property name="text" type="java.lang.String" value="Edit"/>
                           </Properties>
+                          <Events>
+                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="editAssetActionPerformed"/>
+                          </Events>
                         </Component>
-                        <Component class="javax.swing.JButton" name="deleteButton3">
+                        <Component class="javax.swing.JButton" name="deleteAsset">
                           <Properties>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/buttons/delete.png"/>
                             </Property>
                             <Property name="text" type="java.lang.String" value="Delete"/>
                           </Properties>
+                          <Events>
+                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="deleteAssetActionPerformed"/>
+                          </Events>
                         </Component>
-                        <Component class="javax.swing.JButton" name="archiveButton3">
+                        <Component class="javax.swing.JButton" name="archiveAsset">
                           <Properties>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/buttons/archive.png"/>
                             </Property>
                             <Property name="text" type="java.lang.String" value="Archive"/>
                           </Properties>
+                          <Events>
+                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="archiveAssetActionPerformed"/>
+                          </Events>
                         </Component>
                         <Component class="javax.swing.Box$Filler" name="filler4">
                           <Properties>
@@ -769,12 +711,43 @@
                             <AuxValue name="classDetails" type="java.lang.String" value="Box.Filler.HorizontalGlue"/>
                           </AuxValues>
                         </Component>
-                        <Component class="javax.swing.JLabel" name="jLabel4">
+                        <Component class="javax.swing.JLabel" name="assetLoadLabel">
                           <Properties>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/ajax.gif"/>
                             </Property>
                             <Property name="text" type="java.lang.String" value="  "/>
+                          </Properties>
+                        </Component>
+                      </SubComponents>
+                    </Container>
+                    <Container class="javax.swing.JScrollPane" name="assetScroll">
+                      <Properties>
+                        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                          <Border info="org.netbeans.modules.form.compat2.border.MatteColorBorderInfo">
+                            <MatteColorBorder bottom="0" left="0" right="0" top="1">
+                              <Color PropertyName="color" blue="cc" green="cc" red="cc" type="rgb"/>
+                            </MatteColorBorder>
+                          </Border>
+                        </Property>
+                      </Properties>
+                      <AuxValues>
+                        <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
+                      </AuxValues>
+
+                      <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+                      <SubComponents>
+                        <Component class="javax.swing.JTable" name="assetTable">
+                          <Properties>
+                            <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
+                              <Table columnCount="4" rowCount="0">
+                                <Column editable="false" title="Asset No." type="java.lang.Object"/>
+                                <Column editable="false" title="Asset Name" type="java.lang.Object"/>
+                                <Column editable="false" title="Asset Description" type="java.lang.Object"/>
+                                <Column editable="false" title="Location" type="java.lang.Object"/>
+                              </Table>
+                            </Property>
+                            <Property name="showGrid" type="boolean" value="true"/>
                           </Properties>
                         </Component>
                       </SubComponents>

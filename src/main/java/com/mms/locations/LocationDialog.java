@@ -1,23 +1,35 @@
 package com.mms.locations;
 
+import com.mms.MMS;
+import com.sun.glass.events.KeyEvent;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 public class LocationDialog extends javax.swing.JInternalFrame {
     
     private int row = -1;
+    private final JTable table;
     
-    public LocationDialog(DefaultTableModel m) {
+    public LocationDialog(JTable t) {
         initComponents();
+        table = t;
+
     }
     
-    public LocationDialog(DefaultTableModel m, int r) {
+    public LocationDialog(JTable t, int r) {
         initComponents();
+        table = t;
         row = r;
         setTitle("Edit Location");
-            button.setText("Save");
-            //Fill data from table
-            nameField.requestFocus();
-            nameField.selectAll();
+        button.setText("Save");
+        nameField.setText(t.getModel().getValueAt(row, 1).toString());
+        descField.setText(t.getModel().getValueAt(row, 2).toString());
+        nameField.requestFocus();
+        nameField.selectAll();
     }
     
     /**
@@ -46,10 +58,21 @@ public class LocationDialog extends javax.swing.JInternalFrame {
 
         nameLabel.setText("Location Name:");
 
+        nameField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                nameFieldKeyPressed(evt);
+            }
+        });
+
         descLabel.setText("Location Description:");
 
         descField.setColumns(20);
         descField.setRows(5);
+        descField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                nameFieldKeyPressed(evt);
+            }
+        });
         descScroll.setViewportView(descField);
 
         button.setText("Add");
@@ -112,14 +135,67 @@ public class LocationDialog extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonActionPerformed
-        if(row != -1){ //If not edit
-            //Add new location
-        }
+        String name = nameField.getText(), desc = descField.getText();
+        if(name.isEmpty()) nameField.requestFocus();
+        else if(desc.isEmpty()) descField.requestFocus();
         else{
-            //Update location
+            if(row == -1){ //New location
+                    //Get next no
+                    int locNum = -1;
+                    for(int i = 0; i < table.getRowCount(); i++){
+                        int n = Integer.parseInt(table.getValueAt(i, 0).toString());
+                        if(n > locNum) locNum = n;
+                    }
+                    locNum++;
+                    //Insert into DB
+                    PreparedStatement stat;
+                    try {
+                        stat = MMS.getConnection().prepareStatement("INSERT INTO Locations (LocationNo, LocationName, LocationDescription) VALUES (?, ?, ?)");
+                        stat.setInt(1, locNum);
+                        stat.setString(2, name);
+                        stat.setString(3, desc);
+                        stat.execute();
+                        stat.close();
+                    } catch (SQLException ex) {
+                        Logger.getLogger(LocationDialog.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    //Insert into table
+                    Object [] o = {locNum, name, desc};
+                    DefaultTableModel m = (DefaultTableModel)table.getModel();
+                    m.insertRow(0, o);
+                    //Select new row
+                    table.setRowSelectionInterval(0, 0);
+                }
+            else{ //Edit location
+                //Get selected number
+                int locNum = Integer.parseInt(table.getValueAt(row, 0).toString());
+                //Update database
+                PreparedStatement stat;
+                try {
+                    stat = MMS.getConnection().prepareStatement("UPDATE Locations SET LocationName = ?, LocationDescription = ? WHERE LocationNo = ?");
+                    stat.setString(1, name);
+                    stat.setString(2, desc);
+                    stat.setInt(3, locNum);
+                    stat.execute();
+                    stat.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(LocationDialog.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                //Update table
+                table.setValueAt(name, row, 1);
+                table.setValueAt(desc, row, 2);
+                //Select updated row
+                table.setRowSelectionInterval(row, row);
+            }
+            dispose();
         }
     }//GEN-LAST:event_buttonActionPerformed
 
+    private void nameFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nameFieldKeyPressed
+        if(evt.getKeyCode() == KeyEvent.VK_ENTER){
+            buttonActionPerformed(null);
+        }
+    }//GEN-LAST:event_nameFieldKeyPressed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel backPanel;

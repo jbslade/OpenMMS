@@ -2,6 +2,7 @@ package com.mms;
 
 import com.formdev.flatlaf.intellijthemes.FlatArcIJTheme;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Image;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -14,13 +15,16 @@ import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JTable;
 import javax.swing.UIManager;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumnModel;
 
 public class MMS {
     
     //Variables
     public static final String NAME = "OpenMMS", VERSION = "1.0";
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
     private static MainFrame m;
     private static Connection conn;
     private static String user;
@@ -121,10 +125,30 @@ public class MMS {
         m.setIconImage(systemIcon);
         m.setLocationRelativeTo(null);
         m.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        //Load tables
+        m.loadLocations(0);
+        m.loadAssets(0);
+        
         m.setVisible(true);
     }
     
-    //Shutdown method
+    //UTILITY METHODS
+    //Resize table
+    public static void resizeTable(JTable table) {
+        final TableColumnModel columnModel = table.getColumnModel();
+        for (int column = 0; column < table.getColumnCount(); column++) {
+            int width = 100; // Min width
+            for (int row = 0; row < table.getRowCount(); row++) {
+                TableCellRenderer renderer = table.getCellRenderer(row, column);
+                Component comp = table.prepareRenderer(renderer, row, column);
+                width = Math.max(comp.getPreferredSize().width +5 , width);
+            }
+            if(width > 400) width=400;  
+            columnModel.getColumn(column).setPreferredWidth(width);
+        }
+    }
+    
+    //Shutdown
     public static void shutdown(){
         try {
             if(conn != null){
