@@ -734,11 +734,16 @@ public class MainFrame extends javax.swing.JFrame {
 
     //New Asset
     private void newAssetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newAssetActionPerformed
-        AssetDialog a = new AssetDialog(assetTable, locationTable);
-        desktopPane.add(a);
-        desktopPane.setLayer(a, 1);
-        a.setLocation(desktopPane.getWidth()/2-a.getWidth()/2, desktopPane.getHeight()/2-a.getHeight()/2-50);
-        a.setVisible(true);
+        if(locationTable.getRowCount() == 0){
+            JOptionPane.showMessageDialog(this, "You must add a location before you can add an asset.", "No Location", JOptionPane.INFORMATION_MESSAGE);
+        }
+        else{
+            AssetDialog a = new AssetDialog(assetTable, locationTable);
+            desktopPane.add(a);
+            desktopPane.setLayer(a, 1);
+            a.setLocation(desktopPane.getWidth()/2-a.getWidth()/2, desktopPane.getHeight()/2-a.getHeight()/2-50);
+            a.setVisible(true);
+        }
     }//GEN-LAST:event_newAssetActionPerformed
 
     //Edit Asset
