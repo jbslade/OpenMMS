@@ -20,6 +20,8 @@ import javax.swing.JPanel;
 
 public class Setup extends javax.swing.JDialog {
     
+    private final Component thisForm = this;
+    
     /**
      * Creates new form Setup
      * @param parent
@@ -387,7 +389,7 @@ public class Setup extends javax.swing.JDialog {
                         if(derbyNewRadio.isSelected()){//Create new
                             File f = new File(dbDir+"\\"+dbName);
                             if(f.exists()){ //If database exists
-                                if(JOptionPane.showConfirmDialog(null, "A database with the same name was found at this location.\n\n"
+                                if(JOptionPane.showConfirmDialog(thisForm, "A database with the same name was found at this location.\n\n"
                                         + "Would you like to overwrite it?", "Database Exists", JOptionPane.YES_NO_OPTION) == 0){
                                     //Delete old database directory
                                     deleteDir(f);

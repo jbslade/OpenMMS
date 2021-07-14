@@ -65,6 +65,7 @@ public class MMS {
         FlatGrayIJTheme.install();
         System.setProperty("flatlaf.menuBarEmbedded", "true");
         UIManager.put("TabbedPane.selectedBackground", Color.white);
+        System.setProperty( "flatlaf.animation", "false" );
         
         //Preferences
         p = Preferences.userNodeForPackage(MMS.class);

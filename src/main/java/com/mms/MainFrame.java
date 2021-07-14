@@ -8,6 +8,8 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.Box;
+import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.Popup;
@@ -749,17 +751,21 @@ public class MainFrame extends javax.swing.JFrame {
 
     //Delete Location
     private void deleteLocationButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteLocationButtonActionPerformed
-        if(JOptionPane.showConfirmDialog(this, "Are you sure you want to delete "+locationTable.getValueAt(locationTable.getSelectedRow(), 1)+"?", "Delete Location", JOptionPane.YES_NO_OPTION) == 0){
-            int locNum = Integer.parseInt(locationTable.getValueAt(locationTable.getSelectedRow(), 0).toString());
-            //Delete from DB
-            MMS.executeQuery("DELETE FROM Locations WHERE LocationNo = ?",
-                    new Object[]{locNum});
-            //Delete from table
-            DefaultTableModel m = (DefaultTableModel)locationTable.getModel();
-            m.removeRow(locationTable.getSelectedRow());
-            //Select first row
-            if(locationTable.getRowCount() != 0) locationTable.setRowSelectionInterval(0, 0);
-        }
+        JOptionPane jop = new JOptionPane("Are you sure you want to delete "+locationTable.getValueAt(locationTable.getSelectedRow(), 1)+"?", JOptionPane.QUESTION_MESSAGE, JOptionPane.YES_NO_OPTION);
+        JInternalFrame inf = jop.createInternalFrame(desktopPane, "Delete Location");
+        inf.setFrameIcon(MMS.locationIcon);//smaller icons to be defined
+        inf.setVisible(true);
+//        if(JOptionPane.showConfirmDialog(this, "Are you sure you want to delete "+locationTable.getValueAt(locationTable.getSelectedRow(), 1)+"?", "Delete Location", JOptionPane.YES_NO_OPTION) == 0){
+//            int locNum = Integer.parseInt(locationTable.getValueAt(locationTable.getSelectedRow(), 0).toString());
+//            //Delete from DB
+//            MMS.executeQuery("DELETE FROM Locations WHERE LocationNo = ?",
+//                    new Object[]{locNum});
+//            //Delete from table
+//            DefaultTableModel m = (DefaultTableModel)locationTable.getModel();
+//            m.removeRow(locationTable.getSelectedRow());
+//            //Select first row
+//            if(locationTable.getRowCount() != 0) locationTable.setRowSelectionInterval(0, 0);
+//        }
     }//GEN-LAST:event_deleteLocationButtonActionPerformed
 
     //Archive Location
