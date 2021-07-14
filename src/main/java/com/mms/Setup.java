@@ -1,10 +1,12 @@
 package com.mms;
 
+import com.mms.users.Hasher;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.net.URISyntaxException;
+import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -28,8 +30,7 @@ public class Setup extends javax.swing.JDialog {
     public Setup(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        setTitle(MMS.NAME+" - Database Setup");
-        setIconImage(MMS.systemIcon);
+        setIconImage(MMS.systemIcon.getImage());
         setLocationRelativeTo(parent);
         try {
             derbyDirField.setText(new File(MMS.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile().getPath());
@@ -49,19 +50,22 @@ public class Setup extends javax.swing.JDialog {
 
         typeRadioGroup = new javax.swing.ButtonGroup();
         derbyRadioGroup = new javax.swing.ButtonGroup();
+        serverRadioGroup = new javax.swing.ButtonGroup();
         dbSelector = new javax.swing.JFileChooser();
         backPanel = new javax.swing.JPanel();
         derbyRadio = new javax.swing.JRadioButton();
-        microsoftRadio = new javax.swing.JRadioButton();
+        serverRadio = new javax.swing.JRadioButton();
         microsoftPanel = new javax.swing.JPanel();
         srvrField = new javax.swing.JTextField();
         srvrLabel = new javax.swing.JLabel();
-        dbField = new javax.swing.JTextField();
-        dbLabel = new javax.swing.JLabel();
-        usrLabel = new javax.swing.JLabel();
-        usrField = new javax.swing.JTextField();
-        passField = new javax.swing.JPasswordField();
-        passLabel = new javax.swing.JLabel();
+        srvrDBField = new javax.swing.JTextField();
+        srvrDBLabel = new javax.swing.JLabel();
+        srvrUsrLabel = new javax.swing.JLabel();
+        srvrUsrField = new javax.swing.JTextField();
+        srvrPassField = new javax.swing.JPasswordField();
+        srvrPassLabel = new javax.swing.JLabel();
+        mssqlRadio = new javax.swing.JRadioButton();
+        derbyServerRadio = new javax.swing.JRadioButton();
         derbyPanel = new javax.swing.JPanel();
         derbyNewRadio = new javax.swing.JRadioButton();
         derbyNameField = new javax.swing.JTextField();
@@ -77,6 +81,7 @@ public class Setup extends javax.swing.JDialog {
         dbSelector.setFileSelectionMode(javax.swing.JFileChooser.DIRECTORIES_ONLY);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Database Setup");
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosed(java.awt.event.WindowEvent evt) {
                 formWindowClosed(evt);
@@ -97,20 +102,25 @@ public class Setup extends javax.swing.JDialog {
             }
         });
 
-        typeRadioGroup.add(microsoftRadio);
-        microsoftRadio.setText("Microsoft SQL Server");
-        microsoftRadio.addChangeListener(new javax.swing.event.ChangeListener() {
+        typeRadioGroup.add(serverRadio);
+        serverRadio.setText("Database Server");
+        serverRadio.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                microsoftRadioStateChanged(evt);
+                serverRadioStateChanged(evt);
             }
         });
-        microsoftRadio.addKeyListener(new java.awt.event.KeyAdapter() {
+        serverRadio.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 srvrFieldKeyPressed(evt);
             }
         });
 
         srvrField.setEnabled(false);
+        srvrField.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                srvrFieldFocusGained(evt);
+            }
+        });
         srvrField.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 srvrFieldKeyPressed(evt);
@@ -121,38 +131,73 @@ public class Setup extends javax.swing.JDialog {
         srvrLabel.setText("Address:");
         srvrLabel.setEnabled(false);
 
-        dbField.setEnabled(false);
-        dbField.addKeyListener(new java.awt.event.KeyAdapter() {
+        srvrDBField.setText(MMS.NAME+"_DB");
+        srvrDBField.setEnabled(false);
+        srvrDBField.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                srvrDBFieldFocusGained(evt);
+            }
+        });
+        srvrDBField.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 srvrFieldKeyPressed(evt);
             }
         });
 
-        dbLabel.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        dbLabel.setText("Database:");
-        dbLabel.setEnabled(false);
+        srvrDBLabel.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        srvrDBLabel.setText("Database:");
+        srvrDBLabel.setEnabled(false);
 
-        usrLabel.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        usrLabel.setText("Username:");
-        usrLabel.setEnabled(false);
+        srvrUsrLabel.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        srvrUsrLabel.setText("Username:");
+        srvrUsrLabel.setEnabled(false);
 
-        usrField.setEnabled(false);
-        usrField.addKeyListener(new java.awt.event.KeyAdapter() {
+        srvrUsrField.setEnabled(false);
+        srvrUsrField.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                srvrUsrFieldFocusGained(evt);
+            }
+        });
+        srvrUsrField.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 srvrFieldKeyPressed(evt);
             }
         });
 
-        passField.setEnabled(false);
-        passField.addKeyListener(new java.awt.event.KeyAdapter() {
+        srvrPassField.setEnabled(false);
+        srvrPassField.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                srvrPassFieldFocusGained(evt);
+            }
+        });
+        srvrPassField.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 srvrFieldKeyPressed(evt);
             }
         });
 
-        passLabel.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        passLabel.setText("Password:");
-        passLabel.setEnabled(false);
+        srvrPassLabel.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        srvrPassLabel.setText("Password:");
+        srvrPassLabel.setEnabled(false);
+
+        serverRadioGroup.add(mssqlRadio);
+        mssqlRadio.setSelected(true);
+        mssqlRadio.setText("MSSQL");
+        mssqlRadio.setEnabled(false);
+        mssqlRadio.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                srvrFieldKeyPressed(evt);
+            }
+        });
+
+        serverRadioGroup.add(derbyServerRadio);
+        derbyServerRadio.setText("Derby");
+        derbyServerRadio.setEnabled(false);
+        derbyServerRadio.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                srvrFieldKeyPressed(evt);
+            }
+        });
 
         javax.swing.GroupLayout microsoftPanelLayout = new javax.swing.GroupLayout(microsoftPanel);
         microsoftPanel.setLayout(microsoftPanelLayout);
@@ -161,37 +206,48 @@ public class Setup extends javax.swing.JDialog {
             .addGroup(microsoftPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(microsoftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(dbLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(srvrLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(usrLabel)
-                    .addComponent(passLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(microsoftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(srvrField, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(dbField)
-                    .addComponent(usrField, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(passField))
+                    .addGroup(microsoftPanelLayout.createSequentialGroup()
+                        .addComponent(mssqlRadio)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(derbyServerRadio)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(microsoftPanelLayout.createSequentialGroup()
+                        .addGroup(microsoftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(srvrDBLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(srvrLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(srvrUsrLabel)
+                            .addComponent(srvrPassLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(microsoftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(srvrField, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(srvrDBField)
+                            .addComponent(srvrUsrField, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(srvrPassField))))
                 .addContainerGap())
         );
         microsoftPanelLayout.setVerticalGroup(
             microsoftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(microsoftPanelLayout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, microsoftPanelLayout.createSequentialGroup()
                 .addContainerGap()
+                .addGroup(microsoftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(mssqlRadio)
+                    .addComponent(derbyServerRadio))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(microsoftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(srvrLabel)
                     .addComponent(srvrField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(microsoftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(dbLabel)
-                    .addComponent(dbField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(srvrDBLabel)
+                    .addComponent(srvrDBField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(microsoftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(usrLabel)
-                    .addComponent(usrField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(srvrUsrLabel)
+                    .addComponent(srvrUsrField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(microsoftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(passLabel)
-                    .addComponent(passField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(srvrPassLabel)
+                    .addComponent(srvrPassField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -210,6 +266,11 @@ public class Setup extends javax.swing.JDialog {
         });
 
         derbyNameField.setText(MMS.NAME+"_DB");
+        derbyNameField.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                derbyNameFieldFocusGained(evt);
+            }
+        });
         derbyNameField.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 srvrFieldKeyPressed(evt);
@@ -219,7 +280,7 @@ public class Setup extends javax.swing.JDialog {
         derbyNameLabel.setText("Name:");
 
         derbyRadioGroup.add(derbyExistingRadio);
-        derbyExistingRadio.setText("Use existing database");
+        derbyExistingRadio.setText("Open existing database");
         derbyExistingRadio.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 srvrFieldKeyPressed(evt);
@@ -304,7 +365,7 @@ public class Setup extends javax.swing.JDialog {
                         .addGroup(backPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(backPanelLayout.createSequentialGroup()
                                 .addGroup(backPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(microsoftRadio)
+                                    .addComponent(serverRadio)
                                     .addComponent(derbyRadio))
                                 .addGap(0, 0, Short.MAX_VALUE))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, backPanelLayout.createSequentialGroup()
@@ -322,14 +383,14 @@ public class Setup extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(derbyPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(microsoftRadio)
+                .addComponent(serverRadio)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(microsoftPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(backPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(continueButton)
                     .addComponent(statusLabel))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -345,17 +406,17 @@ public class Setup extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(backPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(backPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void continueButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_continueButtonActionPerformed
-        if(derbyRadio.isSelected()){ //DERBY
+        if(derbyRadio.isSelected()){ //DERBY STANDALONE
             setPanelEnabled(backPanel, false);
-            statusLabel.setIcon(new ImageIcon(MMS.ajaxIcon));
+            statusLabel.setIcon(MMS.ajaxIcon);
             statusLabel.setForeground(Color.black);
             statusLabel.setText("Connecting...");
             new Thread(){
@@ -378,11 +439,13 @@ public class Setup extends javax.swing.JDialog {
                         System.setProperty("derby.system.home", dbDir);
                         //Try connect
                         if(derbyNewRadio.isSelected()){
-                            MMS.setConnection(DriverManager.getConnection("jdbc:derby:"+dbName+";create=true"));
+                            Connection conn = DriverManager.getConnection("jdbc:derby:"+dbName+";create=true");
+                            MMS.setConnection(conn);
                             System.out.println("[DATABASE] Connected to Derby: "+dbName);
-                            //Create database
+                            
+                            //Create database tables
                             statusLabel.setText("Creating DB...");
-                            createDerby();
+                            createTables();
                         }
                         else{
                             MMS.setConnection(DriverManager.getConnection("jdbc:derby:"+dbName));
@@ -408,40 +471,46 @@ public class Setup extends javax.swing.JDialog {
                 }
             }.start();
         }
-        else{ //MSSQL
+        else{ //DATABASE SERVER
             String srvr = srvrField.getText(), 
-               db = dbField.getText(),
-               usr = usrField.getText(),
-               pass = passField.getText();
+               db = srvrDBField.getText(),
+               usr = srvrUsrField.getText(),
+               pass = srvrPassField.getText();
             if(srvr.isEmpty()) srvrField.requestFocus();
-            else if(db.isEmpty()) dbField.requestFocus();
-            else if(usr.isEmpty()) usrField.requestFocus();
-            else if(pass.isEmpty()) passField.requestFocus();
+            else if(db.isEmpty()) srvrDBField.requestFocus();
+            else if(usr.isEmpty()) srvrUsrField.requestFocus();
+            else if(pass.isEmpty()) srvrPassField.requestFocus();
             else{
                 setPanelEnabled(backPanel, false);
-                statusLabel.setIcon(new ImageIcon(MMS.ajaxIcon));
+                statusLabel.setIcon(MMS.ajaxIcon);
                 statusLabel.setForeground(Color.black);
                 statusLabel.setText("Connecting...");
                 new Thread(){
                     @Override
-                    public void run(){
+                    public void run(){                        
                         try {
-                            //Register driver
-                            DriverManager.registerDriver(new com.microsoft.sqlserver.jdbc.SQLServerDriver());
-                            //Try connect
-                            MMS.setConnection(DriverManager.getConnection("jdbc:sqlserver://"+srvr+";databaseName="+db+";user="+usr+";password="+pass+";loginTimeout=4"));
-                            System.out.println("[DATABASE] Connected to MSSQL: "+db);
-                            
-                            //Put preferences
-                            p.put("dbType", "mssql");
-                            p.put("mssqlsrvr", srvr);
-                            p.put("mssqldb", db);
-                            p.put("mssqlusr", usr);
-                            p.put("mssqlpass", pass);
-                            p.putBoolean("firstRun", false);
-                            
-                            complete = true;
-                            dispose();
+                            if(mssqlRadio.isSelected()){ //MSSQL
+                                //Register driver
+                                DriverManager.registerDriver(new com.microsoft.sqlserver.jdbc.SQLServerDriver());
+
+                                //Try connect
+                                MMS.setConnection(DriverManager.getConnection("jdbc:sqlserver://"+srvr+";databaseName="+db+";user="+usr+";password="+pass+";loginTimeout=4"));
+                                System.out.println("[DATABASE] Connected to MSSQL: "+db);
+
+                                //Put preferences
+                                p.put("dbType", "mssql");
+                                p.put("mssqlsrvr", srvr);
+                                p.put("mssqldb", db);
+                                p.put("mssqlusr", usr);
+                                p.put("mssqlpass", pass);
+                                p.putBoolean("firstRun", false);
+
+                                complete = true;
+                                dispose();
+                            }
+                            else{ //Derby server
+                                //CONNECT TO DERBY SERVER
+                            }
                         } catch (SQLException ex) {
                             Logger.getLogger(MMS.class.getName()).log(Level.SEVERE, null, ex);
                             setPanelEnabled(backPanel, true);
@@ -462,9 +531,9 @@ public class Setup extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_srvrFieldKeyPressed
 
-    private void microsoftRadioStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_microsoftRadioStateChanged
-        if(backPanel.isEnabled()) setPanelEnabled(microsoftPanel, microsoftRadio.isSelected());
-    }//GEN-LAST:event_microsoftRadioStateChanged
+    private void serverRadioStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_serverRadioStateChanged
+        if(backPanel.isEnabled()) setPanelEnabled(microsoftPanel, serverRadio.isSelected());
+    }//GEN-LAST:event_serverRadioStateChanged
 
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
         if(!complete) MMS.shutdown();
@@ -485,18 +554,43 @@ public class Setup extends javax.swing.JDialog {
         if(backPanel.isEnabled()) setPanelEnabled(derbyPanel, derbyRadio.isSelected());
     }//GEN-LAST:event_derbyRadioStateChanged
 
-    private void createDerby(){
-        try {
-            Statement st = MMS.getConnection().createStatement();
-            st.executeUpdate("CREATE TABLE Locations(LocationNo INT PRIMARY KEY,"
-                    + "LocationName VARCHAR(100), LocationDescription VARCHAR(100), Archived VARCHAR(1))");
-            st.executeUpdate("CREATE TABLE Assets(AssetNo INT PRIMARY KEY,"
-                    + "AssetName VARCHAR(100), AssetDescription VARCHAR(100), LocationNo INT, Archived VARCHAR(1))");
-            
-            System.out.println("[DATABASE] Derby database created.");
-        } catch (SQLException ex) {
-            Logger.getLogger(Setup.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    private void derbyNameFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_derbyNameFieldFocusGained
+        derbyNameField.selectAll();
+    }//GEN-LAST:event_derbyNameFieldFocusGained
+
+    private void srvrDBFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_srvrDBFieldFocusGained
+        srvrDBField.selectAll();
+    }//GEN-LAST:event_srvrDBFieldFocusGained
+
+    private void srvrFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_srvrFieldFocusGained
+        srvrField.selectAll();
+    }//GEN-LAST:event_srvrFieldFocusGained
+
+    private void srvrUsrFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_srvrUsrFieldFocusGained
+        srvrUsrField.selectAll();
+    }//GEN-LAST:event_srvrUsrFieldFocusGained
+
+    private void srvrPassFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_srvrPassFieldFocusGained
+        srvrPassField.selectAll();
+    }//GEN-LAST:event_srvrPassFieldFocusGained
+
+    private void createTables(){
+        //Users
+        MMS.executeQuery("CREATE TABLE Users(Username VARCHAR(50) PRIMARY KEY,"
+                + "Password VARCHAR(50), Salt VARCHAR(16), Logged VARCHAR(1))");
+        String salt = Hasher.getSalt(), pass = Hasher.getHash("admin", salt);
+        MMS.executeQuery("INSERT INTO Users (Username, Password, Salt, Logged) VALUES (?, ?, ?, ?)",
+                new Object[]{"Administrator", pass, salt, "N"});
+        //Locations
+        MMS.executeQuery("CREATE TABLE Locations(LocationNo INT PRIMARY KEY,"
+                + "LocationName VARCHAR(100), LocationDescription VARCHAR(100), Archived VARCHAR(1))");
+        //Assets
+        MMS.executeQuery("CREATE TABLE Assets(AssetNo INT PRIMARY KEY,"
+                + "AssetName VARCHAR(100), AssetDescription VARCHAR(100), LocationNo INT, Archived VARCHAR(1))");
+        //Employees
+        MMS.executeQuery("CREATE TABLE Employees(EmployeeNo INT PRIMARY KEY,"
+                + "EmployeeName VARCHAR(100), Designation VARCHAR(100), Archived VARCHAR(1))");
+        System.out.println("[DATABASE] Derby database created.");
     }
     
     private void setPanelEnabled(JPanel panel, Boolean isEnabled) {
@@ -506,7 +600,7 @@ public class Setup extends javax.swing.JDialog {
             if (component instanceof JPanel) {
                 setPanelEnabled((JPanel)component, isEnabled);
             }
-            else if((component.equals(derbyNameField) || component.equals(derbyNameLabel)) && backPanel.isEnabled()) component.setEnabled(derbyNewRadio.isSelected());
+            else if((component.equals(derbyNameField) || component.equals(derbyNameLabel)) && backPanel.isEnabled() && derbyPanel.isEnabled()) component.setEnabled(derbyNewRadio.isSelected());
             else if(!component.equals(statusLabel)) component.setEnabled(isEnabled);
         }
     }
@@ -514,8 +608,6 @@ public class Setup extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel backPanel;
     private javax.swing.JButton continueButton;
-    private javax.swing.JTextField dbField;
-    private javax.swing.JLabel dbLabel;
     private javax.swing.JFileChooser dbSelector;
     private javax.swing.JButton derbyDirButton;
     private javax.swing.JTextField derbyDirField;
@@ -527,15 +619,20 @@ public class Setup extends javax.swing.JDialog {
     private javax.swing.JPanel derbyPanel;
     private javax.swing.JRadioButton derbyRadio;
     private javax.swing.ButtonGroup derbyRadioGroup;
+    private javax.swing.JRadioButton derbyServerRadio;
     private javax.swing.JPanel microsoftPanel;
-    private javax.swing.JRadioButton microsoftRadio;
-    private javax.swing.JPasswordField passField;
-    private javax.swing.JLabel passLabel;
+    private javax.swing.JRadioButton mssqlRadio;
+    private javax.swing.JRadioButton serverRadio;
+    private javax.swing.ButtonGroup serverRadioGroup;
+    private javax.swing.JTextField srvrDBField;
+    private javax.swing.JLabel srvrDBLabel;
     private javax.swing.JTextField srvrField;
     private javax.swing.JLabel srvrLabel;
+    private javax.swing.JPasswordField srvrPassField;
+    private javax.swing.JLabel srvrPassLabel;
+    private javax.swing.JTextField srvrUsrField;
+    private javax.swing.JLabel srvrUsrLabel;
     private javax.swing.JLabel statusLabel;
     private javax.swing.ButtonGroup typeRadioGroup;
-    private javax.swing.JTextField usrField;
-    private javax.swing.JLabel usrLabel;
     // End of variables declaration//GEN-END:variables
 }

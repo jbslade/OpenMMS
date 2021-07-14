@@ -268,6 +268,7 @@
                                 </Column>
                               </Table>
                             </Property>
+                            <Property name="dragEnabled" type="boolean" value="true"/>
                             <Property name="showGrid" type="boolean" value="true"/>
                           </Properties>
                         </Component>
@@ -605,11 +606,12 @@
                           <Properties>
                             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
                               <Table columnCount="3" rowCount="0">
-                                <Column editable="false" title="Location No." type="java.lang.Object"/>
-                                <Column editable="false" title="Location Name" type="java.lang.Object"/>
-                                <Column editable="false" title="Location Description" type="java.lang.Object"/>
+                                <Column editable="false" title="No." type="java.lang.Object"/>
+                                <Column editable="false" title="Name" type="java.lang.Object"/>
+                                <Column editable="false" title="Description" type="java.lang.Object"/>
                               </Table>
                             </Property>
+                            <Property name="dragEnabled" type="boolean" value="true"/>
                             <Property name="showGrid" type="boolean" value="true"/>
                           </Properties>
                         </Component>
@@ -741,12 +743,13 @@
                           <Properties>
                             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
                               <Table columnCount="4" rowCount="0">
-                                <Column editable="false" title="Asset No." type="java.lang.Object"/>
-                                <Column editable="false" title="Asset Name" type="java.lang.Object"/>
-                                <Column editable="false" title="Asset Description" type="java.lang.Object"/>
+                                <Column editable="false" title="No." type="java.lang.Object"/>
+                                <Column editable="false" title="Name" type="java.lang.Object"/>
+                                <Column editable="false" title="Description" type="java.lang.Object"/>
                                 <Column editable="false" title="Location" type="java.lang.Object"/>
                               </Table>
                             </Property>
+                            <Property name="dragEnabled" type="boolean" value="true"/>
                             <Property name="showGrid" type="boolean" value="true"/>
                           </Properties>
                         </Component>
@@ -858,14 +861,17 @@
                   <Layout>
                     <DimensionLayout dim="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="workOrderTools5" alignment="0" max="32767" attributes="0"/>
+                          <Component id="workOrderTools5" pref="753" max="32767" attributes="0"/>
+                          <Component id="employeeScroll" pref="753" max="32767" attributes="0"/>
                       </Group>
                     </DimensionLayout>
                     <DimensionLayout dim="1">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="workOrderTools5" min="-2" pref="25" max="-2" attributes="0"/>
-                              <EmptySpace min="0" pref="486" max="32767" attributes="0"/>
+                              <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
+                              <Component id="employeeScroll" pref="454" max="32767" attributes="0"/>
+                              <EmptySpace min="-2" pref="32" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -884,37 +890,49 @@
 
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBoxLayout"/>
                       <SubComponents>
-                        <Component class="javax.swing.JButton" name="newButton5">
+                        <Component class="javax.swing.JButton" name="newEmployee">
                           <Properties>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/buttons/new.png"/>
                             </Property>
                             <Property name="text" type="java.lang.String" value="New"/>
                           </Properties>
+                          <Events>
+                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="newEmployeeActionPerformed"/>
+                          </Events>
                         </Component>
-                        <Component class="javax.swing.JButton" name="editButton5">
+                        <Component class="javax.swing.JButton" name="editEmployee">
                           <Properties>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/buttons/edit.png"/>
                             </Property>
                             <Property name="text" type="java.lang.String" value="Edit"/>
                           </Properties>
+                          <Events>
+                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="editEmployeeActionPerformed"/>
+                          </Events>
                         </Component>
-                        <Component class="javax.swing.JButton" name="deleteButton5">
+                        <Component class="javax.swing.JButton" name="deleteEmployee">
                           <Properties>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/buttons/delete.png"/>
                             </Property>
                             <Property name="text" type="java.lang.String" value="Delete"/>
                           </Properties>
+                          <Events>
+                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="deleteEmployeeActionPerformed"/>
+                          </Events>
                         </Component>
-                        <Component class="javax.swing.JButton" name="archiveButton5">
+                        <Component class="javax.swing.JButton" name="archiveEmployee">
                           <Properties>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/buttons/archive.png"/>
                             </Property>
                             <Property name="text" type="java.lang.String" value="Archive"/>
                           </Properties>
+                          <Events>
+                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="archiveEmployeeActionPerformed"/>
+                          </Events>
                         </Component>
                         <Component class="javax.swing.Box$Filler" name="filler6">
                           <Properties>
@@ -926,12 +944,43 @@
                             <AuxValue name="classDetails" type="java.lang.String" value="Box.Filler.HorizontalGlue"/>
                           </AuxValues>
                         </Component>
-                        <Component class="javax.swing.JLabel" name="jLabel6">
+                        <Component class="javax.swing.JLabel" name="employeeLoadLabel">
                           <Properties>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/ajax.gif"/>
                             </Property>
                             <Property name="text" type="java.lang.String" value="  "/>
+                          </Properties>
+                        </Component>
+                      </SubComponents>
+                    </Container>
+                    <Container class="javax.swing.JScrollPane" name="employeeScroll">
+                      <Properties>
+                        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                          <Border info="org.netbeans.modules.form.compat2.border.MatteColorBorderInfo">
+                            <MatteColorBorder bottom="0" left="0" right="0" top="1">
+                              <Color PropertyName="color" blue="cc" green="cc" red="cc" type="rgb"/>
+                            </MatteColorBorder>
+                          </Border>
+                        </Property>
+                      </Properties>
+                      <AuxValues>
+                        <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
+                      </AuxValues>
+
+                      <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+                      <SubComponents>
+                        <Component class="javax.swing.JTable" name="employeeTable">
+                          <Properties>
+                            <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
+                              <Table columnCount="3" rowCount="0">
+                                <Column editable="false" title="No." type="java.lang.Object"/>
+                                <Column editable="false" title="Name" type="java.lang.Object"/>
+                                <Column editable="false" title="Designation" type="java.lang.Object"/>
+                              </Table>
+                            </Property>
+                            <Property name="dragEnabled" type="boolean" value="true"/>
+                            <Property name="showGrid" type="boolean" value="true"/>
                           </Properties>
                         </Component>
                       </SubComponents>

@@ -2,10 +2,6 @@ package com.mms.locations;
 
 import com.mms.MMS;
 import com.sun.glass.events.KeyEvent;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
@@ -51,8 +47,6 @@ public class LocationDialog extends javax.swing.JInternalFrame {
 
         setClosable(true);
         setIconifiable(true);
-        setMaximizable(true);
-        setResizable(true);
         setTitle("New Location");
         setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/iframes/locations.png"))); // NOI18N
 
@@ -148,17 +142,8 @@ public class LocationDialog extends javax.swing.JInternalFrame {
                     }
                     locNum++;
                     //Insert into DB
-                    PreparedStatement stat;
-                    try {
-                        stat = MMS.getConnection().prepareStatement("INSERT INTO Locations (LocationNo, LocationName, LocationDescription, Archived) VALUES (?, ?, ?, 'N')");
-                        stat.setInt(1, locNum);
-                        stat.setString(2, name);
-                        stat.setString(3, desc);
-                        stat.execute();
-                        stat.close();
-                    } catch (SQLException ex) {
-                        Logger.getLogger(LocationDialog.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                    MMS.executeQuery("INSERT INTO Locations (LocationNo, LocationName, LocationDescription, Archived) VALUES (?, ?, ?, 'N')",
+                            new Object[]{locNum, name, desc});
                     //Insert into table
                     Object [] o = {locNum, name, desc};
                     DefaultTableModel m = (DefaultTableModel)table.getModel();
@@ -170,17 +155,8 @@ public class LocationDialog extends javax.swing.JInternalFrame {
                 //Get selected number
                 int locNum = Integer.parseInt(table.getValueAt(row, 0).toString());
                 //Update database
-                PreparedStatement stat;
-                try {
-                    stat = MMS.getConnection().prepareStatement("UPDATE Locations SET LocationName = ?, LocationDescription = ? WHERE LocationNo = ?");
-                    stat.setString(1, name);
-                    stat.setString(2, desc);
-                    stat.setInt(3, locNum);
-                    stat.execute();
-                    stat.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(LocationDialog.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                MMS.executeQuery("UPDATE Locations SET LocationName = ?, LocationDescription = ? WHERE LocationNo = ?",
+                        new Object[]{name, desc, locNum});
                 //Update table
                 table.setValueAt(name, row, 1);
                 table.setValueAt(desc, row, 2);

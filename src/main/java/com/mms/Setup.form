@@ -6,6 +6,8 @@
     </Component>
     <Component class="javax.swing.ButtonGroup" name="derbyRadioGroup">
     </Component>
+    <Component class="javax.swing.ButtonGroup" name="serverRadioGroup">
+    </Component>
     <Component class="javax.swing.JFileChooser" name="dbSelector">
       <Properties>
         <Property name="dialogTitle" type="java.lang.String" value="Select Database Location"/>
@@ -15,6 +17,7 @@
   </NonVisualComponents>
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="2"/>
+    <Property name="title" type="java.lang.String" value="Database Setup"/>
   </Properties>
   <SyntheticProperties>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
@@ -49,8 +52,8 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="backPanel" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="32767" attributes="0"/>
+              <Component id="backPanel" max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -70,7 +73,7 @@
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" attributes="0">
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="microsoftRadio" min="-2" max="-2" attributes="0"/>
+                                      <Component id="serverRadio" min="-2" max="-2" attributes="0"/>
                                       <Component id="derbyRadio" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
@@ -96,15 +99,15 @@
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="derbyPanel" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                  <Component id="microsoftRadio" min="-2" max="-2" attributes="0"/>
+                  <Component id="serverRadio" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="microsoftPanel" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="continueButton" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="statusLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -123,15 +126,15 @@
             <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="srvrFieldKeyPressed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JRadioButton" name="microsoftRadio">
+        <Component class="javax.swing.JRadioButton" name="serverRadio">
           <Properties>
             <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
               <ComponentRef name="typeRadioGroup"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Microsoft SQL Server"/>
+            <Property name="text" type="java.lang.String" value="Database Server"/>
           </Properties>
           <Events>
-            <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="microsoftRadioStateChanged"/>
+            <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="serverRadioStateChanged"/>
             <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="srvrFieldKeyPressed"/>
           </Events>
         </Component>
@@ -143,25 +146,40 @@
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="dbLabel" min="-2" pref="53" max="-2" attributes="0"/>
-                          <Component id="srvrLabel" min="-2" pref="53" max="-2" attributes="0"/>
-                          <Component id="usrLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="passLabel" alignment="0" min="-2" pref="53" max="-2" attributes="0"/>
+                          <Group type="102" attributes="0">
+                              <Component id="mssqlRadio" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="derbyServerRadio" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                          </Group>
+                          <Group type="102" attributes="0">
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="srvrDBLabel" min="-2" pref="53" max="-2" attributes="0"/>
+                                  <Component id="srvrLabel" min="-2" pref="53" max="-2" attributes="0"/>
+                                  <Component id="srvrUsrLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="srvrPassLabel" alignment="0" min="-2" pref="53" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace min="-2" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="srvrField" alignment="1" max="32767" attributes="0"/>
+                                  <Component id="srvrDBField" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="srvrUsrField" alignment="1" max="32767" attributes="0"/>
+                                  <Component id="srvrPassField" alignment="0" max="32767" attributes="0"/>
+                              </Group>
+                          </Group>
                       </Group>
-                      <EmptySpace min="-2" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="srvrField" alignment="1" max="32767" attributes="0"/>
-                          <Component id="dbField" alignment="0" max="32767" attributes="0"/>
-                          <Component id="usrField" alignment="1" max="32767" attributes="0"/>
-                          <Component id="passField" alignment="0" max="32767" attributes="0"/>
-                      </Group>
-                      <EmptySpace min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
+                  <Group type="102" alignment="1" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="mssqlRadio" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="derbyServerRadio" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="srvrLabel" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -169,18 +187,18 @@
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="dbLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="dbField" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="srvrDBLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="srvrDBField" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="usrLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="usrField" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="srvrUsrLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="srvrUsrField" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="passLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="passField" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="srvrPassLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="srvrPassField" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="32767" attributes="0"/>
                   </Group>
@@ -193,6 +211,7 @@
                 <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
+                <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="srvrFieldFocusGained"/>
                 <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="srvrFieldKeyPressed"/>
               </Events>
             </Component>
@@ -203,50 +222,81 @@
                 <Property name="enabled" type="boolean" value="false"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JTextField" name="dbField">
+            <Component class="javax.swing.JTextField" name="srvrDBField">
               <Properties>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                  <Connection code="MMS.NAME+&quot;_DB&quot;" type="code"/>
+                </Property>
                 <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
+                <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="srvrDBFieldFocusGained"/>
                 <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="srvrFieldKeyPressed"/>
               </Events>
             </Component>
-            <Component class="javax.swing.JLabel" name="dbLabel">
+            <Component class="javax.swing.JLabel" name="srvrDBLabel">
               <Properties>
                 <Property name="horizontalAlignment" type="int" value="2"/>
                 <Property name="text" type="java.lang.String" value="Database:"/>
                 <Property name="enabled" type="boolean" value="false"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JLabel" name="usrLabel">
+            <Component class="javax.swing.JLabel" name="srvrUsrLabel">
               <Properties>
                 <Property name="horizontalAlignment" type="int" value="2"/>
                 <Property name="text" type="java.lang.String" value="Username:"/>
                 <Property name="enabled" type="boolean" value="false"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JTextField" name="usrField">
+            <Component class="javax.swing.JTextField" name="srvrUsrField">
               <Properties>
                 <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
+                <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="srvrUsrFieldFocusGained"/>
                 <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="srvrFieldKeyPressed"/>
               </Events>
             </Component>
-            <Component class="javax.swing.JPasswordField" name="passField">
+            <Component class="javax.swing.JPasswordField" name="srvrPassField">
               <Properties>
                 <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
+                <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="srvrPassFieldFocusGained"/>
                 <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="srvrFieldKeyPressed"/>
               </Events>
             </Component>
-            <Component class="javax.swing.JLabel" name="passLabel">
+            <Component class="javax.swing.JLabel" name="srvrPassLabel">
               <Properties>
                 <Property name="horizontalAlignment" type="int" value="2"/>
                 <Property name="text" type="java.lang.String" value="Password:"/>
                 <Property name="enabled" type="boolean" value="false"/>
               </Properties>
+            </Component>
+            <Component class="javax.swing.JRadioButton" name="mssqlRadio">
+              <Properties>
+                <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+                  <ComponentRef name="serverRadioGroup"/>
+                </Property>
+                <Property name="selected" type="boolean" value="true"/>
+                <Property name="text" type="java.lang.String" value="MSSQL"/>
+                <Property name="enabled" type="boolean" value="false"/>
+              </Properties>
+              <Events>
+                <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="srvrFieldKeyPressed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JRadioButton" name="derbyServerRadio">
+              <Properties>
+                <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+                  <ComponentRef name="serverRadioGroup"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Derby"/>
+                <Property name="enabled" type="boolean" value="false"/>
+              </Properties>
+              <Events>
+                <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="srvrFieldKeyPressed"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>
@@ -327,6 +377,7 @@
                 </Property>
               </Properties>
               <Events>
+                <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="derbyNameFieldFocusGained"/>
                 <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="srvrFieldKeyPressed"/>
               </Events>
             </Component>
@@ -340,7 +391,7 @@
                 <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
                   <ComponentRef name="derbyRadioGroup"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Use existing database"/>
+                <Property name="text" type="java.lang.String" value="Open existing database"/>
               </Properties>
               <Events>
                 <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="srvrFieldKeyPressed"/>

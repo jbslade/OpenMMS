@@ -1,14 +1,15 @@
 package com.mms;
 
 import com.formdev.flatlaf.intellijthemes.FlatArcIJTheme;
+import com.mms.locations.LocationDialog;
+import com.mms.users.LoginDialog;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Image;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,7 +25,7 @@ public class MMS {
     
     //Variables
     public static final String NAME = "OpenMMS", VERSION = "1.0";
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
     private static MainFrame m;
     private static Connection conn;
     private static String user;
@@ -32,19 +33,18 @@ public class MMS {
     private static Preferences p;
     
     //Image icons
-    public static final Image systemIcon = new ImageIcon(MMS.class.getResource("/icon.png")).getImage();
-    public static final Image workOrdersIcon = new ImageIcon(MMS.class.getResource("/tabs/workOrders.png")).getImage();
-    public static final Image scheduleIcon = new ImageIcon(MMS.class.getResource("/tabs/schedule.png")).getImage();
-    public static final Image locationIcon = new ImageIcon(MMS.class.getResource("/tabs/locations.png")).getImage();
-    public static final Image assetsIcon = new ImageIcon(MMS.class.getResource("/tabs/assets.png")).getImage();
-    public static final Image partsIcon = new ImageIcon(MMS.class.getResource("/tabs/parts.png")).getImage();
-    public static final Image employeesIcon = new ImageIcon(MMS.class.getResource("/tabs/employees.png")).getImage();
-    public static final Image reportsIcon = new ImageIcon(MMS.class.getResource("/tabs/reports.png")).getImage();
-    public static final Image ajaxIcon = new ImageIcon(MMS.class.getResource("/ajax.gif")).getImage();
+    public static final ImageIcon systemIcon = new ImageIcon(MMS.class.getResource("/icon.png"));
+    public static final ImageIcon workOrdersIcon = new ImageIcon(MMS.class.getResource("/tabs/workOrders.png"));
+    public static final ImageIcon scheduleIcon = new ImageIcon(MMS.class.getResource("/tabs/schedule.png"));
+    public static final ImageIcon locationIcon = new ImageIcon(MMS.class.getResource("/tabs/locations.png"));
+    public static final ImageIcon assetsIcon = new ImageIcon(MMS.class.getResource("/tabs/assets.png"));
+    public static final ImageIcon partsIcon = new ImageIcon(MMS.class.getResource("/tabs/parts.png"));
+    public static final ImageIcon employeesIcon = new ImageIcon(MMS.class.getResource("/tabs/employees.png"));
+    public static final ImageIcon reportsIcon = new ImageIcon(MMS.class.getResource("/tabs/reports.png"));
+    public static final ImageIcon ajaxIcon = new ImageIcon(MMS.class.getResource("/ajax.gif"));
     
     //Getters
     public static MainFrame getMainFrame(){return m;}
-    public static Connection getConnection(){return conn;}
     public static String getUser(){return user;}
     public static ArrayList<String> getUsers(){return users;}
     public static Preferences getPrefs(){return p;}
@@ -63,12 +63,19 @@ public class MMS {
         //Preferences
         p = Preferences.userNodeForPackage(MMS.class);
         
+        //Placeholder frame
+        JFrame phf = new JFrame();
+        phf.setIconImage(systemIcon.getImage());
+        phf.setUndecorated(true);
+        phf.setLocationRelativeTo(null);
+        
         //Setup
         if(DEBUG) p.putBoolean("firstRun", true);
         OUTER:
         while (true) {
             if (p.getBoolean("firstRun", true)) {
-                new Setup(null, true).setVisible(true);
+                phf.setVisible(true);
+                new Setup(phf, true).setVisible(true);
                 break;
             } else {
                 switch (p.get("dbType", "")) {
@@ -105,20 +112,87 @@ public class MMS {
             }
         }
         
+        //RESET OLD ADMIN PASSWORD MSSQL (REMOVE ONCE FIXED)
+//        String salt = Hasher.getSalt(), pass = Hasher.getHash("admin", salt);
+//        MMS.executeQuery("UPDATE Users SET Password = ?, Salt = ? WHERE Username = ?",
+//                new Object[]{pass, salt, "Administrator"});
+        
+        //Login
+        if(conn != null) loadUsers();
+        phf.setVisible(true);
+        new LoginDialog(phf, true).setVisible(true);
+        
+        //Dispose placeholder frame
+        phf.dispose();
+        
         //MainFrame
         m = new MainFrame();
         m.setTitle(NAME+" "+VERSION);
-        m.setIconImage(systemIcon);
+        m.setIconImage(systemIcon.getImage());
         m.setLocationRelativeTo(null);
         m.setExtendedState(JFrame.MAXIMIZED_BOTH);
         //Load tables
         m.loadLocations(0);
         m.loadAssets(0);
+        m.loadEmployees(0);
         
         m.setVisible(true);
     }
     
-    //UTILITY METHODS
+    //DATABASE METHODS
+    //Query (no return)
+    public static void executeQuery(String sql, Object [] o){
+        PreparedStatement stat;
+        try {
+            stat = conn.prepareStatement(sql);
+            for(int i = 0; i < o.length; i++){
+                stat.setObject(i+1, o[i]);
+            }
+            stat.execute();
+            stat.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(LocationDialog.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    } //Query (no return, no params)
+    public static void executeQuery(String sql){
+        PreparedStatement stat;
+        try {
+            stat = conn.prepareStatement(sql);
+            stat.execute();
+            stat.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(LocationDialog.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    //Select with params
+    public static ResultSet select(String sql, Object [] o){
+        PreparedStatement stat;
+        ResultSet rs = null;
+        try {
+            stat = conn.prepareStatement(sql);
+            for(int i = 0; i < o.length; i++){
+                stat.setObject(i+1, o[i]);
+            }
+            rs = stat.executeQuery();
+        } catch (SQLException ex) {
+            Logger.getLogger(LocationDialog.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return rs;
+    }
+    //Select without params
+    public static ResultSet select(String sql){
+        PreparedStatement stat;
+        ResultSet rs = null;
+        try {
+            stat = conn.prepareStatement(sql);
+            rs = stat.executeQuery();
+        } catch (SQLException ex) {
+            Logger.getLogger(LocationDialog.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return rs;
+    }
+    
+    //OTHER METHODS
     //Resize table
     public static void resizeTable(JTable table) {
         final TableColumnModel columnModel = table.getColumnModel();
@@ -133,14 +207,37 @@ public class MMS {
             columnModel.getColumn(column).setPreferredWidth(width);
         }
     }
+    //Load users
+    public static void loadUsers(){
+        users = new ArrayList<>();
+            try {
+                ResultSet rs = select("SELECT Username, Logged FROM Users");
+                while(rs.next()){
+                    String s = rs.getString(1).trim();
+                    String logged = rs.getString(2) == null ? "N" : rs.getString(2);
+                    if(logged.equals("Y")) s = s += " **";
+                    users.add(s);
+                }
+                rs.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+    }
     
-    //Shutdown
+    //SHUTDOWN
     public static void shutdown(){
         try {
+            //Set user to logged out
+            if(user != null){
+                executeQuery("UPDATE Users SET Logged = 'N' WHERE Username = ?",
+                        new Object[]{user});
+            }
+            //Close connection
             if(conn != null){
                 conn.close();
                 System.out.println("[DATABASE] Connection closed");
             }
+            //Shutdown Derby
             if(p.get("dbType", "").equals("derby")) DriverManager.getConnection("jdbc:derby:;shutdown=true");
         } catch (SQLException ex) {
             System.out.println("[DATABASE] "+ex.getCause());

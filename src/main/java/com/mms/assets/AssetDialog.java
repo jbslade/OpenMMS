@@ -2,10 +2,6 @@ package com.mms.assets;
 
 import com.mms.MMS;
 import com.sun.glass.events.KeyEvent;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
@@ -66,7 +62,6 @@ public class AssetDialog extends javax.swing.JInternalFrame {
 
         setClosable(true);
         setIconifiable(true);
-        setMaximizable(true);
         setTitle("New Asset");
         setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/iframes/assets.png"))); // NOI18N
 
@@ -97,6 +92,12 @@ public class AssetDialog extends javax.swing.JInternalFrame {
         });
 
         locationLabel.setText("Location:");
+
+        locationCombo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                nameFieldKeyPressed(evt);
+            }
+        });
 
         javax.swing.GroupLayout backPanelLayout = new javax.swing.GroupLayout(backPanel);
         backPanel.setLayout(backPanelLayout);
@@ -174,18 +175,8 @@ public class AssetDialog extends javax.swing.JInternalFrame {
                     }
                     assNum++;
                     //Insert into DB
-                    PreparedStatement stat;
-                    try {
-                        stat = MMS.getConnection().prepareStatement("INSERT INTO Assets (AssetNo, AssetName, AssetDescription, LocationNo, Archived) VALUES (?, ?, ?, ?, 'N')");
-                        stat.setInt(1, assNum);
-                        stat.setString(2, name);
-                        stat.setString(3, desc);
-                        stat.setInt(4, locNum);
-                        stat.execute();
-                        stat.close();
-                    } catch (SQLException ex) {
-                        Logger.getLogger(AssetDialog.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                    MMS.executeQuery("INSERT INTO Assets (AssetNo, AssetName, AssetDescription, LocationNo, Archived) VALUES (?, ?, ?, ?, 'N')",
+                            new Object[]{assNum, name, desc, locNum});
                     //Insert into table
                     Object [] o = {assNum, name, desc, locName};
                     DefaultTableModel m = (DefaultTableModel)assetTable.getModel();
@@ -197,18 +188,8 @@ public class AssetDialog extends javax.swing.JInternalFrame {
                 //Get selected number
                 int assNum = Integer.parseInt(assetTable.getValueAt(row, 0).toString());
                 //Update database
-                PreparedStatement stat;
-                try {
-                    stat = MMS.getConnection().prepareStatement("UPDATE Assets SET AssetName = ?, AssetDescription = ?, LocationNo = ? WHERE AssetNo = ?");
-                    stat.setString(1, name);
-                    stat.setString(2, desc);
-                    stat.setInt(3, locNum);
-                    stat.setInt(4, assNum);
-                    stat.execute();
-                    stat.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(AssetDialog.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                MMS.executeQuery("UPDATE Assets SET AssetName = ?, AssetDescription = ?, LocationNo = ? WHERE AssetNo = ?",
+                        new Object[]{name, desc, locNum, assNum});
                 //Update table
                 assetTable.setValueAt(name, row, 1);
                 assetTable.setValueAt(desc, row, 2);
