@@ -2,6 +2,10 @@ package com.mms.locations;
 
 import com.mms.MMS;
 import com.sun.glass.events.KeyEvent;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
@@ -12,12 +16,13 @@ public class LocationDialog extends javax.swing.JInternalFrame {
     
     public LocationDialog(JTable t) {
         initComponents();
+        getRootPane().setDefaultButton(button);
         table = t;
-
     }
     
     public LocationDialog(JTable t, int r) {
         initComponents();
+        getRootPane().setDefaultButton(button);
         table = t;
         row = r;
         setTitle("Edit Location");
@@ -49,24 +54,30 @@ public class LocationDialog extends javax.swing.JInternalFrame {
         setIconifiable(true);
         setTitle("New Location");
         setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/iframes/locations.png"))); // NOI18N
-
-        nameLabel.setText("Location Name:");
-
-        nameField.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                nameFieldKeyPressed(evt);
+        addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
+            public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameClosing(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameDeactivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {
+                formInternalFrameDeiconified(evt);
+            }
+            public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
             }
         });
+
+        nameLabel.setText("Location Name:");
 
         descLabel.setText("Location Description:");
 
         descField.setColumns(20);
         descField.setRows(5);
-        descField.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                nameFieldKeyPressed(evt);
-            }
-        });
         descScroll.setViewportView(descField);
 
         button.setText("Add");
@@ -136,9 +147,12 @@ public class LocationDialog extends javax.swing.JInternalFrame {
             if(row == -1){ //New location
                     //Get next no
                     int locNum = 0;
-                    for(int i = 0; i < table.getRowCount(); i++){
-                        int n = Integer.parseInt(table.getValueAt(i, 0).toString());
-                        if(n > locNum) locNum = n;
+                    ResultSet rs = MMS.select("SELECT MAX(LocationNo) FROM Locations");
+                    try {
+                        if(rs.next()) locNum = rs.getInt(1);
+                        rs.close();
+                    } catch (SQLException ex) {
+                        Logger.getLogger(LocationDialog.class.getName()).log(Level.SEVERE, null, ex);
                     }
                     locNum++;
                     //Insert into DB
@@ -167,11 +181,9 @@ public class LocationDialog extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_buttonActionPerformed
 
-    private void nameFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nameFieldKeyPressed
-        if(evt.getKeyCode() == KeyEvent.VK_ENTER){
-            buttonActionPerformed(null);
-        }
-    }//GEN-LAST:event_nameFieldKeyPressed
+    private void formInternalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameDeiconified
+        getRootPane().setDefaultButton(button);
+    }//GEN-LAST:event_formInternalFrameDeiconified
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel backPanel;

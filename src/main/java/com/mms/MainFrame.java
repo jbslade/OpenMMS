@@ -676,6 +676,11 @@ public class MainFrame extends javax.swing.JFrame {
         menuTableFilter.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/filter.png"))); // NOI18N
         menuTableFilter.setMnemonic('F');
         menuTableFilter.setText("Filter");
+        menuTableFilter.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuTableFilterActionPerformed(evt);
+            }
+        });
         menuTable.add(menuTableFilter);
 
         menuTableRefresh.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/refresh.png"))); // NOI18N
@@ -747,13 +752,13 @@ public class MainFrame extends javax.swing.JFrame {
         if(JOptionPane.showConfirmDialog(this, "Are you sure you want to delete "+locationTable.getValueAt(locationTable.getSelectedRow(), 1)+"?", "Delete Location", JOptionPane.YES_NO_OPTION) == 0){
             int locNum = Integer.parseInt(locationTable.getValueAt(locationTable.getSelectedRow(), 0).toString());
             //Delete from DB
-            MMS.executeQuery("DELETE Locations WHERE LocationNo = ?",
+            MMS.executeQuery("DELETE FROM Locations WHERE LocationNo = ?",
                     new Object[]{locNum});
             //Delete from table
             DefaultTableModel m = (DefaultTableModel)locationTable.getModel();
             m.removeRow(locationTable.getSelectedRow());
             //Select first row
-            locationTable.setRowSelectionInterval(0, 0);
+            if(locationTable.getRowCount() != 0) locationTable.setRowSelectionInterval(0, 0);
         }
     }//GEN-LAST:event_deleteLocationButtonActionPerformed
 
@@ -761,22 +766,21 @@ public class MainFrame extends javax.swing.JFrame {
     private void archiveLocationButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_archiveLocationButtonActionPerformed
         if(JOptionPane.showConfirmDialog(this, "Are you sure you want to archive "+locationTable.getValueAt(locationTable.getSelectedRow(), 1)+"?", "Archive Location", JOptionPane.YES_NO_OPTION) == 0){
             int locNum = Integer.parseInt(locationTable.getValueAt(locationTable.getSelectedRow(), 0).toString());
-            //Delete from DB
+            //Set Archived = Y
             MMS.executeQuery("UPDATE Locations SET Archived = ? WHERE LocationNo = ?",
                     new Object[]{"Y", locNum});
             //Delete from table
             DefaultTableModel m = (DefaultTableModel)locationTable.getModel();
             m.removeRow(locationTable.getSelectedRow());
             //Select first row
-            locationTable.setRowSelectionInterval(0, 0);
+            if(locationTable.getRowCount() != 0) locationTable.setRowSelectionInterval(0, 0);
         }
     }//GEN-LAST:event_archiveLocationButtonActionPerformed
 
     //New Asset
     private void newAssetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newAssetActionPerformed
         if(locationTable.getRowCount() == 0){
-            Popup p = PopupFactory.getSharedInstance().getPopup(assetPanel, new JLabel("You must add a location before you can add an asset."), newAsset.getLocationOnScreen().x, newAsset.getLocationOnScreen().y+newAsset.getHeight());
-            p.show();
+            PopupPanel.display("You must add a location before you can add an asset.", newAsset.getLocationOnScreen().x+10, newAsset.getLocationOnScreen().y+newAsset.getHeight()+10);
         }
         else{
             AssetDialog a = new AssetDialog(assetTable, locationTable);
@@ -801,13 +805,13 @@ public class MainFrame extends javax.swing.JFrame {
         if(JOptionPane.showConfirmDialog(this, "Are you sure you want to delete "+assetTable.getValueAt(assetTable.getSelectedRow(), 1)+"?", "Delete Asset", JOptionPane.YES_NO_OPTION) == 0){
             int assNum = Integer.parseInt(assetTable.getValueAt(assetTable.getSelectedRow(), 0).toString());
             //Delete from DB
-            MMS.executeQuery("DELETE Assets WHERE AssetNo = ?",
+            MMS.executeQuery("DELETE FROM Assets WHERE AssetNo = ?",
                     new Object[]{assNum});
             //Delete from table
             DefaultTableModel m = (DefaultTableModel)assetTable.getModel();
             m.removeRow(assetTable.getSelectedRow());
             //Select first row
-            assetTable.setRowSelectionInterval(0, 0);
+            if(assetTable.getRowCount() != 0) assetTable.setRowSelectionInterval(0, 0);
         }
     }//GEN-LAST:event_deleteAssetActionPerformed
 
@@ -815,14 +819,14 @@ public class MainFrame extends javax.swing.JFrame {
     private void archiveAssetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_archiveAssetActionPerformed
         if(JOptionPane.showConfirmDialog(this, "Are you sure you want to archive "+assetTable.getValueAt(assetTable.getSelectedRow(), 1)+"?", "Archive Asset", JOptionPane.YES_NO_OPTION) == 0){
             int assNum = Integer.parseInt(assetTable.getValueAt(assetTable.getSelectedRow(), 0).toString());
-            //Delete from DB
+            //Set Archived = Y
             MMS.executeQuery("UPDATE Assets SET Archived = ? WHERE AssetNo = ?",
                     new Object[]{"Y", assNum});
             //Delete from table
             DefaultTableModel m = (DefaultTableModel)assetTable.getModel();
             m.removeRow(assetTable.getSelectedRow());
             //Select first row
-            assetTable.setRowSelectionInterval(0, 0);
+            if(assetTable.getRowCount() != 0) assetTable.setRowSelectionInterval(0, 0);
         }
     }//GEN-LAST:event_archiveAssetActionPerformed
 
@@ -871,13 +875,13 @@ public class MainFrame extends javax.swing.JFrame {
         if(JOptionPane.showConfirmDialog(this, "Are you sure you want to delete "+employeeTable.getValueAt(employeeTable.getSelectedRow(), 1)+"?", "Delete Employee", JOptionPane.YES_NO_OPTION) == 0){
             int empNum = Integer.parseInt(employeeTable.getValueAt(employeeTable.getSelectedRow(), 0).toString());
             //Delete from DB
-            MMS.executeQuery("UPDATE Employees SET Archived = ? WHERE EmployeeNo = ?",
-                    new Object[]{"Y", empNum});
+            MMS.executeQuery("DELETE FROM Employees WHERE EmployeeNo = ?",
+                    new Object[]{empNum});
             //Delete from table
             DefaultTableModel m = (DefaultTableModel)employeeTable.getModel();
             m.removeRow(employeeTable.getSelectedRow());
             //Select first row
-            employeeTable.setRowSelectionInterval(0, 0);
+            if(employeeTable.getRowCount() != 0) employeeTable.setRowSelectionInterval(0, 0);
         }
     }//GEN-LAST:event_deleteEmployeeActionPerformed
 
@@ -885,16 +889,20 @@ public class MainFrame extends javax.swing.JFrame {
     private void archiveEmployeeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_archiveEmployeeActionPerformed
         if(JOptionPane.showConfirmDialog(this, "Are you sure you want to archive "+employeeTable.getValueAt(employeeTable.getSelectedRow(), 1)+"?", "Archive Employee", JOptionPane.YES_NO_OPTION) == 0){
             int empNum = Integer.parseInt(employeeTable.getValueAt(employeeTable.getSelectedRow(), 0).toString());
-            //Delete from DB
-            MMS.executeQuery("DELETE Employees WHERE EmployeeNo = ?",
-                    new Object[]{empNum});
+            //Set archived = Y
+            MMS.executeQuery("UPDATE Employees SET Archived = ? WHERE EmployeeNo = ?",
+                    new Object[]{"Y", empNum});
             //Delete from table
             DefaultTableModel m = (DefaultTableModel)employeeTable.getModel();
             m.removeRow(employeeTable.getSelectedRow());
             //Select first row
-            employeeTable.setRowSelectionInterval(0, 0);
+            if(employeeTable.getRowCount() != 0) employeeTable.setRowSelectionInterval(0, 0);
         }
     }//GEN-LAST:event_archiveEmployeeActionPerformed
+
+    private void menuTableFilterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuTableFilterActionPerformed
+
+    }//GEN-LAST:event_menuTableFilterActionPerformed
 
     //Load locations
     public void loadLocations(int row){

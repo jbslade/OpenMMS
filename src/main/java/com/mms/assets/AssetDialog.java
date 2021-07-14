@@ -2,6 +2,10 @@ package com.mms.assets;
 
 import com.mms.MMS;
 import com.sun.glass.events.KeyEvent;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
@@ -12,6 +16,7 @@ public class AssetDialog extends javax.swing.JInternalFrame {
     
     public AssetDialog(JTable t, JTable l) {
         initComponents();
+        getRootPane().setDefaultButton(button);
         assetTable = t;
         locationTable = l;
         
@@ -23,6 +28,7 @@ public class AssetDialog extends javax.swing.JInternalFrame {
     
     public AssetDialog(JTable t, JTable l, int r) {
         initComponents();
+        getRootPane().setDefaultButton(button);
         assetTable = t;
         locationTable = l;
         row = r;
@@ -64,24 +70,30 @@ public class AssetDialog extends javax.swing.JInternalFrame {
         setIconifiable(true);
         setTitle("New Asset");
         setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/iframes/assets.png"))); // NOI18N
-
-        nameLabel.setText("Asset Name");
-
-        nameField.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                nameFieldKeyPressed(evt);
+        addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
+            public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameClosing(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameDeactivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {
+                formInternalFrameDeiconified(evt);
+            }
+            public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
             }
         });
+
+        nameLabel.setText("Asset Name");
 
         descLabel.setText("Asset Description");
 
         descField.setColumns(20);
         descField.setRows(5);
-        descField.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                nameFieldKeyPressed(evt);
-            }
-        });
         descScroll.setViewportView(descField);
 
         button.setText("Add");
@@ -92,12 +104,6 @@ public class AssetDialog extends javax.swing.JInternalFrame {
         });
 
         locationLabel.setText("Location:");
-
-        locationCombo.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                nameFieldKeyPressed(evt);
-            }
-        });
 
         javax.swing.GroupLayout backPanelLayout = new javax.swing.GroupLayout(backPanel);
         backPanel.setLayout(backPanelLayout);
@@ -169,9 +175,12 @@ public class AssetDialog extends javax.swing.JInternalFrame {
             if(row == -1){ //New asset
                     //Get next no
                     int assNum = 0;
-                    for(int i = 0; i < assetTable.getRowCount(); i++){
-                        int n = Integer.parseInt(assetTable.getValueAt(i, 0).toString());
-                        if(n > assNum) assNum = n;
+                    ResultSet rs = MMS.select("SELECT MAX(AssetNo) FROM Assets");
+                    try {
+                        if(rs.next()) assNum = rs.getInt(1);
+                        rs.close();
+                    } catch (SQLException ex) {
+                        Logger.getLogger(AssetDialog.class.getName()).log(Level.SEVERE, null, ex);
                     }
                     assNum++;
                     //Insert into DB
@@ -201,11 +210,9 @@ public class AssetDialog extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_buttonActionPerformed
 
-    private void nameFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nameFieldKeyPressed
-        if(evt.getKeyCode() == KeyEvent.VK_ENTER){
-            buttonActionPerformed(null);
-        }
-    }//GEN-LAST:event_nameFieldKeyPressed
+    private void formInternalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameDeiconified
+        getRootPane().setDefaultButton(button);
+    }//GEN-LAST:event_formInternalFrameDeiconified
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel backPanel;

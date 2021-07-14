@@ -1,7 +1,10 @@
 package com.mms.employees;
 
 import com.mms.MMS;
-import com.sun.glass.events.KeyEvent;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
@@ -12,11 +15,13 @@ public class EmployeeDialog extends javax.swing.JInternalFrame {
     
     public EmployeeDialog(JTable t) {
         initComponents();
+        getRootPane().setDefaultButton(button);
         table = t;
     }
     
     public EmployeeDialog(JTable t, int r) {
         initComponents();
+        getRootPane().setDefaultButton(button);
         table = t;
         row = r;
         setTitle("Edit Employee");
@@ -48,14 +53,25 @@ public class EmployeeDialog extends javax.swing.JInternalFrame {
         setTitle("New Employee");
         setToolTipText("");
         setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/iframes/employees.png"))); // NOI18N
-
-        nameLabel.setText("Employee Name:");
-
-        nameField.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                nameFieldKeyPressed(evt);
+        addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
+            public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameClosing(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameDeactivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {
+                formInternalFrameDeiconified(evt);
+            }
+            public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
             }
         });
+
+        nameLabel.setText("Employee Name:");
 
         descLabel.setText("Employee Designation:");
 
@@ -63,12 +79,6 @@ public class EmployeeDialog extends javax.swing.JInternalFrame {
         button.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonActionPerformed(evt);
-            }
-        });
-
-        descField.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                nameFieldKeyPressed(evt);
             }
         });
 
@@ -132,9 +142,12 @@ public class EmployeeDialog extends javax.swing.JInternalFrame {
             if(row == -1){ //New employee
                     //Get next no
                     int empNum = 0;
-                    for(int i = 0; i < table.getRowCount(); i++){
-                        int n = Integer.parseInt(table.getValueAt(i, 0).toString());
-                        if(n > empNum) empNum = n;
+                    ResultSet rs = MMS.select("SELECT MAX(EmployeeNo) FROM Employee");
+                    try {
+                        if(rs.next()) empNum = rs.getInt(1);
+                        rs.close();
+                    } catch (SQLException ex) {
+                        Logger.getLogger(EmployeeDialog.class.getName()).log(Level.SEVERE, null, ex);
                     }
                     empNum++;
                     //Insert into DB
@@ -163,11 +176,9 @@ public class EmployeeDialog extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_buttonActionPerformed
 
-    private void nameFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nameFieldKeyPressed
-        if(evt.getKeyCode() == KeyEvent.VK_ENTER){
-            buttonActionPerformed(null);
-        }
-    }//GEN-LAST:event_nameFieldKeyPressed
+    private void formInternalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameDeiconified
+        getRootPane().setDefaultButton(button);
+    }//GEN-LAST:event_formInternalFrameDeiconified
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel backPanel;

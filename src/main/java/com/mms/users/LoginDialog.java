@@ -22,7 +22,7 @@ public class LoginDialog extends javax.swing.JDialog {
         setIconImage(MMS.systemIcon.getImage());
         setLocationRelativeTo(parent);
         passwordField.putClientProperty("JTextField.placeholderText", "Password");
-        
+        getRootPane().setDefaultButton(continueButton);
         //Set combo box users
         userCombo.removeAllItems();
         for(int i = 0; i < MMS.getUsers().size(); i++){
@@ -37,6 +37,9 @@ public class LoginDialog extends javax.swing.JDialog {
             userCombo.setSelectedItem(u);
             passwordField.requestFocus();
         }
+        
+        //Show placeholder frame
+        MMS.phf.setVisible(true);
     }
 
     /**
@@ -54,13 +57,12 @@ public class LoginDialog extends javax.swing.JDialog {
         userCombo = new javax.swing.JComboBox<>();
         passwordField = new javax.swing.JPasswordField();
         continueButton = new javax.swing.JButton();
-        failedLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Login");
         addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowClosed(java.awt.event.WindowEvent evt) {
-                formWindowClosed(evt);
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
             }
         });
 
@@ -76,17 +78,6 @@ public class LoginDialog extends javax.swing.JDialog {
         separator.setOrientation(javax.swing.SwingConstants.VERTICAL);
 
         userCombo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        userCombo.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                userComboKeyPressed(evt);
-            }
-        });
-
-        passwordField.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                userComboKeyPressed(evt);
-            }
-        });
 
         continueButton.setText("Continue");
         continueButton.addActionListener(new java.awt.event.ActionListener() {
@@ -94,9 +85,6 @@ public class LoginDialog extends javax.swing.JDialog {
                 continueButtonActionPerformed(evt);
             }
         });
-
-        failedLabel.setForeground(new java.awt.Color(255, 0, 0));
-        failedLabel.setText(" ");
 
         javax.swing.GroupLayout backPanelLayout = new javax.swing.GroupLayout(backPanel);
         backPanel.setLayout(backPanelLayout);
@@ -108,12 +96,9 @@ public class LoginDialog extends javax.swing.JDialog {
                 .addComponent(separator, javax.swing.GroupLayout.PREFERRED_SIZE, 11, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(backPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(userCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(userCombo, 0, 183, Short.MAX_VALUE)
                     .addComponent(passwordField)
-                    .addGroup(backPanelLayout.createSequentialGroup()
-                        .addComponent(failedLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 102, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(continueButton)))
+                    .addComponent(continueButton))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         backPanelLayout.setVerticalGroup(
@@ -122,16 +107,13 @@ public class LoginDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(backPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(logoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(backPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(separator)
-                        .addGroup(backPanelLayout.createSequentialGroup()
-                            .addComponent(userCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(passwordField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addGroup(backPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(continueButton)
-                                .addComponent(failedLabel)))))
+                    .addComponent(separator, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, backPanelLayout.createSequentialGroup()
+                        .addComponent(userCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(passwordField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(continueButton)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -154,10 +136,6 @@ public class LoginDialog extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
-        if(!success) MMS.shutdown();
-    }//GEN-LAST:event_formWindowClosed
 
     private void continueButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_continueButtonActionPerformed
         String u = userCombo.getSelectedItem().toString(), p = passwordField.getText();
@@ -195,12 +173,6 @@ public class LoginDialog extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_continueButtonActionPerformed
 
-    private void userComboKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_userComboKeyPressed
-        if(evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            continueButtonActionPerformed(null);
-        }
-    }//GEN-LAST:event_userComboKeyPressed
-
     private void logoLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_logoLabelMouseClicked
         new Thread(){
             @Override
@@ -217,8 +189,11 @@ public class LoginDialog extends javax.swing.JDialog {
         }.start();
     }//GEN-LAST:event_logoLabelMouseClicked
 
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        MMS.shutdown();
+    }//GEN-LAST:event_formWindowClosing
+
     private void fail(){
-        failedLabel.setText("Login failed!");
         passwordField.requestFocus();
         passwordField.selectAll();
     }
@@ -226,7 +201,6 @@ public class LoginDialog extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel backPanel;
     private javax.swing.JButton continueButton;
-    private javax.swing.JLabel failedLabel;
     private javax.swing.JLabel logoLabel;
     private javax.swing.JPasswordField passwordField;
     private javax.swing.JSeparator separator;
