@@ -1,3 +1,18 @@
+/*
+ * Copyright 2021 J.B. Slade.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.mms;
 
 import com.formdev.flatlaf.intellijthemes.FlatGrayIJTheme;
@@ -26,11 +41,15 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
+/**
+ *
+ * @author J.B. Slade
+ */
 public class MMS {
     
     //Variables
     public static final String NAME = "OpenMMS", VERSION = "1.0";
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
     public static final JFrame phf = new JFrame();
     private static MainFrame m;
     private static Connection conn;
@@ -65,7 +84,6 @@ public class MMS {
         FlatGrayIJTheme.install();
         System.setProperty("flatlaf.menuBarEmbedded", "true");
         UIManager.put("TabbedPane.selectedBackground", Color.white);
-        System.setProperty( "flatlaf.animation", "false" );
         
         //Preferences
         p = Preferences.userNodeForPackage(MMS.class);
@@ -215,16 +233,6 @@ public class MMS {
             columnModel.getColumn(column).setPreferredWidth(width);
         }
     }
-    public static void sortTable(JTable table){
-        TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(table.getModel());
-        table.setRowSorter(sorter);
-
-        List<RowSorter.SortKey> sortKeys = new ArrayList<>(25);
-        sortKeys.add(new RowSorter.SortKey(0, SortOrder.ASCENDING));
-        //sortKeys.add(new RowSorter.SortKey(0, SortOrder.ASCENDING));
-        sorter.setSortKeys(sortKeys);
-    }
-    
     
     //Load users
     public static void loadUsers(){

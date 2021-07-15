@@ -1,22 +1,40 @@
+/*
+ * Copyright 2021 J.B. Slade.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.mms;
 
+import com.mms.utilities.InternalDialog;
+import com.mms.utilities.PopupPanel;
 import com.mms.assets.AssetDialog;
 import com.mms.employees.EmployeeDialog;
 import com.mms.locations.LocationDialog;
+import java.awt.Color;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.Box;
-import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.Popup;
-import javax.swing.PopupFactory;
 import javax.swing.SwingConstants;
+import javax.swing.border.MatteBorder;
 import javax.swing.table.DefaultTableModel;
 
+/**
+ *
+ * @author J.B. Slade
+ */
 public class MainFrame extends javax.swing.JFrame {
     
     public MainFrame() {
@@ -38,7 +56,29 @@ public class MainFrame extends javax.swing.JFrame {
         tabbedPane.setIconAt(4, MMS.partsIcon);
         tabbedPane.setIconAt(5, MMS.employeesIcon);
         tabbedPane.setIconAt(6, MMS.reportsIcon);
-        tabbedPane.setIconAt(7, MMS.systemIcon);  
+        tabbedPane.setIconAt(7, MMS.systemIcon);
+        
+        //Tables
+        workOrderTable.setBackground(Color.white);
+        workOrderTable.getTableHeader().setBackground(Color.white);
+        workOrderTable.getTableHeader().setBorder(new MatteBorder(0,0,1,0, workOrderTable.getGridColor()));
+        workOrderTable.setAutoCreateRowSorter(true);
+        scheduleTable.setBackground(Color.white);
+        scheduleTable.getTableHeader().setBackground(Color.white);
+        scheduleTable.getTableHeader().setBorder(new MatteBorder(0,0,1,0, scheduleTable.getGridColor()));
+        scheduleTable.setAutoCreateRowSorter(true);
+        locationTable.setBackground(Color.white);
+        locationTable.getTableHeader().setBackground(Color.white);
+        locationTable.getTableHeader().setBorder(new MatteBorder(0,0,1,0, locationTable.getGridColor()));
+        locationTable.setAutoCreateRowSorter(true);
+        assetTable.setBackground(Color.white);
+        assetTable.getTableHeader().setBackground(Color.white);
+        assetTable.getTableHeader().setBorder(new MatteBorder(0,0,1,0, assetTable.getGridColor()));
+        assetTable.setAutoCreateRowSorter(true);
+        employeeTable.setBackground(Color.white);
+        employeeTable.getTableHeader().setBackground(Color.white);
+        employeeTable.getTableHeader().setBorder(new MatteBorder(0,0,1,0, employeeTable.getGridColor()));
+        employeeTable.setAutoCreateRowSorter(true);
         
         //Set user
         menuUser.setText(MMS.getUser());
@@ -57,29 +97,31 @@ public class MainFrame extends javax.swing.JFrame {
         desktopPane = new javax.swing.JDesktopPane();
         tabbedPane = new javax.swing.JTabbedPane();
         workOrderPanel = new javax.swing.JPanel();
-        workOrderScroll = new javax.swing.JScrollPane();
-        workOrdersTable = new javax.swing.JTable();
         workOrderTools = new javax.swing.JToolBar();
-        newButton = new javax.swing.JButton();
-        editButton = new javax.swing.JButton();
-        deleteButton = new javax.swing.JButton();
-        archiveButton = new javax.swing.JButton();
-        statusButton = new javax.swing.JButton();
-        viewButton = new javax.swing.JButton();
-        printButton = new javax.swing.JButton();
+        newWOButton = new javax.swing.JButton();
+        editWOButton = new javax.swing.JButton();
+        deleteWOButton = new javax.swing.JButton();
+        archiveWOButton = new javax.swing.JButton();
+        statusWOButton = new javax.swing.JButton();
+        viewWOButton = new javax.swing.JButton();
+        printWOButton = new javax.swing.JButton();
         filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
-        jLabel1 = new javax.swing.JLabel();
+        workLoadLabel = new javax.swing.JLabel();
+        workOrderScroll = new javax.swing.JScrollPane();
+        workOrderTable = new javax.swing.JTable();
         schedulePanel = new javax.swing.JPanel();
-        workOrderTools1 = new javax.swing.JToolBar();
-        newButton1 = new javax.swing.JButton();
-        editButton1 = new javax.swing.JButton();
-        deleteButton1 = new javax.swing.JButton();
-        archiveButton1 = new javax.swing.JButton();
-        completeButton1 = new javax.swing.JButton();
-        viewButton1 = new javax.swing.JButton();
+        scheduleTools = new javax.swing.JToolBar();
+        newScheduleButton = new javax.swing.JButton();
+        editScheduleButton = new javax.swing.JButton();
+        deleteScheduleButton = new javax.swing.JButton();
+        archiveScheduleButton = new javax.swing.JButton();
+        completeScheduleButton = new javax.swing.JButton();
+        viewScheduleButton = new javax.swing.JButton();
         createWOButton1 = new javax.swing.JButton();
         filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
-        jLabel2 = new javax.swing.JLabel();
+        scheduleLoadLabel = new javax.swing.JLabel();
+        scheduleScroll = new javax.swing.JScrollPane();
+        scheduleTable = new javax.swing.JTable();
         locationPanel = new javax.swing.JPanel();
         locationTools = new javax.swing.JToolBar();
         newLocationButton = new javax.swing.JButton();
@@ -92,16 +134,16 @@ public class MainFrame extends javax.swing.JFrame {
         locationTable = new javax.swing.JTable();
         assetPanel = new javax.swing.JPanel();
         assetTools = new javax.swing.JToolBar();
-        newAsset = new javax.swing.JButton();
-        editAsset = new javax.swing.JButton();
-        deleteAsset = new javax.swing.JButton();
-        archiveAsset = new javax.swing.JButton();
+        newAssetButton = new javax.swing.JButton();
+        editAssetButton = new javax.swing.JButton();
+        deleteAssetButton = new javax.swing.JButton();
+        archiveAssetButton = new javax.swing.JButton();
         filler4 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
         assetLoadLabel = new javax.swing.JLabel();
         assetScroll = new javax.swing.JScrollPane();
         assetTable = new javax.swing.JTable();
         partPanel = new javax.swing.JPanel();
-        workOrderTools4 = new javax.swing.JToolBar();
+        partTools = new javax.swing.JToolBar();
         newButton4 = new javax.swing.JButton();
         editButton4 = new javax.swing.JButton();
         deleteButton4 = new javax.swing.JButton();
@@ -109,11 +151,11 @@ public class MainFrame extends javax.swing.JFrame {
         filler5 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
         jLabel5 = new javax.swing.JLabel();
         employeePanel = new javax.swing.JPanel();
-        workOrderTools5 = new javax.swing.JToolBar();
-        newEmployee = new javax.swing.JButton();
-        editEmployee = new javax.swing.JButton();
-        deleteEmployee = new javax.swing.JButton();
-        archiveEmployee = new javax.swing.JButton();
+        employeeTools = new javax.swing.JToolBar();
+        newEmpButton = new javax.swing.JButton();
+        editEmpButton = new javax.swing.JButton();
+        deleteEmpButton = new javax.swing.JButton();
+        archiveEmpButton = new javax.swing.JButton();
         filler6 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
         employeeLoadLabel = new javax.swing.JLabel();
         employeeScroll = new javax.swing.JScrollPane();
@@ -128,7 +170,6 @@ public class MainFrame extends javax.swing.JFrame {
         menuFile = new javax.swing.JMenu();
         menuEdit = new javax.swing.JMenu();
         menuTable = new javax.swing.JMenu();
-        menuTableSort = new javax.swing.JMenu();
         menuTableFilter = new javax.swing.JMenuItem();
         menuTableRefresh = new javax.swing.JMenuItem();
         menuUser = new javax.swing.JMenu();
@@ -145,16 +186,48 @@ public class MainFrame extends javax.swing.JFrame {
         tabbedPane.setTabPlacement(javax.swing.JTabbedPane.LEFT);
         tabbedPane.setFocusable(false);
 
+        workOrderTools.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        workOrderTools.setFloatable(false);
+        workOrderTools.setRollover(true);
+
+        newWOButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/new.png"))); // NOI18N
+        newWOButton.setText("New");
+        workOrderTools.add(newWOButton);
+
+        editWOButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/edit.png"))); // NOI18N
+        editWOButton.setText("Edit");
+        workOrderTools.add(editWOButton);
+
+        deleteWOButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/delete.png"))); // NOI18N
+        deleteWOButton.setText("Delete");
+        workOrderTools.add(deleteWOButton);
+
+        archiveWOButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/archive.png"))); // NOI18N
+        archiveWOButton.setText("Archive");
+        workOrderTools.add(archiveWOButton);
+
+        statusWOButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/status.png"))); // NOI18N
+        statusWOButton.setText("Status");
+        workOrderTools.add(statusWOButton);
+
+        viewWOButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/view.png"))); // NOI18N
+        viewWOButton.setText("View");
+        workOrderTools.add(viewWOButton);
+
+        printWOButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/print.png"))); // NOI18N
+        printWOButton.setText("Print");
+        workOrderTools.add(printWOButton);
+        workOrderTools.add(filler1);
+
+        workLoadLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ajax.gif"))); // NOI18N
+        workLoadLabel.setText("  ");
+        workOrderTools.add(workLoadLabel);
+
         workOrderScroll.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 0, 0, 0, new java.awt.Color(204, 204, 204)));
 
-        workOrdersTable.setModel(new javax.swing.table.DefaultTableModel(
+        workOrderTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {"TEST", "TEST", "TEST", "TEST", "TEST", "TEST", "TEST", "TEST", "TEST"},
-                {"", null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, "", null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null}
+
             },
             new String [] {
                 "No.", "Date", "Type", "Description", "Priority", "Asset", "Location", "Employee(s)", "Status"
@@ -168,46 +241,9 @@ public class MainFrame extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        workOrdersTable.setDragEnabled(true);
-        workOrdersTable.setShowGrid(true);
-        workOrderScroll.setViewportView(workOrdersTable);
-
-        workOrderTools.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        workOrderTools.setFloatable(false);
-        workOrderTools.setRollover(true);
-
-        newButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/new.png"))); // NOI18N
-        newButton.setText("New");
-        workOrderTools.add(newButton);
-
-        editButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/edit.png"))); // NOI18N
-        editButton.setText("Edit");
-        workOrderTools.add(editButton);
-
-        deleteButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/delete.png"))); // NOI18N
-        deleteButton.setText("Delete");
-        workOrderTools.add(deleteButton);
-
-        archiveButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/archive.png"))); // NOI18N
-        archiveButton.setText("Archive");
-        workOrderTools.add(archiveButton);
-
-        statusButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/status.png"))); // NOI18N
-        statusButton.setText("Status");
-        workOrderTools.add(statusButton);
-
-        viewButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/view.png"))); // NOI18N
-        viewButton.setText("View");
-        workOrderTools.add(viewButton);
-
-        printButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/print.png"))); // NOI18N
-        printButton.setText("Print");
-        workOrderTools.add(printButton);
-        workOrderTools.add(filler1);
-
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ajax.gif"))); // NOI18N
-        jLabel1.setText("  ");
-        workOrderTools.add(jLabel1);
+        workOrderTable.setDragEnabled(true);
+        workOrderTable.setShowGrid(true);
+        workOrderScroll.setViewportView(workOrderTable);
 
         javax.swing.GroupLayout workOrderPanelLayout = new javax.swing.GroupLayout(workOrderPanel);
         workOrderPanel.setLayout(workOrderPanelLayout);
@@ -226,54 +262,78 @@ public class MainFrame extends javax.swing.JFrame {
 
         tabbedPane.addTab("Work Orders", workOrderPanel);
 
-        workOrderTools1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        workOrderTools1.setFloatable(false);
-        workOrderTools1.setRollover(true);
+        scheduleTools.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        scheduleTools.setFloatable(false);
+        scheduleTools.setRollover(true);
 
-        newButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/new.png"))); // NOI18N
-        newButton1.setText("New");
-        workOrderTools1.add(newButton1);
+        newScheduleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/new.png"))); // NOI18N
+        newScheduleButton.setText("New");
+        scheduleTools.add(newScheduleButton);
 
-        editButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/edit.png"))); // NOI18N
-        editButton1.setText("Edit");
-        workOrderTools1.add(editButton1);
+        editScheduleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/edit.png"))); // NOI18N
+        editScheduleButton.setText("Edit");
+        scheduleTools.add(editScheduleButton);
 
-        deleteButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/delete.png"))); // NOI18N
-        deleteButton1.setText("Delete");
-        workOrderTools1.add(deleteButton1);
+        deleteScheduleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/delete.png"))); // NOI18N
+        deleteScheduleButton.setText("Delete");
+        scheduleTools.add(deleteScheduleButton);
 
-        archiveButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/archive.png"))); // NOI18N
-        archiveButton1.setText("Archive");
-        workOrderTools1.add(archiveButton1);
+        archiveScheduleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/archive.png"))); // NOI18N
+        archiveScheduleButton.setText("Archive");
+        scheduleTools.add(archiveScheduleButton);
 
-        completeButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/complete.png"))); // NOI18N
-        completeButton1.setText("Complete");
-        workOrderTools1.add(completeButton1);
+        completeScheduleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/complete.png"))); // NOI18N
+        completeScheduleButton.setText("Complete");
+        scheduleTools.add(completeScheduleButton);
 
-        viewButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/view.png"))); // NOI18N
-        viewButton1.setText("View");
-        workOrderTools1.add(viewButton1);
+        viewScheduleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/view.png"))); // NOI18N
+        viewScheduleButton.setText("View");
+        scheduleTools.add(viewScheduleButton);
 
         createWOButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/createWO.png"))); // NOI18N
         createWOButton1.setText("Create W/O");
-        workOrderTools1.add(createWOButton1);
-        workOrderTools1.add(filler2);
+        scheduleTools.add(createWOButton1);
+        scheduleTools.add(filler2);
 
-        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ajax.gif"))); // NOI18N
-        jLabel2.setText("  ");
-        workOrderTools1.add(jLabel2);
+        scheduleLoadLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ajax.gif"))); // NOI18N
+        scheduleLoadLabel.setText("  ");
+        scheduleTools.add(scheduleLoadLabel);
+
+        scheduleScroll.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 0, 0, 0, new java.awt.Color(204, 204, 204)));
+
+        scheduleTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "No.", "Date", "Type", "Description", "Priority", "Asset", "Location", "Employee(s)", "Status"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        scheduleTable.setDragEnabled(true);
+        scheduleTable.setShowGrid(true);
+        scheduleScroll.setViewportView(scheduleTable);
 
         javax.swing.GroupLayout schedulePanelLayout = new javax.swing.GroupLayout(schedulePanel);
         schedulePanel.setLayout(schedulePanelLayout);
         schedulePanelLayout.setHorizontalGroup(
             schedulePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(workOrderTools1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(scheduleTools, javax.swing.GroupLayout.DEFAULT_SIZE, 753, Short.MAX_VALUE)
+            .addComponent(scheduleScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 753, Short.MAX_VALUE)
         );
         schedulePanelLayout.setVerticalGroup(
             schedulePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(schedulePanelLayout.createSequentialGroup()
-                .addComponent(workOrderTools1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 486, Short.MAX_VALUE))
+                .addComponent(scheduleTools, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(scheduleScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 486, Short.MAX_VALUE))
         );
 
         tabbedPane.addTab("Schedule", schedulePanel);
@@ -357,8 +417,7 @@ public class MainFrame extends javax.swing.JFrame {
             .addGroup(locationPanelLayout.createSequentialGroup()
                 .addComponent(locationTools, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(locationScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 448, Short.MAX_VALUE)
-                .addGap(38, 38, 38))
+                .addComponent(locationScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 486, Short.MAX_VALUE))
         );
 
         tabbedPane.addTab("Locations", locationPanel);
@@ -367,41 +426,41 @@ public class MainFrame extends javax.swing.JFrame {
         assetTools.setFloatable(false);
         assetTools.setRollover(true);
 
-        newAsset.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/new.png"))); // NOI18N
-        newAsset.setText("New");
-        newAsset.addActionListener(new java.awt.event.ActionListener() {
+        newAssetButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/new.png"))); // NOI18N
+        newAssetButton.setText("New");
+        newAssetButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                newAssetActionPerformed(evt);
+                newAssetButtonActionPerformed(evt);
             }
         });
-        assetTools.add(newAsset);
+        assetTools.add(newAssetButton);
 
-        editAsset.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/edit.png"))); // NOI18N
-        editAsset.setText("Edit");
-        editAsset.addActionListener(new java.awt.event.ActionListener() {
+        editAssetButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/edit.png"))); // NOI18N
+        editAssetButton.setText("Edit");
+        editAssetButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                editAssetActionPerformed(evt);
+                editAssetButtonActionPerformed(evt);
             }
         });
-        assetTools.add(editAsset);
+        assetTools.add(editAssetButton);
 
-        deleteAsset.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/delete.png"))); // NOI18N
-        deleteAsset.setText("Delete");
-        deleteAsset.addActionListener(new java.awt.event.ActionListener() {
+        deleteAssetButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/delete.png"))); // NOI18N
+        deleteAssetButton.setText("Delete");
+        deleteAssetButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                deleteAssetActionPerformed(evt);
+                deleteAssetButtonActionPerformed(evt);
             }
         });
-        assetTools.add(deleteAsset);
+        assetTools.add(deleteAssetButton);
 
-        archiveAsset.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/archive.png"))); // NOI18N
-        archiveAsset.setText("Archive");
-        archiveAsset.addActionListener(new java.awt.event.ActionListener() {
+        archiveAssetButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/archive.png"))); // NOI18N
+        archiveAssetButton.setText("Archive");
+        archiveAssetButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                archiveAssetActionPerformed(evt);
+                archiveAssetButtonActionPerformed(evt);
             }
         });
-        assetTools.add(archiveAsset);
+        assetTools.add(archiveAssetButton);
         assetTools.add(filler4);
 
         assetLoadLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ajax.gif"))); // NOI18N
@@ -447,90 +506,90 @@ public class MainFrame extends javax.swing.JFrame {
 
         tabbedPane.addTab("Assets", assetPanel);
 
-        workOrderTools4.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        workOrderTools4.setFloatable(false);
-        workOrderTools4.setRollover(true);
+        partTools.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        partTools.setFloatable(false);
+        partTools.setRollover(true);
 
         newButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/new.png"))); // NOI18N
         newButton4.setText("New");
-        workOrderTools4.add(newButton4);
+        partTools.add(newButton4);
 
         editButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/edit.png"))); // NOI18N
         editButton4.setText("Edit");
-        workOrderTools4.add(editButton4);
+        partTools.add(editButton4);
 
         deleteButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/delete.png"))); // NOI18N
         deleteButton4.setText("Delete");
-        workOrderTools4.add(deleteButton4);
+        partTools.add(deleteButton4);
 
         archiveButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/archive.png"))); // NOI18N
         archiveButton4.setText("Archive");
-        workOrderTools4.add(archiveButton4);
-        workOrderTools4.add(filler5);
+        partTools.add(archiveButton4);
+        partTools.add(filler5);
 
         jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ajax.gif"))); // NOI18N
         jLabel5.setText("  ");
-        workOrderTools4.add(jLabel5);
+        partTools.add(jLabel5);
 
         javax.swing.GroupLayout partPanelLayout = new javax.swing.GroupLayout(partPanel);
         partPanel.setLayout(partPanelLayout);
         partPanelLayout.setHorizontalGroup(
             partPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(workOrderTools4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(partTools, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         partPanelLayout.setVerticalGroup(
             partPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(partPanelLayout.createSequentialGroup()
-                .addComponent(workOrderTools4, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(partTools, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 486, Short.MAX_VALUE))
         );
 
         tabbedPane.addTab("Parts", partPanel);
 
-        workOrderTools5.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        workOrderTools5.setFloatable(false);
-        workOrderTools5.setRollover(true);
+        employeeTools.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        employeeTools.setFloatable(false);
+        employeeTools.setRollover(true);
 
-        newEmployee.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/new.png"))); // NOI18N
-        newEmployee.setText("New");
-        newEmployee.addActionListener(new java.awt.event.ActionListener() {
+        newEmpButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/new.png"))); // NOI18N
+        newEmpButton.setText("New");
+        newEmpButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                newEmployeeActionPerformed(evt);
+                newEmpButtonActionPerformed(evt);
             }
         });
-        workOrderTools5.add(newEmployee);
+        employeeTools.add(newEmpButton);
 
-        editEmployee.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/edit.png"))); // NOI18N
-        editEmployee.setText("Edit");
-        editEmployee.addActionListener(new java.awt.event.ActionListener() {
+        editEmpButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/edit.png"))); // NOI18N
+        editEmpButton.setText("Edit");
+        editEmpButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                editEmployeeActionPerformed(evt);
+                editEmpButtonActionPerformed(evt);
             }
         });
-        workOrderTools5.add(editEmployee);
+        employeeTools.add(editEmpButton);
 
-        deleteEmployee.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/delete.png"))); // NOI18N
-        deleteEmployee.setText("Delete");
-        deleteEmployee.addActionListener(new java.awt.event.ActionListener() {
+        deleteEmpButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/delete.png"))); // NOI18N
+        deleteEmpButton.setText("Delete");
+        deleteEmpButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                deleteEmployeeActionPerformed(evt);
+                deleteEmpButtonActionPerformed(evt);
             }
         });
-        workOrderTools5.add(deleteEmployee);
+        employeeTools.add(deleteEmpButton);
 
-        archiveEmployee.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/archive.png"))); // NOI18N
-        archiveEmployee.setText("Archive");
-        archiveEmployee.addActionListener(new java.awt.event.ActionListener() {
+        archiveEmpButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/archive.png"))); // NOI18N
+        archiveEmpButton.setText("Archive");
+        archiveEmpButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                archiveEmployeeActionPerformed(evt);
+                archiveEmpButtonActionPerformed(evt);
             }
         });
-        workOrderTools5.add(archiveEmployee);
-        workOrderTools5.add(filler6);
+        employeeTools.add(archiveEmpButton);
+        employeeTools.add(filler6);
 
         employeeLoadLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ajax.gif"))); // NOI18N
         employeeLoadLabel.setText("  ");
-        workOrderTools5.add(employeeLoadLabel);
+        employeeTools.add(employeeLoadLabel);
 
         employeeScroll.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 0, 0, 0, new java.awt.Color(204, 204, 204)));
 
@@ -558,13 +617,13 @@ public class MainFrame extends javax.swing.JFrame {
         employeePanel.setLayout(employeePanelLayout);
         employeePanelLayout.setHorizontalGroup(
             employeePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(workOrderTools5, javax.swing.GroupLayout.DEFAULT_SIZE, 753, Short.MAX_VALUE)
+            .addComponent(employeeTools, javax.swing.GroupLayout.DEFAULT_SIZE, 753, Short.MAX_VALUE)
             .addComponent(employeeScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 753, Short.MAX_VALUE)
         );
         employeePanelLayout.setVerticalGroup(
             employeePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(employeePanelLayout.createSequentialGroup()
-                .addComponent(workOrderTools5, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(employeeTools, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
                 .addComponent(employeeScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
                 .addGap(32, 32, 32))
@@ -671,10 +730,6 @@ public class MainFrame extends javax.swing.JFrame {
 
         menuTable.setText("Table");
 
-        menuTableSort.setMnemonic('S');
-        menuTableSort.setText("Sort By");
-        menuTable.add(menuTableSort);
-
         menuTableFilter.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/filter.png"))); // NOI18N
         menuTableFilter.setMnemonic('F');
         menuTableFilter.setText("Filter");
@@ -751,26 +806,22 @@ public class MainFrame extends javax.swing.JFrame {
 
     //Delete Location
     private void deleteLocationButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteLocationButtonActionPerformed
-        JOptionPane jop = new JOptionPane("Are you sure you want to delete "+locationTable.getValueAt(locationTable.getSelectedRow(), 1)+"?", JOptionPane.QUESTION_MESSAGE, JOptionPane.YES_NO_OPTION);
-        JInternalFrame inf = jop.createInternalFrame(desktopPane, "Delete Location");
-        inf.setFrameIcon(MMS.locationIcon);//smaller icons to be defined
-        inf.setVisible(true);
-//        if(JOptionPane.showConfirmDialog(this, "Are you sure you want to delete "+locationTable.getValueAt(locationTable.getSelectedRow(), 1)+"?", "Delete Location", JOptionPane.YES_NO_OPTION) == 0){
-//            int locNum = Integer.parseInt(locationTable.getValueAt(locationTable.getSelectedRow(), 0).toString());
-//            //Delete from DB
-//            MMS.executeQuery("DELETE FROM Locations WHERE LocationNo = ?",
-//                    new Object[]{locNum});
-//            //Delete from table
-//            DefaultTableModel m = (DefaultTableModel)locationTable.getModel();
-//            m.removeRow(locationTable.getSelectedRow());
-//            //Select first row
-//            if(locationTable.getRowCount() != 0) locationTable.setRowSelectionInterval(0, 0);
-//        }
+            if(InternalDialog.showInternalConfirmDialog(desktopPane, "Are you sure you want to delete "+locationTable.getValueAt(locationTable.getSelectedRow(), 1)+"?", "Delete Location", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null) == 0){
+            int locNum = Integer.parseInt(locationTable.getValueAt(locationTable.getSelectedRow(), 0).toString());
+            //Delete from DB
+            MMS.executeQuery("DELETE FROM Locations WHERE LocationNo = ?",
+                    new Object[]{locNum});
+            //Delete from table
+            DefaultTableModel m = (DefaultTableModel)locationTable.getModel();
+            m.removeRow(locationTable.getSelectedRow());
+            //Select first row
+            if(locationTable.getRowCount() != 0) locationTable.setRowSelectionInterval(0, 0);
+        }
     }//GEN-LAST:event_deleteLocationButtonActionPerformed
 
     //Archive Location
     private void archiveLocationButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_archiveLocationButtonActionPerformed
-        if(JOptionPane.showConfirmDialog(this, "Are you sure you want to archive "+locationTable.getValueAt(locationTable.getSelectedRow(), 1)+"?", "Archive Location", JOptionPane.YES_NO_OPTION) == 0){
+        if(InternalDialog.showInternalConfirmDialog(desktopPane, "Are you sure you want to archive "+locationTable.getValueAt(locationTable.getSelectedRow(), 1)+"?", "Archive Location", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null) == 0){
             int locNum = Integer.parseInt(locationTable.getValueAt(locationTable.getSelectedRow(), 0).toString());
             //Set Archived = Y
             MMS.executeQuery("UPDATE Locations SET Archived = ? WHERE LocationNo = ?",
@@ -784,9 +835,9 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_archiveLocationButtonActionPerformed
 
     //New Asset
-    private void newAssetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newAssetActionPerformed
+    private void newAssetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newAssetButtonActionPerformed
         if(locationTable.getRowCount() == 0){
-            PopupPanel.display("You must add a location before you can add an asset.", newAsset.getLocationOnScreen().x+10, newAsset.getLocationOnScreen().y+newAsset.getHeight()+10);
+            PopupPanel.display("You must add a location before you can add an asset.", newAssetButton.getLocationOnScreen().x+10, newAssetButton.getLocationOnScreen().y+newAssetButton.getHeight()+10);
         }
         else{
             AssetDialog a = new AssetDialog(assetTable, locationTable);
@@ -795,20 +846,20 @@ public class MainFrame extends javax.swing.JFrame {
             a.setLocation(desktopPane.getWidth()/2-a.getWidth()/2, desktopPane.getHeight()/2-a.getHeight()/2-50);
             a.setVisible(true);
         }
-    }//GEN-LAST:event_newAssetActionPerformed
+    }//GEN-LAST:event_newAssetButtonActionPerformed
 
     //Edit Asset
-    private void editAssetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editAssetActionPerformed
+    private void editAssetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editAssetButtonActionPerformed
         AssetDialog a = new AssetDialog(assetTable, locationTable, assetTable.getSelectedRow());
         desktopPane.add(a);
         desktopPane.setLayer(a, 1);
         a.setLocation(desktopPane.getWidth()/2-a.getWidth()/2, desktopPane.getHeight()/2-a.getHeight()/2-50);
         a.setVisible(true);
-    }//GEN-LAST:event_editAssetActionPerformed
+    }//GEN-LAST:event_editAssetButtonActionPerformed
 
     //Delete Asset
-    private void deleteAssetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteAssetActionPerformed
-        if(JOptionPane.showConfirmDialog(this, "Are you sure you want to delete "+assetTable.getValueAt(assetTable.getSelectedRow(), 1)+"?", "Delete Asset", JOptionPane.YES_NO_OPTION) == 0){
+    private void deleteAssetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteAssetButtonActionPerformed
+        if(InternalDialog.showInternalConfirmDialog(desktopPane, "Are you sure you want to delete "+assetTable.getValueAt(assetTable.getSelectedRow(), 1)+"?", "Delete Asset", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null) == 0){
             int assNum = Integer.parseInt(assetTable.getValueAt(assetTable.getSelectedRow(), 0).toString());
             //Delete from DB
             MMS.executeQuery("DELETE FROM Assets WHERE AssetNo = ?",
@@ -819,11 +870,11 @@ public class MainFrame extends javax.swing.JFrame {
             //Select first row
             if(assetTable.getRowCount() != 0) assetTable.setRowSelectionInterval(0, 0);
         }
-    }//GEN-LAST:event_deleteAssetActionPerformed
+    }//GEN-LAST:event_deleteAssetButtonActionPerformed
 
     //Archive Asset
-    private void archiveAssetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_archiveAssetActionPerformed
-        if(JOptionPane.showConfirmDialog(this, "Are you sure you want to archive "+assetTable.getValueAt(assetTable.getSelectedRow(), 1)+"?", "Archive Asset", JOptionPane.YES_NO_OPTION) == 0){
+    private void archiveAssetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_archiveAssetButtonActionPerformed
+        if(InternalDialog.showInternalConfirmDialog(desktopPane, "Are you sure you want to archive "+assetTable.getValueAt(assetTable.getSelectedRow(), 1)+"?", "Archive Asset", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null) == 0){
             int assNum = Integer.parseInt(assetTable.getValueAt(assetTable.getSelectedRow(), 0).toString());
             //Set Archived = Y
             MMS.executeQuery("UPDATE Assets SET Archived = ? WHERE AssetNo = ?",
@@ -834,7 +885,7 @@ public class MainFrame extends javax.swing.JFrame {
             //Select first row
             if(assetTable.getRowCount() != 0) assetTable.setRowSelectionInterval(0, 0);
         }
-    }//GEN-LAST:event_archiveAssetActionPerformed
+    }//GEN-LAST:event_archiveAssetButtonActionPerformed
 
     //Refresh table
     private void menuTableRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuTableRefreshActionPerformed
@@ -859,26 +910,26 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_menuTableRefreshActionPerformed
 
     //New Employee
-    private void newEmployeeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newEmployeeActionPerformed
+    private void newEmpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newEmpButtonActionPerformed
         EmployeeDialog e = new EmployeeDialog(employeeTable);
         desktopPane.add(e);
         desktopPane.setLayer(e, 1);
         e.setLocation(desktopPane.getWidth()/2-e.getWidth()/2, desktopPane.getHeight()/2-e.getHeight()/2-50);
         e.setVisible(true);
-    }//GEN-LAST:event_newEmployeeActionPerformed
+    }//GEN-LAST:event_newEmpButtonActionPerformed
 
     //Edit Employee
-    private void editEmployeeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editEmployeeActionPerformed
+    private void editEmpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editEmpButtonActionPerformed
         EmployeeDialog e = new EmployeeDialog(employeeTable, employeeTable.getSelectedRow());
         desktopPane.add(e);
         desktopPane.setLayer(e, 1);
         e.setLocation(desktopPane.getWidth()/2-e.getWidth()/2, desktopPane.getHeight()/2-e.getHeight()/2-50);
         e.setVisible(true);
-    }//GEN-LAST:event_editEmployeeActionPerformed
+    }//GEN-LAST:event_editEmpButtonActionPerformed
 
     //Delete Employee
-    private void deleteEmployeeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteEmployeeActionPerformed
-        if(JOptionPane.showConfirmDialog(this, "Are you sure you want to delete "+employeeTable.getValueAt(employeeTable.getSelectedRow(), 1)+"?", "Delete Employee", JOptionPane.YES_NO_OPTION) == 0){
+    private void deleteEmpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteEmpButtonActionPerformed
+        if(InternalDialog.showInternalConfirmDialog(desktopPane, "Are you sure you want to delete "+employeeTable.getValueAt(employeeTable.getSelectedRow(), 1)+"?", "Delete Employee", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null) == 0){
             int empNum = Integer.parseInt(employeeTable.getValueAt(employeeTable.getSelectedRow(), 0).toString());
             //Delete from DB
             MMS.executeQuery("DELETE FROM Employees WHERE EmployeeNo = ?",
@@ -889,11 +940,11 @@ public class MainFrame extends javax.swing.JFrame {
             //Select first row
             if(employeeTable.getRowCount() != 0) employeeTable.setRowSelectionInterval(0, 0);
         }
-    }//GEN-LAST:event_deleteEmployeeActionPerformed
+    }//GEN-LAST:event_deleteEmpButtonActionPerformed
 
     //Archive Employee
-    private void archiveEmployeeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_archiveEmployeeActionPerformed
-        if(JOptionPane.showConfirmDialog(this, "Are you sure you want to archive "+employeeTable.getValueAt(employeeTable.getSelectedRow(), 1)+"?", "Archive Employee", JOptionPane.YES_NO_OPTION) == 0){
+    private void archiveEmpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_archiveEmpButtonActionPerformed
+        if(InternalDialog.showInternalConfirmDialog(desktopPane, "Are you sure you want to archive "+employeeTable.getValueAt(employeeTable.getSelectedRow(), 1)+"?", "Archive Employee", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null) == 0){
             int empNum = Integer.parseInt(employeeTable.getValueAt(employeeTable.getSelectedRow(), 0).toString());
             //Set archived = Y
             MMS.executeQuery("UPDATE Employees SET Archived = ? WHERE EmployeeNo = ?",
@@ -904,7 +955,7 @@ public class MainFrame extends javax.swing.JFrame {
             //Select first row
             if(employeeTable.getRowCount() != 0) employeeTable.setRowSelectionInterval(0, 0);
         }
-    }//GEN-LAST:event_archiveEmployeeActionPerformed
+    }//GEN-LAST:event_archiveEmpButtonActionPerformed
 
     private void menuTableFilterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuTableFilterActionPerformed
 
@@ -1006,45 +1057,44 @@ public class MainFrame extends javax.swing.JFrame {
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel adminPanel;
-    private javax.swing.JButton archiveAsset;
-    private javax.swing.JButton archiveButton;
-    private javax.swing.JButton archiveButton1;
+    private javax.swing.JButton archiveAssetButton;
     private javax.swing.JButton archiveButton4;
-    private javax.swing.JButton archiveEmployee;
+    private javax.swing.JButton archiveEmpButton;
     private javax.swing.JButton archiveLocationButton;
+    private javax.swing.JButton archiveScheduleButton;
+    private javax.swing.JButton archiveWOButton;
     private javax.swing.JLabel assetLoadLabel;
     private javax.swing.JPanel assetPanel;
     private javax.swing.JScrollPane assetScroll;
     private javax.swing.JTable assetTable;
     private javax.swing.JToolBar assetTools;
     private javax.swing.JPanel backPanel;
-    private javax.swing.JButton completeButton1;
+    private javax.swing.JButton completeScheduleButton;
     private javax.swing.JButton createWOButton1;
-    private javax.swing.JButton deleteAsset;
-    private javax.swing.JButton deleteButton;
-    private javax.swing.JButton deleteButton1;
+    private javax.swing.JButton deleteAssetButton;
     private javax.swing.JButton deleteButton4;
-    private javax.swing.JButton deleteEmployee;
+    private javax.swing.JButton deleteEmpButton;
     private javax.swing.JButton deleteLocationButton;
+    private javax.swing.JButton deleteScheduleButton;
+    private javax.swing.JButton deleteWOButton;
     private javax.swing.JDesktopPane desktopPane;
-    private javax.swing.JButton editAsset;
-    private javax.swing.JButton editButton;
-    private javax.swing.JButton editButton1;
+    private javax.swing.JButton editAssetButton;
     private javax.swing.JButton editButton4;
-    private javax.swing.JButton editEmployee;
+    private javax.swing.JButton editEmpButton;
     private javax.swing.JButton editLocationButton;
+    private javax.swing.JButton editScheduleButton;
+    private javax.swing.JButton editWOButton;
     private javax.swing.JLabel employeeLoadLabel;
     private javax.swing.JPanel employeePanel;
     private javax.swing.JScrollPane employeeScroll;
     private javax.swing.JTable employeeTable;
+    private javax.swing.JToolBar employeeTools;
     private javax.swing.Box.Filler filler1;
     private javax.swing.Box.Filler filler2;
     private javax.swing.Box.Filler filler3;
     private javax.swing.Box.Filler filler4;
     private javax.swing.Box.Filler filler5;
     private javax.swing.Box.Filler filler6;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
@@ -1063,28 +1113,30 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JMenu menuTable;
     private javax.swing.JMenuItem menuTableFilter;
     private javax.swing.JMenuItem menuTableRefresh;
-    private javax.swing.JMenu menuTableSort;
     private javax.swing.JMenu menuUser;
-    private javax.swing.JButton newAsset;
-    private javax.swing.JButton newButton;
-    private javax.swing.JButton newButton1;
+    private javax.swing.JButton newAssetButton;
     private javax.swing.JButton newButton4;
-    private javax.swing.JButton newEmployee;
+    private javax.swing.JButton newEmpButton;
     private javax.swing.JButton newLocationButton;
+    private javax.swing.JButton newScheduleButton;
+    private javax.swing.JButton newWOButton;
     private javax.swing.JPanel partPanel;
-    private javax.swing.JButton printButton;
+    private javax.swing.JToolBar partTools;
+    private javax.swing.JButton printWOButton;
     private javax.swing.JPanel reportPanel;
+    private javax.swing.JLabel scheduleLoadLabel;
     private javax.swing.JPanel schedulePanel;
-    private javax.swing.JButton statusButton;
+    private javax.swing.JScrollPane scheduleScroll;
+    private javax.swing.JTable scheduleTable;
+    private javax.swing.JToolBar scheduleTools;
+    private javax.swing.JButton statusWOButton;
     private javax.swing.JTabbedPane tabbedPane;
-    private javax.swing.JButton viewButton;
-    private javax.swing.JButton viewButton1;
+    private javax.swing.JButton viewScheduleButton;
+    private javax.swing.JButton viewWOButton;
+    private javax.swing.JLabel workLoadLabel;
     private javax.swing.JPanel workOrderPanel;
     private javax.swing.JScrollPane workOrderScroll;
+    private javax.swing.JTable workOrderTable;
     private javax.swing.JToolBar workOrderTools;
-    private javax.swing.JToolBar workOrderTools1;
-    private javax.swing.JToolBar workOrderTools4;
-    private javax.swing.JToolBar workOrderTools5;
-    private javax.swing.JTable workOrdersTable;
     // End of variables declaration//GEN-END:variables
 }

@@ -19,12 +19,6 @@
             <Property name="text" type="java.lang.String" value="Table"/>
           </Properties>
           <SubComponents>
-            <Menu class="javax.swing.JMenu" name="menuTableSort">
-              <Properties>
-                <Property name="mnemonic" type="int" value="83"/>
-                <Property name="text" type="java.lang.String" value="Sort By"/>
-              </Properties>
-            </Menu>
             <MenuItem class="javax.swing.JMenuItem" name="menuTableFilter">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
@@ -177,106 +171,6 @@
                     </DimensionLayout>
                   </Layout>
                   <SubComponents>
-                    <Container class="javax.swing.JScrollPane" name="workOrderScroll">
-                      <Properties>
-                        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-                          <Border info="org.netbeans.modules.form.compat2.border.MatteColorBorderInfo">
-                            <MatteColorBorder bottom="0" left="0" right="0" top="1">
-                              <Color PropertyName="color" blue="cc" green="cc" red="cc" type="rgb"/>
-                            </MatteColorBorder>
-                          </Border>
-                        </Property>
-                      </Properties>
-                      <AuxValues>
-                        <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
-                      </AuxValues>
-
-                      <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
-                      <SubComponents>
-                        <Component class="javax.swing.JTable" name="workOrdersTable">
-                          <Properties>
-                            <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                              <Table columnCount="9" rowCount="6">
-                                <Column editable="false" title="No." type="java.lang.Object">
-                                  <Data value="TEST"/>
-                                  <Data value=""/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                </Column>
-                                <Column editable="false" title="Date" type="java.lang.Object">
-                                  <Data value="TEST"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                  <Data value=""/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                </Column>
-                                <Column editable="false" title="Type" type="java.lang.Object">
-                                  <Data value="TEST"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                </Column>
-                                <Column editable="false" title="Description" type="java.lang.Object">
-                                  <Data value="TEST"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                </Column>
-                                <Column editable="false" title="Priority" type="java.lang.Object">
-                                  <Data value="TEST"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                </Column>
-                                <Column editable="false" title="Asset" type="java.lang.Object">
-                                  <Data value="TEST"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                </Column>
-                                <Column editable="false" title="Location" type="java.lang.Object">
-                                  <Data value="TEST"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                </Column>
-                                <Column editable="false" title="Employee(s)" type="java.lang.Object">
-                                  <Data value="TEST"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                </Column>
-                                <Column editable="false" title="Status" type="java.lang.Object">
-                                  <Data value="TEST"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                  <Data value="null"/>
-                                </Column>
-                              </Table>
-                            </Property>
-                            <Property name="dragEnabled" type="boolean" value="true"/>
-                            <Property name="showGrid" type="boolean" value="true"/>
-                          </Properties>
-                        </Component>
-                      </SubComponents>
-                    </Container>
                     <Container class="javax.swing.JToolBar" name="workOrderTools">
                       <Properties>
                         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
@@ -290,7 +184,7 @@
 
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBoxLayout"/>
                       <SubComponents>
-                        <Component class="javax.swing.JButton" name="newButton">
+                        <Component class="javax.swing.JButton" name="newWOButton">
                           <Properties>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/buttons/new.png"/>
@@ -298,7 +192,7 @@
                             <Property name="text" type="java.lang.String" value="New"/>
                           </Properties>
                         </Component>
-                        <Component class="javax.swing.JButton" name="editButton">
+                        <Component class="javax.swing.JButton" name="editWOButton">
                           <Properties>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/buttons/edit.png"/>
@@ -306,7 +200,7 @@
                             <Property name="text" type="java.lang.String" value="Edit"/>
                           </Properties>
                         </Component>
-                        <Component class="javax.swing.JButton" name="deleteButton">
+                        <Component class="javax.swing.JButton" name="deleteWOButton">
                           <Properties>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/buttons/delete.png"/>
@@ -314,7 +208,7 @@
                             <Property name="text" type="java.lang.String" value="Delete"/>
                           </Properties>
                         </Component>
-                        <Component class="javax.swing.JButton" name="archiveButton">
+                        <Component class="javax.swing.JButton" name="archiveWOButton">
                           <Properties>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/buttons/archive.png"/>
@@ -322,7 +216,7 @@
                             <Property name="text" type="java.lang.String" value="Archive"/>
                           </Properties>
                         </Component>
-                        <Component class="javax.swing.JButton" name="statusButton">
+                        <Component class="javax.swing.JButton" name="statusWOButton">
                           <Properties>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/buttons/status.png"/>
@@ -330,7 +224,7 @@
                             <Property name="text" type="java.lang.String" value="Status"/>
                           </Properties>
                         </Component>
-                        <Component class="javax.swing.JButton" name="viewButton">
+                        <Component class="javax.swing.JButton" name="viewWOButton">
                           <Properties>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/buttons/view.png"/>
@@ -338,7 +232,7 @@
                             <Property name="text" type="java.lang.String" value="View"/>
                           </Properties>
                         </Component>
-                        <Component class="javax.swing.JButton" name="printButton">
+                        <Component class="javax.swing.JButton" name="printWOButton">
                           <Properties>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/buttons/print.png"/>
@@ -356,12 +250,49 @@
                             <AuxValue name="classDetails" type="java.lang.String" value="Box.Filler.HorizontalGlue"/>
                           </AuxValues>
                         </Component>
-                        <Component class="javax.swing.JLabel" name="jLabel1">
+                        <Component class="javax.swing.JLabel" name="workLoadLabel">
                           <Properties>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/ajax.gif"/>
                             </Property>
                             <Property name="text" type="java.lang.String" value="  "/>
+                          </Properties>
+                        </Component>
+                      </SubComponents>
+                    </Container>
+                    <Container class="javax.swing.JScrollPane" name="workOrderScroll">
+                      <Properties>
+                        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                          <Border info="org.netbeans.modules.form.compat2.border.MatteColorBorderInfo">
+                            <MatteColorBorder bottom="0" left="0" right="0" top="1">
+                              <Color PropertyName="color" blue="cc" green="cc" red="cc" type="rgb"/>
+                            </MatteColorBorder>
+                          </Border>
+                        </Property>
+                      </Properties>
+                      <AuxValues>
+                        <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
+                      </AuxValues>
+
+                      <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+                      <SubComponents>
+                        <Component class="javax.swing.JTable" name="workOrderTable">
+                          <Properties>
+                            <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
+                              <Table columnCount="9" rowCount="0">
+                                <Column editable="false" title="No." type="java.lang.Object"/>
+                                <Column editable="false" title="Date" type="java.lang.Object"/>
+                                <Column editable="false" title="Type" type="java.lang.Object"/>
+                                <Column editable="false" title="Description" type="java.lang.Object"/>
+                                <Column editable="false" title="Priority" type="java.lang.Object"/>
+                                <Column editable="false" title="Asset" type="java.lang.Object"/>
+                                <Column editable="false" title="Location" type="java.lang.Object"/>
+                                <Column editable="false" title="Employee(s)" type="java.lang.Object"/>
+                                <Column editable="false" title="Status" type="java.lang.Object"/>
+                              </Table>
+                            </Property>
+                            <Property name="dragEnabled" type="boolean" value="true"/>
+                            <Property name="showGrid" type="boolean" value="true"/>
                           </Properties>
                         </Component>
                       </SubComponents>
@@ -380,20 +311,22 @@
                   <Layout>
                     <DimensionLayout dim="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="workOrderTools1" alignment="0" max="32767" attributes="0"/>
+                          <Component id="scheduleTools" pref="753" max="32767" attributes="0"/>
+                          <Component id="scheduleScroll" pref="753" max="32767" attributes="0"/>
                       </Group>
                     </DimensionLayout>
                     <DimensionLayout dim="1">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
-                              <Component id="workOrderTools1" min="-2" pref="25" max="-2" attributes="0"/>
-                              <EmptySpace min="0" pref="486" max="32767" attributes="0"/>
+                              <Component id="scheduleTools" min="-2" pref="25" max="-2" attributes="0"/>
+                              <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
+                              <Component id="scheduleScroll" pref="486" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
                   </Layout>
                   <SubComponents>
-                    <Container class="javax.swing.JToolBar" name="workOrderTools1">
+                    <Container class="javax.swing.JToolBar" name="scheduleTools">
                       <Properties>
                         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                           <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
@@ -406,7 +339,7 @@
 
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBoxLayout"/>
                       <SubComponents>
-                        <Component class="javax.swing.JButton" name="newButton1">
+                        <Component class="javax.swing.JButton" name="newScheduleButton">
                           <Properties>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/buttons/new.png"/>
@@ -414,7 +347,7 @@
                             <Property name="text" type="java.lang.String" value="New"/>
                           </Properties>
                         </Component>
-                        <Component class="javax.swing.JButton" name="editButton1">
+                        <Component class="javax.swing.JButton" name="editScheduleButton">
                           <Properties>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/buttons/edit.png"/>
@@ -422,7 +355,7 @@
                             <Property name="text" type="java.lang.String" value="Edit"/>
                           </Properties>
                         </Component>
-                        <Component class="javax.swing.JButton" name="deleteButton1">
+                        <Component class="javax.swing.JButton" name="deleteScheduleButton">
                           <Properties>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/buttons/delete.png"/>
@@ -430,7 +363,7 @@
                             <Property name="text" type="java.lang.String" value="Delete"/>
                           </Properties>
                         </Component>
-                        <Component class="javax.swing.JButton" name="archiveButton1">
+                        <Component class="javax.swing.JButton" name="archiveScheduleButton">
                           <Properties>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/buttons/archive.png"/>
@@ -438,7 +371,7 @@
                             <Property name="text" type="java.lang.String" value="Archive"/>
                           </Properties>
                         </Component>
-                        <Component class="javax.swing.JButton" name="completeButton1">
+                        <Component class="javax.swing.JButton" name="completeScheduleButton">
                           <Properties>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/buttons/complete.png"/>
@@ -446,7 +379,7 @@
                             <Property name="text" type="java.lang.String" value="Complete"/>
                           </Properties>
                         </Component>
-                        <Component class="javax.swing.JButton" name="viewButton1">
+                        <Component class="javax.swing.JButton" name="viewScheduleButton">
                           <Properties>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/buttons/view.png"/>
@@ -472,12 +405,49 @@
                             <AuxValue name="classDetails" type="java.lang.String" value="Box.Filler.HorizontalGlue"/>
                           </AuxValues>
                         </Component>
-                        <Component class="javax.swing.JLabel" name="jLabel2">
+                        <Component class="javax.swing.JLabel" name="scheduleLoadLabel">
                           <Properties>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/ajax.gif"/>
                             </Property>
                             <Property name="text" type="java.lang.String" value="  "/>
+                          </Properties>
+                        </Component>
+                      </SubComponents>
+                    </Container>
+                    <Container class="javax.swing.JScrollPane" name="scheduleScroll">
+                      <Properties>
+                        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                          <Border info="org.netbeans.modules.form.compat2.border.MatteColorBorderInfo">
+                            <MatteColorBorder bottom="0" left="0" right="0" top="1">
+                              <Color PropertyName="color" blue="cc" green="cc" red="cc" type="rgb"/>
+                            </MatteColorBorder>
+                          </Border>
+                        </Property>
+                      </Properties>
+                      <AuxValues>
+                        <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
+                      </AuxValues>
+
+                      <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+                      <SubComponents>
+                        <Component class="javax.swing.JTable" name="scheduleTable">
+                          <Properties>
+                            <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
+                              <Table columnCount="9" rowCount="0">
+                                <Column editable="false" title="No." type="java.lang.Object"/>
+                                <Column editable="false" title="Date" type="java.lang.Object"/>
+                                <Column editable="false" title="Type" type="java.lang.Object"/>
+                                <Column editable="false" title="Description" type="java.lang.Object"/>
+                                <Column editable="false" title="Priority" type="java.lang.Object"/>
+                                <Column editable="false" title="Asset" type="java.lang.Object"/>
+                                <Column editable="false" title="Location" type="java.lang.Object"/>
+                                <Column editable="false" title="Employee(s)" type="java.lang.Object"/>
+                                <Column editable="false" title="Status" type="java.lang.Object"/>
+                              </Table>
+                            </Property>
+                            <Property name="dragEnabled" type="boolean" value="true"/>
+                            <Property name="showGrid" type="boolean" value="true"/>
                           </Properties>
                         </Component>
                       </SubComponents>
@@ -505,8 +475,7 @@
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="locationTools" min="-2" pref="25" max="-2" attributes="0"/>
                               <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-                              <Component id="locationScroll" pref="448" max="32767" attributes="0"/>
-                              <EmptySpace min="-2" pref="38" max="-2" attributes="0"/>
+                              <Component id="locationScroll" pref="486" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -662,7 +631,7 @@
 
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBoxLayout"/>
                       <SubComponents>
-                        <Component class="javax.swing.JButton" name="newAsset">
+                        <Component class="javax.swing.JButton" name="newAssetButton">
                           <Properties>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/buttons/new.png"/>
@@ -670,10 +639,10 @@
                             <Property name="text" type="java.lang.String" value="New"/>
                           </Properties>
                           <Events>
-                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="newAssetActionPerformed"/>
+                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="newAssetButtonActionPerformed"/>
                           </Events>
                         </Component>
-                        <Component class="javax.swing.JButton" name="editAsset">
+                        <Component class="javax.swing.JButton" name="editAssetButton">
                           <Properties>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/buttons/edit.png"/>
@@ -681,10 +650,10 @@
                             <Property name="text" type="java.lang.String" value="Edit"/>
                           </Properties>
                           <Events>
-                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="editAssetActionPerformed"/>
+                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="editAssetButtonActionPerformed"/>
                           </Events>
                         </Component>
-                        <Component class="javax.swing.JButton" name="deleteAsset">
+                        <Component class="javax.swing.JButton" name="deleteAssetButton">
                           <Properties>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/buttons/delete.png"/>
@@ -692,10 +661,10 @@
                             <Property name="text" type="java.lang.String" value="Delete"/>
                           </Properties>
                           <Events>
-                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="deleteAssetActionPerformed"/>
+                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="deleteAssetButtonActionPerformed"/>
                           </Events>
                         </Component>
-                        <Component class="javax.swing.JButton" name="archiveAsset">
+                        <Component class="javax.swing.JButton" name="archiveAssetButton">
                           <Properties>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/buttons/archive.png"/>
@@ -703,7 +672,7 @@
                             <Property name="text" type="java.lang.String" value="Archive"/>
                           </Properties>
                           <Events>
-                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="archiveAssetActionPerformed"/>
+                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="archiveAssetButtonActionPerformed"/>
                           </Events>
                         </Component>
                         <Component class="javax.swing.Box$Filler" name="filler4">
@@ -772,20 +741,20 @@
                   <Layout>
                     <DimensionLayout dim="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="workOrderTools4" alignment="0" max="32767" attributes="0"/>
+                          <Component id="partTools" alignment="0" max="32767" attributes="0"/>
                       </Group>
                     </DimensionLayout>
                     <DimensionLayout dim="1">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
-                              <Component id="workOrderTools4" min="-2" pref="25" max="-2" attributes="0"/>
+                              <Component id="partTools" min="-2" pref="25" max="-2" attributes="0"/>
                               <EmptySpace min="0" pref="486" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
                   </Layout>
                   <SubComponents>
-                    <Container class="javax.swing.JToolBar" name="workOrderTools4">
+                    <Container class="javax.swing.JToolBar" name="partTools">
                       <Properties>
                         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                           <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
@@ -864,14 +833,14 @@
                   <Layout>
                     <DimensionLayout dim="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="workOrderTools5" pref="753" max="32767" attributes="0"/>
+                          <Component id="employeeTools" pref="753" max="32767" attributes="0"/>
                           <Component id="employeeScroll" pref="753" max="32767" attributes="0"/>
                       </Group>
                     </DimensionLayout>
                     <DimensionLayout dim="1">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
-                              <Component id="workOrderTools5" min="-2" pref="25" max="-2" attributes="0"/>
+                              <Component id="employeeTools" min="-2" pref="25" max="-2" attributes="0"/>
                               <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                               <Component id="employeeScroll" pref="454" max="32767" attributes="0"/>
                               <EmptySpace min="-2" pref="32" max="-2" attributes="0"/>
@@ -880,7 +849,7 @@
                     </DimensionLayout>
                   </Layout>
                   <SubComponents>
-                    <Container class="javax.swing.JToolBar" name="workOrderTools5">
+                    <Container class="javax.swing.JToolBar" name="employeeTools">
                       <Properties>
                         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                           <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
@@ -893,7 +862,7 @@
 
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBoxLayout"/>
                       <SubComponents>
-                        <Component class="javax.swing.JButton" name="newEmployee">
+                        <Component class="javax.swing.JButton" name="newEmpButton">
                           <Properties>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/buttons/new.png"/>
@@ -901,10 +870,10 @@
                             <Property name="text" type="java.lang.String" value="New"/>
                           </Properties>
                           <Events>
-                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="newEmployeeActionPerformed"/>
+                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="newEmpButtonActionPerformed"/>
                           </Events>
                         </Component>
-                        <Component class="javax.swing.JButton" name="editEmployee">
+                        <Component class="javax.swing.JButton" name="editEmpButton">
                           <Properties>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/buttons/edit.png"/>
@@ -912,10 +881,10 @@
                             <Property name="text" type="java.lang.String" value="Edit"/>
                           </Properties>
                           <Events>
-                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="editEmployeeActionPerformed"/>
+                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="editEmpButtonActionPerformed"/>
                           </Events>
                         </Component>
-                        <Component class="javax.swing.JButton" name="deleteEmployee">
+                        <Component class="javax.swing.JButton" name="deleteEmpButton">
                           <Properties>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/buttons/delete.png"/>
@@ -923,10 +892,10 @@
                             <Property name="text" type="java.lang.String" value="Delete"/>
                           </Properties>
                           <Events>
-                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="deleteEmployeeActionPerformed"/>
+                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="deleteEmpButtonActionPerformed"/>
                           </Events>
                         </Component>
-                        <Component class="javax.swing.JButton" name="archiveEmployee">
+                        <Component class="javax.swing.JButton" name="archiveEmpButton">
                           <Properties>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/buttons/archive.png"/>
@@ -934,7 +903,7 @@
                             <Property name="text" type="java.lang.String" value="Archive"/>
                           </Properties>
                           <Events>
-                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="archiveEmployeeActionPerformed"/>
+                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="archiveEmpButtonActionPerformed"/>
                           </Events>
                         </Component>
                         <Component class="javax.swing.Box$Filler" name="filler6">
