@@ -34,6 +34,7 @@ public class AssetDialog extends javax.swing.JInternalFrame {
     
     public AssetDialog(JTable t, JTable l) {
         initComponents();
+        
         getRootPane().setDefaultButton(button);
         assetTable = t;
         locationTable = l;
@@ -88,6 +89,7 @@ public class AssetDialog extends javax.swing.JInternalFrame {
         setIconifiable(true);
         setTitle("New Asset");
         setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/iframes/assets.png"))); // NOI18N
+        setPreferredSize(new java.awt.Dimension(285, 374));
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
             public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
             }
@@ -106,9 +108,9 @@ public class AssetDialog extends javax.swing.JInternalFrame {
             }
         });
 
-        nameLabel.setText("Asset Name");
+        nameLabel.setText("Name:");
 
-        descLabel.setText("Asset Description");
+        descLabel.setText("Description:");
 
         descField.setColumns(17);
         descField.setRows(4);

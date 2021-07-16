@@ -27,6 +27,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.Box;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.border.MatteBorder;
 import javax.swing.table.DefaultTableModel;
@@ -36,6 +38,8 @@ import javax.swing.table.DefaultTableModel;
  * @author J.B. Slade
  */
 public class MainFrame extends javax.swing.JFrame {
+    
+    private Filter filter;
     
     public MainFrame() {
         initComponents();
@@ -150,6 +154,8 @@ public class MainFrame extends javax.swing.JFrame {
         archiveButton4 = new javax.swing.JButton();
         filler5 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
         jLabel5 = new javax.swing.JLabel();
+        partScroll = new javax.swing.JScrollPane();
+        partTable = new javax.swing.JTable();
         employeePanel = new javax.swing.JPanel();
         employeeTools = new javax.swing.JToolBar();
         newEmpButton = new javax.swing.JButton();
@@ -185,6 +191,11 @@ public class MainFrame extends javax.swing.JFrame {
 
         tabbedPane.setTabPlacement(javax.swing.JTabbedPane.LEFT);
         tabbedPane.setFocusable(false);
+        tabbedPane.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                tabbedPaneStateChanged(evt);
+            }
+        });
 
         workOrderTools.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         workOrderTools.setFloatable(false);
@@ -242,14 +253,13 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
         workOrderTable.setDragEnabled(true);
-        workOrderTable.setShowGrid(true);
         workOrderScroll.setViewportView(workOrderTable);
 
         javax.swing.GroupLayout workOrderPanelLayout = new javax.swing.GroupLayout(workOrderPanel);
         workOrderPanel.setLayout(workOrderPanelLayout);
         workOrderPanelLayout.setHorizontalGroup(
             workOrderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(workOrderScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 753, Short.MAX_VALUE)
+            .addComponent(workOrderScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 788, Short.MAX_VALUE)
             .addComponent(workOrderTools, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         workOrderPanelLayout.setVerticalGroup(
@@ -257,7 +267,7 @@ public class MainFrame extends javax.swing.JFrame {
             .addGroup(workOrderPanelLayout.createSequentialGroup()
                 .addComponent(workOrderTools, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(workOrderScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 486, Short.MAX_VALUE))
+                .addComponent(workOrderScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 544, Short.MAX_VALUE))
         );
 
         tabbedPane.addTab("Work Orders", workOrderPanel);
@@ -318,22 +328,21 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
         scheduleTable.setDragEnabled(true);
-        scheduleTable.setShowGrid(true);
         scheduleScroll.setViewportView(scheduleTable);
 
         javax.swing.GroupLayout schedulePanelLayout = new javax.swing.GroupLayout(schedulePanel);
         schedulePanel.setLayout(schedulePanelLayout);
         schedulePanelLayout.setHorizontalGroup(
             schedulePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(scheduleTools, javax.swing.GroupLayout.DEFAULT_SIZE, 753, Short.MAX_VALUE)
-            .addComponent(scheduleScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 753, Short.MAX_VALUE)
+            .addComponent(scheduleTools, javax.swing.GroupLayout.DEFAULT_SIZE, 788, Short.MAX_VALUE)
+            .addComponent(scheduleScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 788, Short.MAX_VALUE)
         );
         schedulePanelLayout.setVerticalGroup(
             schedulePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(schedulePanelLayout.createSequentialGroup()
                 .addComponent(scheduleTools, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(scheduleScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 486, Short.MAX_VALUE))
+                .addComponent(scheduleScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 544, Short.MAX_VALUE))
         );
 
         tabbedPane.addTab("Schedule", schedulePanel);
@@ -402,22 +411,21 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
         locationTable.setDragEnabled(true);
-        locationTable.setShowGrid(true);
         locationScroll.setViewportView(locationTable);
 
         javax.swing.GroupLayout locationPanelLayout = new javax.swing.GroupLayout(locationPanel);
         locationPanel.setLayout(locationPanelLayout);
         locationPanelLayout.setHorizontalGroup(
             locationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(locationTools, javax.swing.GroupLayout.DEFAULT_SIZE, 753, Short.MAX_VALUE)
-            .addComponent(locationScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 753, Short.MAX_VALUE)
+            .addComponent(locationTools, javax.swing.GroupLayout.DEFAULT_SIZE, 788, Short.MAX_VALUE)
+            .addComponent(locationScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 788, Short.MAX_VALUE)
         );
         locationPanelLayout.setVerticalGroup(
             locationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(locationPanelLayout.createSequentialGroup()
                 .addComponent(locationTools, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(locationScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 486, Short.MAX_VALUE))
+                .addComponent(locationScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 544, Short.MAX_VALUE))
         );
 
         tabbedPane.addTab("Locations", locationPanel);
@@ -486,22 +494,21 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
         assetTable.setDragEnabled(true);
-        assetTable.setShowGrid(true);
         assetScroll.setViewportView(assetTable);
 
         javax.swing.GroupLayout assetPanelLayout = new javax.swing.GroupLayout(assetPanel);
         assetPanel.setLayout(assetPanelLayout);
         assetPanelLayout.setHorizontalGroup(
             assetPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(assetTools, javax.swing.GroupLayout.DEFAULT_SIZE, 753, Short.MAX_VALUE)
-            .addComponent(assetScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 753, Short.MAX_VALUE)
+            .addComponent(assetTools, javax.swing.GroupLayout.DEFAULT_SIZE, 788, Short.MAX_VALUE)
+            .addComponent(assetScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 788, Short.MAX_VALUE)
         );
         assetPanelLayout.setVerticalGroup(
             assetPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(assetPanelLayout.createSequentialGroup()
                 .addComponent(assetTools, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(assetScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 486, Short.MAX_VALUE))
+                .addComponent(assetScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 544, Short.MAX_VALUE))
         );
 
         tabbedPane.addTab("Assets", assetPanel);
@@ -531,17 +538,40 @@ public class MainFrame extends javax.swing.JFrame {
         jLabel5.setText("  ");
         partTools.add(jLabel5);
 
+        partScroll.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 0, 0, 0, new java.awt.Color(204, 204, 204)));
+
+        partTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "No.", "Name", "Description"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        partTable.setDragEnabled(true);
+        partScroll.setViewportView(partTable);
+
         javax.swing.GroupLayout partPanelLayout = new javax.swing.GroupLayout(partPanel);
         partPanel.setLayout(partPanelLayout);
         partPanelLayout.setHorizontalGroup(
             partPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(partTools, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(partTools, javax.swing.GroupLayout.DEFAULT_SIZE, 788, Short.MAX_VALUE)
+            .addComponent(partScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 788, Short.MAX_VALUE)
         );
         partPanelLayout.setVerticalGroup(
             partPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(partPanelLayout.createSequentialGroup()
                 .addComponent(partTools, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 486, Short.MAX_VALUE))
+                .addGap(0, 0, 0)
+                .addComponent(partScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 544, Short.MAX_VALUE))
         );
 
         tabbedPane.addTab("Parts", partPanel);
@@ -610,23 +640,21 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
         employeeTable.setDragEnabled(true);
-        employeeTable.setShowGrid(true);
         employeeScroll.setViewportView(employeeTable);
 
         javax.swing.GroupLayout employeePanelLayout = new javax.swing.GroupLayout(employeePanel);
         employeePanel.setLayout(employeePanelLayout);
         employeePanelLayout.setHorizontalGroup(
             employeePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(employeeTools, javax.swing.GroupLayout.DEFAULT_SIZE, 753, Short.MAX_VALUE)
-            .addComponent(employeeScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 753, Short.MAX_VALUE)
+            .addComponent(employeeTools, javax.swing.GroupLayout.DEFAULT_SIZE, 788, Short.MAX_VALUE)
+            .addComponent(employeeScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 788, Short.MAX_VALUE)
         );
         employeePanelLayout.setVerticalGroup(
             employeePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(employeePanelLayout.createSequentialGroup()
                 .addComponent(employeeTools, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(employeeScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
-                .addGap(32, 32, 32))
+                .addComponent(employeeScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 544, Short.MAX_VALUE))
         );
 
         tabbedPane.addTab("Employees", employeePanel);
@@ -635,11 +663,11 @@ public class MainFrame extends javax.swing.JFrame {
         reportPanel.setLayout(reportPanelLayout);
         reportPanelLayout.setHorizontalGroup(
             reportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 753, Short.MAX_VALUE)
+            .addGap(0, 788, Short.MAX_VALUE)
         );
         reportPanelLayout.setVerticalGroup(
             reportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 511, Short.MAX_VALUE)
+            .addGap(0, 569, Short.MAX_VALUE)
         );
 
         tabbedPane.addTab("Reports", reportPanel);
@@ -650,11 +678,11 @@ public class MainFrame extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 748, Short.MAX_VALUE)
+            .addGap(0, 783, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 483, Short.MAX_VALUE)
+            .addGap(0, 539, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("Users", jPanel1);
@@ -663,11 +691,11 @@ public class MainFrame extends javax.swing.JFrame {
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 748, Short.MAX_VALUE)
+            .addGap(0, 783, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 483, Short.MAX_VALUE)
+            .addGap(0, 539, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("Updates", jPanel2);
@@ -676,11 +704,11 @@ public class MainFrame extends javax.swing.JFrame {
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 748, Short.MAX_VALUE)
+            .addGap(0, 783, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 483, Short.MAX_VALUE)
+            .addGap(0, 539, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("tab3", jPanel3);
@@ -730,6 +758,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         menuTable.setText("Table");
 
+        menuTableFilter.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         menuTableFilter.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/filter.png"))); // NOI18N
         menuTableFilter.setMnemonic('F');
         menuTableFilter.setText("Filter");
@@ -958,8 +987,23 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_archiveEmpButtonActionPerformed
 
     private void menuTableFilterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuTableFilterActionPerformed
-
+        JTable table = null;
+        JPanel panel = null;
+        switch(tabbedPane.getSelectedIndex()){
+            case 0: table = workOrderTable; panel = workOrderPanel; break;
+            case 1: table = scheduleTable; panel = schedulePanel; break;
+            case 2: table = locationTable; panel = locationPanel; break;
+            case 3: table = assetTable; panel = assetPanel; break;
+            case 4: table = partTable; panel = partPanel; break;
+            case 5: table = employeeTable; panel = employeePanel; break;
+        }
+        if(filter == null) filter = new Filter(table, panel.getLocationOnScreen().x, panel.getLocationOnScreen().y+panel.getHeight());
+        else if(!filter.isActive()) filter = new Filter(table, panel.getLocationOnScreen().x, panel.getLocationOnScreen().y+panel.getHeight());
     }//GEN-LAST:event_menuTableFilterActionPerformed
+
+    private void tabbedPaneStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_tabbedPaneStateChanged
+        if(filter != null) filter.close();
+    }//GEN-LAST:event_tabbedPaneStateChanged
 
     //Load locations
     public void loadLocations(int row){
@@ -1121,6 +1165,8 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JButton newScheduleButton;
     private javax.swing.JButton newWOButton;
     private javax.swing.JPanel partPanel;
+    private javax.swing.JScrollPane partScroll;
+    private javax.swing.JTable partTable;
     private javax.swing.JToolBar partTools;
     private javax.swing.JButton printWOButton;
     private javax.swing.JPanel reportPanel;

@@ -100,6 +100,7 @@ public class Setup extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Database Setup");
+        setPreferredSize(new java.awt.Dimension(320, 557));
         setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
@@ -199,7 +200,7 @@ public class Setup extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(microsoftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(srvrField, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(srvrDBField)
+                            .addComponent(srvrDBField, javax.swing.GroupLayout.DEFAULT_SIZE, 131, Short.MAX_VALUE)
                             .addComponent(srvrUsrField, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(srvrPassField))))
                 .addContainerGap())
@@ -284,7 +285,7 @@ public class Setup extends javax.swing.JDialog {
                         .addGap(21, 21, 21)
                         .addComponent(derbyNameLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(derbyNameField, javax.swing.GroupLayout.DEFAULT_SIZE, 193, Short.MAX_VALUE)))
+                        .addComponent(derbyNameField)))
                 .addContainerGap())
         );
         derbyPanelLayout.setVerticalGroup(
@@ -545,20 +546,37 @@ public class Setup extends javax.swing.JDialog {
 
     private void createTables(){
         //Users
-        MMS.executeQuery("CREATE TABLE Users(Username VARCHAR(50) PRIMARY KEY,"
-                + "Password VARCHAR(50), Salt VARCHAR(16), Logged VARCHAR(1))");
+        MMS.executeQuery("CREATE TABLE Users("
+                + "Username VARCHAR(50) PRIMARY KEY,"
+                + "Password VARCHAR(50),"
+                + "Salt VARCHAR(16),"
+                + "Logged VARCHAR(1)"
+                + ")");
         String salt = Hasher.getSalt(), pass = Hasher.getHash("admin", salt);
         MMS.executeQuery("INSERT INTO Users (Username, Password, Salt, Logged) VALUES (?, ?, ?, ?)",
                 new Object[]{"Administrator", pass, salt, "N"});
         //Locations
-        MMS.executeQuery("CREATE TABLE Locations(LocationNo INT PRIMARY KEY,"
-                + "LocationName VARCHAR(100), LocationDescription VARCHAR(100), Archived VARCHAR(1))");
+        MMS.executeQuery("CREATE TABLE Locations("
+                + "LocationNo INT PRIMARY KEY,"
+                + "LocationName VARCHAR(100),"
+                + "LocationDescription VARCHAR(100),"
+                + "Archived VARCHAR(1)"
+                + ")");
         //Assets
-        MMS.executeQuery("CREATE TABLE Assets(AssetNo INT PRIMARY KEY,"
-                + "AssetName VARCHAR(100), AssetDescription VARCHAR(100), LocationNo INT, Archived VARCHAR(1))");
+        MMS.executeQuery("CREATE TABLE Assets("
+                + "AssetNo INT PRIMARY KEY,"
+                + "AssetName VARCHAR(100),"
+                + "AssetDescription VARCHAR(100),"
+                + "LocationNo INT,"
+                + "Archived VARCHAR(1)"
+                + ")");
         //Employees
-        MMS.executeQuery("CREATE TABLE Employees(EmployeeNo INT PRIMARY KEY,"
-                + "EmployeeName VARCHAR(100), Designation VARCHAR(100), Archived VARCHAR(1))");
+        MMS.executeQuery("CREATE TABLE Employees("
+                + "EmployeeNo INT PRIMARY KEY,"
+                + "EmployeeName VARCHAR(100),"
+                + "Designation VARCHAR(100),"
+                + "Archived VARCHAR(1)"
+                + ")");
         System.out.println("[DATABASE] Derby database created.");
     }
     

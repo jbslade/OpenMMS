@@ -21,6 +21,9 @@
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="menuTableFilter">
               <Properties>
+                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
+                  <KeyStroke key="Ctrl+F"/>
+                </Property>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/buttons/filter.png"/>
                 </Property>
@@ -141,6 +144,9 @@
                 <Property name="tabPlacement" type="int" value="2"/>
                 <Property name="focusable" type="boolean" value="false"/>
               </Properties>
+              <Events>
+                <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="tabbedPaneStateChanged"/>
+              </Events>
 
               <Layout class="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout"/>
               <SubComponents>
@@ -156,7 +162,7 @@
                   <Layout>
                     <DimensionLayout dim="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="workOrderScroll" pref="753" max="32767" attributes="0"/>
+                          <Component id="workOrderScroll" pref="788" max="32767" attributes="0"/>
                           <Component id="workOrderTools" max="32767" attributes="0"/>
                       </Group>
                     </DimensionLayout>
@@ -165,7 +171,7 @@
                           <Group type="102" attributes="0">
                               <Component id="workOrderTools" min="-2" pref="25" max="-2" attributes="0"/>
                               <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-                              <Component id="workOrderScroll" pref="486" max="32767" attributes="0"/>
+                              <Component id="workOrderScroll" pref="544" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -292,7 +298,6 @@
                               </Table>
                             </Property>
                             <Property name="dragEnabled" type="boolean" value="true"/>
-                            <Property name="showGrid" type="boolean" value="true"/>
                           </Properties>
                         </Component>
                       </SubComponents>
@@ -311,8 +316,8 @@
                   <Layout>
                     <DimensionLayout dim="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="scheduleTools" pref="753" max="32767" attributes="0"/>
-                          <Component id="scheduleScroll" pref="753" max="32767" attributes="0"/>
+                          <Component id="scheduleTools" pref="788" max="32767" attributes="0"/>
+                          <Component id="scheduleScroll" pref="788" max="32767" attributes="0"/>
                       </Group>
                     </DimensionLayout>
                     <DimensionLayout dim="1">
@@ -320,7 +325,7 @@
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="scheduleTools" min="-2" pref="25" max="-2" attributes="0"/>
                               <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-                              <Component id="scheduleScroll" pref="486" max="32767" attributes="0"/>
+                              <Component id="scheduleScroll" pref="544" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -447,7 +452,6 @@
                               </Table>
                             </Property>
                             <Property name="dragEnabled" type="boolean" value="true"/>
-                            <Property name="showGrid" type="boolean" value="true"/>
                           </Properties>
                         </Component>
                       </SubComponents>
@@ -466,8 +470,8 @@
                   <Layout>
                     <DimensionLayout dim="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="locationTools" pref="753" max="32767" attributes="0"/>
-                          <Component id="locationScroll" pref="753" max="32767" attributes="0"/>
+                          <Component id="locationTools" pref="788" max="32767" attributes="0"/>
+                          <Component id="locationScroll" pref="788" max="32767" attributes="0"/>
                       </Group>
                     </DimensionLayout>
                     <DimensionLayout dim="1">
@@ -475,7 +479,7 @@
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="locationTools" min="-2" pref="25" max="-2" attributes="0"/>
                               <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-                              <Component id="locationScroll" pref="486" max="32767" attributes="0"/>
+                              <Component id="locationScroll" pref="544" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -584,7 +588,6 @@
                               </Table>
                             </Property>
                             <Property name="dragEnabled" type="boolean" value="true"/>
-                            <Property name="showGrid" type="boolean" value="true"/>
                           </Properties>
                         </Component>
                       </SubComponents>
@@ -603,8 +606,8 @@
                   <Layout>
                     <DimensionLayout dim="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="assetTools" pref="753" max="32767" attributes="0"/>
-                          <Component id="assetScroll" pref="753" max="32767" attributes="0"/>
+                          <Component id="assetTools" pref="788" max="32767" attributes="0"/>
+                          <Component id="assetScroll" pref="788" max="32767" attributes="0"/>
                       </Group>
                     </DimensionLayout>
                     <DimensionLayout dim="1">
@@ -612,7 +615,7 @@
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="assetTools" min="-2" pref="25" max="-2" attributes="0"/>
                               <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-                              <Component id="assetScroll" pref="486" max="32767" attributes="0"/>
+                              <Component id="assetScroll" pref="544" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -722,7 +725,6 @@
                               </Table>
                             </Property>
                             <Property name="dragEnabled" type="boolean" value="true"/>
-                            <Property name="showGrid" type="boolean" value="true"/>
                           </Properties>
                         </Component>
                       </SubComponents>
@@ -741,14 +743,16 @@
                   <Layout>
                     <DimensionLayout dim="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="partTools" alignment="0" max="32767" attributes="0"/>
+                          <Component id="partTools" pref="788" max="32767" attributes="0"/>
+                          <Component id="partScroll" pref="788" max="32767" attributes="0"/>
                       </Group>
                     </DimensionLayout>
                     <DimensionLayout dim="1">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="partTools" min="-2" pref="25" max="-2" attributes="0"/>
-                              <EmptySpace min="0" pref="486" max="32767" attributes="0"/>
+                              <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
+                              <Component id="partScroll" pref="544" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -819,6 +823,36 @@
                         </Component>
                       </SubComponents>
                     </Container>
+                    <Container class="javax.swing.JScrollPane" name="partScroll">
+                      <Properties>
+                        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                          <Border info="org.netbeans.modules.form.compat2.border.MatteColorBorderInfo">
+                            <MatteColorBorder bottom="0" left="0" right="0" top="1">
+                              <Color PropertyName="color" blue="cc" green="cc" red="cc" type="rgb"/>
+                            </MatteColorBorder>
+                          </Border>
+                        </Property>
+                      </Properties>
+                      <AuxValues>
+                        <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
+                      </AuxValues>
+
+                      <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+                      <SubComponents>
+                        <Component class="javax.swing.JTable" name="partTable">
+                          <Properties>
+                            <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
+                              <Table columnCount="3" rowCount="0">
+                                <Column editable="false" title="No." type="java.lang.Object"/>
+                                <Column editable="false" title="Name" type="java.lang.Object"/>
+                                <Column editable="false" title="Description" type="java.lang.Object"/>
+                              </Table>
+                            </Property>
+                            <Property name="dragEnabled" type="boolean" value="true"/>
+                          </Properties>
+                        </Component>
+                      </SubComponents>
+                    </Container>
                   </SubComponents>
                 </Container>
                 <Container class="javax.swing.JPanel" name="employeePanel">
@@ -833,8 +867,8 @@
                   <Layout>
                     <DimensionLayout dim="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="employeeTools" pref="753" max="32767" attributes="0"/>
-                          <Component id="employeeScroll" pref="753" max="32767" attributes="0"/>
+                          <Component id="employeeTools" pref="788" max="32767" attributes="0"/>
+                          <Component id="employeeScroll" pref="788" max="32767" attributes="0"/>
                       </Group>
                     </DimensionLayout>
                     <DimensionLayout dim="1">
@@ -842,8 +876,7 @@
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="employeeTools" min="-2" pref="25" max="-2" attributes="0"/>
                               <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-                              <Component id="employeeScroll" pref="454" max="32767" attributes="0"/>
-                              <EmptySpace min="-2" pref="32" max="-2" attributes="0"/>
+                              <Component id="employeeScroll" pref="544" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -952,7 +985,6 @@
                               </Table>
                             </Property>
                             <Property name="dragEnabled" type="boolean" value="true"/>
-                            <Property name="showGrid" type="boolean" value="true"/>
                           </Properties>
                         </Component>
                       </SubComponents>
@@ -971,12 +1003,12 @@
                   <Layout>
                     <DimensionLayout dim="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <EmptySpace min="0" pref="753" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="788" max="32767" attributes="0"/>
                       </Group>
                     </DimensionLayout>
                     <DimensionLayout dim="1">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <EmptySpace min="0" pref="511" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="569" max="32767" attributes="0"/>
                       </Group>
                     </DimensionLayout>
                   </Layout>
@@ -1022,12 +1054,12 @@
                           <Layout>
                             <DimensionLayout dim="0">
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <EmptySpace min="0" pref="748" max="32767" attributes="0"/>
+                                  <EmptySpace min="0" pref="783" max="32767" attributes="0"/>
                               </Group>
                             </DimensionLayout>
                             <DimensionLayout dim="1">
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <EmptySpace min="0" pref="483" max="32767" attributes="0"/>
+                                  <EmptySpace min="0" pref="539" max="32767" attributes="0"/>
                               </Group>
                             </DimensionLayout>
                           </Layout>
@@ -1044,12 +1076,12 @@
                           <Layout>
                             <DimensionLayout dim="0">
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <EmptySpace min="0" pref="748" max="32767" attributes="0"/>
+                                  <EmptySpace min="0" pref="783" max="32767" attributes="0"/>
                               </Group>
                             </DimensionLayout>
                             <DimensionLayout dim="1">
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <EmptySpace min="0" pref="483" max="32767" attributes="0"/>
+                                  <EmptySpace min="0" pref="539" max="32767" attributes="0"/>
                               </Group>
                             </DimensionLayout>
                           </Layout>
@@ -1066,12 +1098,12 @@
                           <Layout>
                             <DimensionLayout dim="0">
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <EmptySpace min="0" pref="748" max="32767" attributes="0"/>
+                                  <EmptySpace min="0" pref="783" max="32767" attributes="0"/>
                               </Group>
                             </DimensionLayout>
                             <DimensionLayout dim="1">
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <EmptySpace min="0" pref="483" max="32767" attributes="0"/>
+                                  <EmptySpace min="0" pref="539" max="32767" attributes="0"/>
                               </Group>
                             </DimensionLayout>
                           </Layout>

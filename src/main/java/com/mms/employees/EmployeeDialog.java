@@ -34,6 +34,7 @@ public class EmployeeDialog extends javax.swing.JInternalFrame {
     
     public EmployeeDialog(JTable t) {
         initComponents();
+        System.out.println(this.getHeight());
         getRootPane().setDefaultButton(button);
         table = t;
     }
@@ -66,13 +67,15 @@ public class EmployeeDialog extends javax.swing.JInternalFrame {
         descLabel = new javax.swing.JLabel();
         button = new javax.swing.JButton();
         descField = new javax.swing.JTextField();
+        descLabel1 = new javax.swing.JLabel();
+        jComboBox1 = new javax.swing.JComboBox<>();
 
         setClosable(true);
         setIconifiable(true);
         setTitle("New Employee");
         setToolTipText("");
         setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/iframes/employees.png"))); // NOI18N
-        setPreferredSize(new java.awt.Dimension(241, 197));
+        setPreferredSize(new java.awt.Dimension(285, 309));
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
             public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
             }
@@ -91,9 +94,9 @@ public class EmployeeDialog extends javax.swing.JInternalFrame {
             }
         });
 
-        nameLabel.setText("Employee Name:");
+        nameLabel.setText("Name:");
 
-        descLabel.setText("Employee Designation:");
+        descLabel.setText("Designation:");
 
         button.setText("Add");
         button.addActionListener(new java.awt.event.ActionListener() {
@@ -101,6 +104,10 @@ public class EmployeeDialog extends javax.swing.JInternalFrame {
                 buttonActionPerformed(evt);
             }
         });
+
+        descLabel1.setText("Department:");
+
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         javax.swing.GroupLayout backPanelLayout = new javax.swing.GroupLayout(backPanel);
         backPanel.setLayout(backPanelLayout);
@@ -110,12 +117,17 @@ public class EmployeeDialog extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(backPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, backPanelLayout.createSequentialGroup()
-                        .addGap(0, 115, Short.MAX_VALUE)
+                        .addGap(0, 166, Short.MAX_VALUE)
                         .addComponent(button))
                     .addComponent(nameField)
-                    .addComponent(nameLabel)
-                    .addComponent(descLabel)
-                    .addComponent(descField, javax.swing.GroupLayout.Alignment.TRAILING))
+                    .addComponent(descField, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(backPanelLayout.createSequentialGroup()
+                        .addGroup(backPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(nameLabel)
+                            .addComponent(descLabel)
+                            .addComponent(descLabel1))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         backPanelLayout.setVerticalGroup(
@@ -129,6 +141,10 @@ public class EmployeeDialog extends javax.swing.JInternalFrame {
                 .addComponent(descLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(descField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(descLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(button)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -205,6 +221,8 @@ public class EmployeeDialog extends javax.swing.JInternalFrame {
     private javax.swing.JButton button;
     private javax.swing.JTextField descField;
     private javax.swing.JLabel descLabel;
+    private javax.swing.JLabel descLabel1;
+    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JTextField nameField;
     private javax.swing.JLabel nameLabel;
     // End of variables declaration//GEN-END:variables

@@ -72,6 +72,7 @@ public class LocationDialog extends javax.swing.JInternalFrame {
         setIconifiable(true);
         setTitle("New Location");
         setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/iframes/locations.png"))); // NOI18N
+        setPreferredSize(new java.awt.Dimension(285, 306));
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
             public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
             }
@@ -90,9 +91,9 @@ public class LocationDialog extends javax.swing.JInternalFrame {
             }
         });
 
-        nameLabel.setText("Location Name:");
+        nameLabel.setText("Name:");
 
-        descLabel.setText("Location Description:");
+        descLabel.setText("Description:");
 
         descField.setColumns(17);
         descField.setRows(4);
