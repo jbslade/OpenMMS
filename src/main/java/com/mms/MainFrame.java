@@ -769,6 +769,7 @@ public class MainFrame extends javax.swing.JFrame {
         });
         menuTable.add(menuTableFilter);
 
+        menuTableRefresh.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         menuTableRefresh.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/refresh.png"))); // NOI18N
         menuTableRefresh.setMnemonic('R');
         menuTableRefresh.setText("Refresh");
@@ -998,7 +999,7 @@ public class MainFrame extends javax.swing.JFrame {
             case 5: table = employeeTable; panel = employeePanel; break;
         }
         if(filter == null) filter = new Filter(table, panel.getLocationOnScreen().x, panel.getLocationOnScreen().y+panel.getHeight());
-        else if(!filter.isActive()) filter = new Filter(table, panel.getLocationOnScreen().x, panel.getLocationOnScreen().y+panel.getHeight());
+        else if(!filter.isActive()) filter = new Filter(table, panel.getLocationOnScreen().y, panel.getLocationOnScreen().y+panel.getHeight());
     }//GEN-LAST:event_menuTableFilterActionPerformed
 
     private void tabbedPaneStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_tabbedPaneStateChanged
