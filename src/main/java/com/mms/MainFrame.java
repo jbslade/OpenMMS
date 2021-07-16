@@ -998,8 +998,8 @@ public class MainFrame extends javax.swing.JFrame {
             case 4: table = partTable; panel = partPanel; break;
             case 5: table = employeeTable; panel = employeePanel; break;
         }
-        if(filter == null) filter = new Filter(table, panel.getLocationOnScreen().x, panel.getLocationOnScreen().y+panel.getHeight());
-        else if(!filter.isActive()) filter = new Filter(table, panel.getLocationOnScreen().y, panel.getLocationOnScreen().y+panel.getHeight());
+        if(filter == null) filter = new Filter(table, panel);
+        else if(!filter.isActive()) filter = new Filter(table, panel);
     }//GEN-LAST:event_menuTableFilterActionPerformed
 
     private void tabbedPaneStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_tabbedPaneStateChanged

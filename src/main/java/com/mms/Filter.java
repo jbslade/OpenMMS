@@ -16,6 +16,7 @@
 package com.mms;
 
 import com.sun.glass.events.KeyEvent;
+import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.Popup;
 import javax.swing.PopupFactory;
@@ -37,12 +38,12 @@ public class Filter extends javax.swing.JPanel {
     
     public boolean isActive(){ return active; }
     
-    public Filter(JTable t, int x, int y) {
+    public Filter(JTable t, JPanel p) {
         initComponents();
         button.putClientProperty("JButton.buttonType", "toolBarButton");
         table = t;
         sorter = new TableRowSorter<>(((DefaultTableModel) t.getModel()));
-        pop = PopupFactory.getSharedInstance().getPopup(MMS.getMainFrame(), this, x, y-this.getPreferredSize().height);
+        pop = PopupFactory.getSharedInstance().getPopup(p, this, p.getLocationOnScreen().x, p.getLocationOnScreen().y+p.getHeight()-this.getPreferredSize().height);
         pop.show();
         active = true;
         filterField.requestFocus();

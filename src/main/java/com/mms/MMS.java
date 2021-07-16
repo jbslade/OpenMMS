@@ -44,7 +44,7 @@ public class MMS {
     
     //Variables
     public static final String NAME = "OpenMMS", VERSION = "1.0";
-    public static final boolean DEBUG = false;
+    public static final boolean DEBUG = true;
     public static final JFrame phf = new JFrame();
     private static MainFrame m;
     private static Connection conn;
