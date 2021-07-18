@@ -15,11 +15,13 @@
  */
 package com.mms;
 
-import com.mms.utilities.InternalDialog;
-import com.mms.utilities.PopupPanel;
-import com.mms.assets.AssetDialog;
-import com.mms.employees.EmployeeDialog;
-import com.mms.locations.LocationDialog;
+import com.mms.panels.FilterPanel;
+import com.mms.dialogs.InternalDialog;
+import com.mms.panels.PopupPanel;
+import com.mms.dialogs.AssetDialog;
+import com.mms.dialogs.EmployeeDialog;
+import com.mms.dialogs.LocationDialog;
+import com.mms.dialogs.PasswordDialog;
 import java.awt.Color;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -39,7 +41,8 @@ import javax.swing.table.DefaultTableModel;
  */
 public class MainFrame extends javax.swing.JFrame {
     
-    private Filter filter;
+    private FilterPanel filter;
+    private boolean logout;
     
     public MainFrame() {
         initComponents();
@@ -86,6 +89,7 @@ public class MainFrame extends javax.swing.JFrame {
         
         //Set user
         menuUser.setText(MMS.getUser());
+        logout = false;
     }
 
     /**
@@ -168,8 +172,13 @@ public class MainFrame extends javax.swing.JFrame {
         employeeTable = new javax.swing.JTable();
         reportPanel = new javax.swing.JPanel();
         adminPanel = new javax.swing.JPanel();
-        jTabbedPane1 = new javax.swing.JTabbedPane();
-        jPanel1 = new javax.swing.JPanel();
+        adminTabbedPane = new javax.swing.JTabbedPane();
+        adminUserPanel = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         menuBar = new javax.swing.JMenuBar();
@@ -672,20 +681,54 @@ public class MainFrame extends javax.swing.JFrame {
 
         tabbedPane.addTab("Reports", reportPanel);
 
-        jTabbedPane1.setFocusable(false);
+        adminTabbedPane.setFocusable(false);
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 783, Short.MAX_VALUE)
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Username", "Access Level", "Logged"
+            }
+        ));
+        jScrollPane1.setViewportView(jTable1);
+
+        jButton1.setText("Add");
+
+        jButton2.setText("Edit");
+
+        jButton3.setText("Reset Password");
+
+        javax.swing.GroupLayout adminUserPanelLayout = new javax.swing.GroupLayout(adminUserPanel);
+        adminUserPanel.setLayout(adminUserPanelLayout);
+        adminUserPanelLayout.setHorizontalGroup(
+            adminUserPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(adminUserPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 634, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(adminUserPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jButton2, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jButton3, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addContainerGap())
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 539, Short.MAX_VALUE)
+        adminUserPanelLayout.setVerticalGroup(
+            adminUserPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(adminUserPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(adminUserPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(adminUserPanelLayout.createSequentialGroup()
+                        .addComponent(jButton1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton3))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(97, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Users", jPanel1);
+        adminTabbedPane.addTab("Users", adminUserPanel);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -698,7 +741,7 @@ public class MainFrame extends javax.swing.JFrame {
             .addGap(0, 539, Short.MAX_VALUE)
         );
 
-        jTabbedPane1.addTab("Updates", jPanel2);
+        adminTabbedPane.addTab("Updates", jPanel2);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -711,17 +754,17 @@ public class MainFrame extends javax.swing.JFrame {
             .addGap(0, 539, Short.MAX_VALUE)
         );
 
-        jTabbedPane1.addTab("tab3", jPanel3);
+        adminTabbedPane.addTab("tab3", jPanel3);
 
         javax.swing.GroupLayout adminPanelLayout = new javax.swing.GroupLayout(adminPanel);
         adminPanel.setLayout(adminPanelLayout);
         adminPanelLayout.setHorizontalGroup(
             adminPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1)
+            .addComponent(adminTabbedPane)
         );
         adminPanelLayout.setVerticalGroup(
             adminPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1)
+            .addComponent(adminTabbedPane)
         );
 
         tabbedPane.addTab("Admin", adminPanel);
@@ -788,9 +831,19 @@ public class MainFrame extends javax.swing.JFrame {
         menuUser.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
 
         menuChangePassword.setText("Change Password");
+        menuChangePassword.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuChangePasswordActionPerformed(evt);
+            }
+        });
         menuUser.add(menuChangePassword);
 
         menuLogout.setText("Logout");
+        menuLogout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuLogoutActionPerformed(evt);
+            }
+        });
         menuUser.add(menuLogout);
 
         menuBar.add(menuUser);
@@ -987,6 +1040,7 @@ public class MainFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_archiveEmpButtonActionPerformed
 
+    //Table Filter
     private void menuTableFilterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuTableFilterActionPerformed
         JTable table = null;
         JPanel panel = null;
@@ -998,13 +1052,26 @@ public class MainFrame extends javax.swing.JFrame {
             case 4: table = partTable; panel = partPanel; break;
             case 5: table = employeeTable; panel = employeePanel; break;
         }
-        if(filter == null) filter = new Filter(table, panel);
-        else if(!filter.isActive()) filter = new Filter(table, panel);
+        if(filter == null) filter = new FilterPanel(table, panel);
+        else if(!filter.isActive()) filter = new FilterPanel(table, panel);
     }//GEN-LAST:event_menuTableFilterActionPerformed
 
+    //Close filter (if tab changed)
     private void tabbedPaneStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_tabbedPaneStateChanged
         if(filter != null) filter.close();
     }//GEN-LAST:event_tabbedPaneStateChanged
+
+    private void menuChangePasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuChangePasswordActionPerformed
+        PasswordDialog pd = new PasswordDialog(MMS.getUser());
+        desktopPane.add(pd);
+        desktopPane.setLayer(pd, 1);
+        pd.setLocation(desktopPane.getWidth()/2-pd.getWidth()/2, desktopPane.getHeight()/2-pd.getHeight()/2-50);
+        pd.setVisible(true);
+    }//GEN-LAST:event_menuChangePasswordActionPerformed
+
+    private void menuLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuLogoutActionPerformed
+        MMS.logout();
+    }//GEN-LAST:event_menuLogoutActionPerformed
 
     //Load locations
     public void loadLocations(int row){
@@ -1102,6 +1169,8 @@ public class MainFrame extends javax.swing.JFrame {
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel adminPanel;
+    private javax.swing.JTabbedPane adminTabbedPane;
+    private javax.swing.JPanel adminUserPanel;
     private javax.swing.JButton archiveAssetButton;
     private javax.swing.JButton archiveButton4;
     private javax.swing.JButton archiveEmpButton;
@@ -1140,11 +1209,14 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.Box.Filler filler4;
     private javax.swing.Box.Filler filler5;
     private javax.swing.Box.Filler filler6;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable jTable1;
     private javax.swing.JLabel locationLoadLabel;
     private javax.swing.JPanel locationPanel;
     private javax.swing.JScrollPane locationScroll;

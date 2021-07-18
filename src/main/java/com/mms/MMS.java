@@ -16,8 +16,8 @@
 package com.mms;
 
 import com.formdev.flatlaf.intellijthemes.FlatGrayIJTheme;
-import com.mms.locations.LocationDialog;
-import com.mms.users.LoginDialog;
+import com.mms.dialogs.LocationDialog;
+import com.mms.dialogs.LoginDialog;
 import java.awt.Color;
 import java.awt.Component;
 import java.sql.Connection;
@@ -137,26 +137,9 @@ public class MMS {
 //        MMS.executeQuery("UPDATE Users SET Password = ?, Salt = ? WHERE Username = ?",
 //                new Object[]{pass, salt, "Administrator"});
         
-        //Login
+        //Load users & login
         loadUsers();
-        phf.setVisible(true);
-        new LoginDialog(phf, true).setVisible(true);
-        
-        //Dispose placeholder frame
-        phf.dispose();
-        
-        //MainFrame
-        m = new MainFrame();
-        m.setTitle(NAME+" "+VERSION);
-        m.setIconImage(systemIcon.getImage());
-        m.setLocationRelativeTo(null);
-        m.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        //Load tables
-        m.loadLocations(0);
-        m.loadAssets(0);
-        m.loadEmployees(0);
-        
-        m.setVisible(true);
+        login();
     }
     
     //DATABASE METHODS
@@ -213,7 +196,6 @@ public class MMS {
         return rs;
     }
     
-    //TABLE METHODS
     //Resize table
     public static void resizeTable(JTable table) {
         final TableColumnModel columnModel = table.getColumnModel();
@@ -246,7 +228,44 @@ public class MMS {
             }
     }
     
-    //SHUTDOWN
+    //Login
+    private static void login(){
+        phf.setVisible(true);
+        new LoginDialog(phf, true).setVisible(true);
+        
+        //Dispose placeholder frame
+        phf.dispose();
+        
+        //MainFrame
+        m = new MainFrame();
+        m.setTitle(NAME+" "+VERSION);
+        m.setIconImage(systemIcon.getImage());
+        m.setLocationRelativeTo(null);
+        m.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        //Load tables
+        m.loadLocations(0);
+        m.loadAssets(0);
+        m.loadEmployees(0);
+        
+        m.setVisible(true);
+    }
+    
+    //Logout
+    public static void logout(){
+        new Thread(){
+            public void run(){  
+                //Set user to logged out
+                if(user != null){
+                    executeQuery("UPDATE Users SET Logged = 'N' WHERE Username = ?",
+                            new Object[]{user});
+                }
+                m.dispose();
+                login();
+            }
+        }.start();
+    }
+    
+    //Shutdown
     public static void shutdown(){
         new Thread(){
             public void run(){
@@ -265,6 +284,7 @@ public class MMS {
                     if(p.get("dbType", "").equals("derby")) DriverManager.getConnection("jdbc:derby:;shutdown=true");
                 } catch (SQLException ex) {
                     System.out.println("[DATABASE] "+ex.getCause());
+                    System.exit(0);
                 }
                 System.exit(0);
             }
