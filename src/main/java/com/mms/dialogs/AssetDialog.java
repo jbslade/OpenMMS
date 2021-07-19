@@ -30,35 +30,43 @@ import javax.swing.table.DefaultTableModel;
 public class AssetDialog extends javax.swing.JInternalFrame {
     
     private int row = -1;
-    private final JTable assetTable, locationTable;
+    private final JTable assetTable;
     
-    public AssetDialog(JTable t, JTable l) {
+    public AssetDialog(JTable t) {
         initComponents();
-        
         getRootPane().setDefaultButton(button);
         assetTable = t;
-        locationTable = l;
         
         //Set locations
-        for(int i = 0; i < locationTable.getModel().getRowCount(); i++){
-            locationCombo.addItem(locationTable.getValueAt(i, 0).toString()+" - "+locationTable.getValueAt(i, 1).toString());
+        ResultSet rs = MMS.select("SELECT LocNo, LocName FROM Locations WHERE Archived = 'N'");
+        try {
+            while(rs.next()){
+                locationCombo.addItem(rs.getString(1)+" - "+rs.getString(2));
+            }
+            rs.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(EmployeeDialog.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
-    public AssetDialog(JTable t, JTable l, int r) {
+    public AssetDialog(JTable t, int r) {
         initComponents();
         getRootPane().setDefaultButton(button);
         assetTable = t;
-        locationTable = l;
         row = r;
-        setTitle("Edit Asset");
         button.setText("Save");
         
         //Set locations
-        for(int i = 0; i < locationTable.getModel().getRowCount(); i++){
-            locationCombo.addItem(locationTable.getValueAt(i, 0).toString()+" - "+locationTable.getValueAt(i, 1).toString());
+        ResultSet rs = MMS.select("SELECT LocNo, LocName FROM Locations WHERE Archived = 'N'");
+        try {
+            while(rs.next()){
+                locationCombo.addItem(rs.getString(1)+" - "+rs.getString(2));
+            }
+            rs.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(EmployeeDialog.class.getName()).log(Level.SEVERE, null, ex);
         }
-        locationCombo.setSelectedItem(assetTable.getValueAt(r, 3));
+        locationCombo.setSelectedItem(t.getValueAt(r, 3));
         
         nameField.setText(t.getModel().getValueAt(r, 1).toString());
         descField.setText(t.getModel().getValueAt(r, 2).toString());
@@ -89,7 +97,6 @@ public class AssetDialog extends javax.swing.JInternalFrame {
         setIconifiable(true);
         setTitle("New Asset");
         setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/iframes/assets.png"))); // NOI18N
-        setPreferredSize(new java.awt.Dimension(285, 374));
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
             public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
             }
@@ -195,7 +202,7 @@ public class AssetDialog extends javax.swing.JInternalFrame {
             if(row == -1){ //New asset
                     //Get next no
                     int assNum = 0;
-                    ResultSet rs = MMS.select("SELECT MAX(AssetNo) FROM Assets");
+                    ResultSet rs = MMS.select("SELECT MAX(AssNo) FROM Assets");
                     try {
                         if(rs.next()) assNum = rs.getInt(1);
                         rs.close();
@@ -204,7 +211,7 @@ public class AssetDialog extends javax.swing.JInternalFrame {
                     }
                     assNum++;
                     //Insert into DB
-                    MMS.executeQuery("INSERT INTO Assets (AssetNo, AssetName, AssetDescription, LocationNo, Archived) VALUES (?, ?, ?, ?, 'N')",
+                    MMS.executeQuery("INSERT INTO Assets (AssNo, AssName, AssDesc, LocNo, Archived) VALUES (?, ?, ?, ?, 'N')",
                             new Object[]{assNum, name, desc, locNum});
                     //Insert into table
                     Object [] o = {assNum, name, desc, locName};
@@ -217,7 +224,7 @@ public class AssetDialog extends javax.swing.JInternalFrame {
                 //Get selected number
                 int assNum = Integer.parseInt(assetTable.getValueAt(row, 0).toString());
                 //Update database
-                MMS.executeQuery("UPDATE Assets SET AssetName = ?, AssetDescription = ?, LocationNo = ? WHERE AssetNo = ?",
+                MMS.executeQuery("UPDATE Assets SET AssName = ?, AssDesc = ?, LocNo = ? WHERE AssNo = ?",
                         new Object[]{name, desc, locNum, assNum});
                 //Update table
                 assetTable.setValueAt(name, row, 1);

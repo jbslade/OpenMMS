@@ -32,15 +32,11 @@ public class LoginDialog extends javax.swing.JDialog {
 
     private final ImageIcon toolbox = new ImageIcon(MMS.class.getResource("/toolbox.png"));
     private boolean success = false;
+    public boolean success(){return success;}
     
-    /**
-     * Creates new form LoginDialog
-     */
     public LoginDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        setIconImage(MMS.systemIcon.getImage());
-        setLocationRelativeTo(parent);
         passwordField.putClientProperty("JTextField.placeholderText", "Password");
         getRootPane().setDefaultButton(button);
         //Set combo box users
@@ -80,11 +76,6 @@ public class LoginDialog extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Login");
-        addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowClosing(java.awt.event.WindowEvent evt) {
-                formWindowClosing(evt);
-            }
-        });
 
         logoLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         logoLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/toolbox.png"))); // NOI18N
@@ -113,11 +104,11 @@ public class LoginDialog extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(separator, javax.swing.GroupLayout.PREFERRED_SIZE, 11, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(backPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                .addGroup(backPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(userCombo, 0, 183, Short.MAX_VALUE)
                     .addComponent(passwordField)
                     .addComponent(button))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         backPanelLayout.setVerticalGroup(
             backPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -156,12 +147,12 @@ public class LoginDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonActionPerformed
-        String u = userCombo.getSelectedItem().toString(), p = passwordField.getText();
+        String u = userCombo.getSelectedItem().toString(), p = new String(passwordField.getPassword());
         if(p.isEmpty()) passwordField.requestFocus();
         else{
             String password = "", salt = "";
             try {
-                ResultSet rs = MMS.select("SELECT Password, Salt FROM Users WHERE Username = ?",
+                ResultSet rs = MMS.select("SELECT UserPass, Salt FROM Users WHERE UserName = ?",
                         new Object[]{u});
                 if(rs.next()){
                     password = rs.getObject(1).toString().trim();
@@ -179,7 +170,7 @@ public class LoginDialog extends javax.swing.JDialog {
                 success = true;
                 MMS.setUser(u);
                 //Set user to logged in
-                MMS.executeQuery("UPDATE Users SET Logged = 'Y' WHERE Username = ?",
+                MMS.executeQuery("UPDATE Users SET Logged = 'Y' WHERE UserName = ?",
                         new Object[]{u});
                 
                 //Put user in preferences
@@ -206,10 +197,6 @@ public class LoginDialog extends javax.swing.JDialog {
             }
         }.start();
     }//GEN-LAST:event_logoLabelMouseClicked
-
-    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        MMS.shutdown();
-    }//GEN-LAST:event_formWindowClosing
 
     private void fail(){
         passwordField.requestFocus();

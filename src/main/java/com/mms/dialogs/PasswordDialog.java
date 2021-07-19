@@ -25,11 +25,8 @@ import javax.swing.JOptionPane;
  */
 public class PasswordDialog extends javax.swing.JInternalFrame {
 
-    private String user;
+    private final String user;
     
-    /**
-     * Creates new form PasswordDialog
-     */
     public PasswordDialog(String u) {
         initComponents();
         getRootPane().setDefaultButton(button);
@@ -55,7 +52,6 @@ public class PasswordDialog extends javax.swing.JInternalFrame {
         setClosable(true);
         setTitle("Change Password");
         setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/user.png"))); // NOI18N
-        setPreferredSize(new java.awt.Dimension(285, 241));
 
         newPassLabel.setText("New Password:");
 
@@ -134,7 +130,7 @@ public class PasswordDialog extends javax.swing.JInternalFrame {
         else{
             String salt = Hasher.getSalt();
             pass = Hasher.getHash(pass, salt);
-            MMS.executeQuery("UPDATE Users SET Salt = ?, Password = ? WHERE Username = ?",
+            MMS.executeQuery("UPDATE Users SET Salt = ?, UserPass = ? WHERE UserName = ?",
                 new Object[]{salt, pass, user});
             InternalDialog.showInternalConfirmDialog(this, "Password changed succesfully.", "Change Password", -1, JOptionPane.INFORMATION_MESSAGE, null);
             dispose();

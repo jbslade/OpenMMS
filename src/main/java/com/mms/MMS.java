@@ -20,6 +20,7 @@ import com.mms.dialogs.LocationDialog;
 import com.mms.dialogs.LoginDialog;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Toolkit;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -46,6 +47,8 @@ public class MMS {
     public static final String NAME = "OpenMMS", VERSION = "1.0";
     public static final boolean DEBUG = true;
     public static final JFrame phf = new JFrame();
+    public static final int DIAG_WIDTH =Toolkit.getDefaultToolkit(). getScreenSize().width/5 > 300 ? 300 : Toolkit.getDefaultToolkit(). getScreenSize().width/5;
+    private static Thread shutdown;
     private static MainFrame m;
     private static Connection conn;
     private static String user;
@@ -80,6 +83,30 @@ public class MMS {
         System.setProperty("flatlaf.menuBarEmbedded", "true");
         UIManager.put("TabbedPane.selectedBackground", Color.white);
         
+        //Shutdown thread
+        shutdown = new Thread(){
+            public void run(){
+                try {
+                    //Set user to logged out
+                    if(user != null){
+                        executeQuery("UPDATE Users SET Logged = 'N' WHERE UserName = ?",
+                                new Object[]{user});
+                    }
+                    //Close connection
+                    if(conn != null){
+                        conn.close();
+                        System.out.println("[DATABASE] Connection closed");
+                    }
+                    //Shutdown Derby
+                    if(p.get("dbType", "").equals("derby")) DriverManager.getConnection("jdbc:derby:;shutdown=true");
+                } catch (SQLException ex) {
+                    System.out.println("[DATABASE] "+ex.getCause());
+                    System.exit(0);
+                }
+                System.exit(0);
+            }
+        };
+        
         //Preferences
         p = Preferences.userNodeForPackage(MMS.class);
         
@@ -93,8 +120,20 @@ public class MMS {
         OUTER:
         while (true) {
             if (p.getBoolean("firstRun", true)) {
-                new Setup(phf, true).setVisible(true);
-                break;
+                Setup setup = new Setup(phf, true);
+                setup.setSize(DIAG_WIDTH, setup.getHeight());
+                setup.setIconImage(systemIcon.getImage());
+                setup.setLocationRelativeTo(phf);
+                setup.setVisible(true);
+                if(setup.success()) break; //SUCCESS
+                else{ //FAIL
+                    shutdown();
+                    try {
+                        shutdown.join();
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(MMS.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
             } else {
                 switch (p.get("dbType", "")) {
                     case "derby":
@@ -140,6 +179,69 @@ public class MMS {
         //Load users & login
         loadUsers();
         login();
+    }
+
+    //Load users
+    public static void loadUsers(){
+        users = new ArrayList<>();
+            try {
+                ResultSet rs = select("SELECT UserName, Logged FROM Users");
+                while(rs.next()){
+                    String s = rs.getString(1).trim();
+                    String logged = rs.getString(2) == null ? "N" : rs.getString(2);
+                    if(logged.equals("Y")) s = s += " **";
+                    users.add(s);
+                }
+                rs.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+    }
+    //Login
+    private static void login(){
+        phf.setVisible(true);
+        LoginDialog lg = new LoginDialog(phf, true);
+        lg.setSize(300, lg.getHeight());
+        lg.setIconImage(systemIcon.getImage());
+        lg.setLocationRelativeTo(phf);
+        lg.setVisible(true);
+        
+        if(lg.success()){ //SUCCESS
+            //Dispose placeholder frame
+            phf.dispose();
+
+            //MainFrame
+            m = new MainFrame();
+            m.setTitle(NAME+" "+VERSION);
+            m.setIconImage(systemIcon.getImage());
+            m.setLocationRelativeTo(null);
+            m.setExtendedState(JFrame.MAXIMIZED_BOTH);
+            //Load tables
+            m.loadLocations(0);
+            m.loadAssets(0);
+            m.loadEmployees(0);
+
+            m.setVisible(true);
+        }
+        else shutdown(); //FAIL       
+    }
+    //Logout
+    public static void logout(){
+        new Thread(){
+            public void run(){  
+                //Set user to logged out
+                if(user != null){
+                    executeQuery("UPDATE Users SET Logged = 'N' WHERE UserName = ?",
+                            new Object[]{user});
+                }
+                m.dispose();
+                login();
+            }
+        }.start();
+    }
+    //Shutdown
+    public static void shutdown(){
+        shutdown.start();
     }
     
     //DATABASE METHODS
@@ -209,85 +311,5 @@ public class MMS {
             if(width > 400) width=400;  
             columnModel.getColumn(column).setPreferredWidth(width);
         }
-    }
-    
-    //Load users
-    public static void loadUsers(){
-        users = new ArrayList<>();
-            try {
-                ResultSet rs = select("SELECT Username, Logged FROM Users");
-                while(rs.next()){
-                    String s = rs.getString(1).trim();
-                    String logged = rs.getString(2) == null ? "N" : rs.getString(2);
-                    if(logged.equals("Y")) s = s += " **";
-                    users.add(s);
-                }
-                rs.close();
-            } catch (SQLException ex) {
-                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-            }
-    }
-    
-    //Login
-    private static void login(){
-        phf.setVisible(true);
-        new LoginDialog(phf, true).setVisible(true);
-        
-        //Dispose placeholder frame
-        phf.dispose();
-        
-        //MainFrame
-        m = new MainFrame();
-        m.setTitle(NAME+" "+VERSION);
-        m.setIconImage(systemIcon.getImage());
-        m.setLocationRelativeTo(null);
-        m.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        //Load tables
-        m.loadLocations(0);
-        m.loadAssets(0);
-        m.loadEmployees(0);
-        
-        m.setVisible(true);
-    }
-    
-    //Logout
-    public static void logout(){
-        new Thread(){
-            public void run(){  
-                //Set user to logged out
-                if(user != null){
-                    executeQuery("UPDATE Users SET Logged = 'N' WHERE Username = ?",
-                            new Object[]{user});
-                }
-                m.dispose();
-                login();
-            }
-        }.start();
-    }
-    
-    //Shutdown
-    public static void shutdown(){
-        new Thread(){
-            public void run(){
-                try {
-                    //Set user to logged out
-                    if(user != null){
-                        executeQuery("UPDATE Users SET Logged = 'N' WHERE Username = ?",
-                                new Object[]{user});
-                    }
-                    //Close connection
-                    if(conn != null){
-                        conn.close();
-                        System.out.println("[DATABASE] Connection closed");
-                    }
-                    //Shutdown Derby
-                    if(p.get("dbType", "").equals("derby")) DriverManager.getConnection("jdbc:derby:;shutdown=true");
-                } catch (SQLException ex) {
-                    System.out.println("[DATABASE] "+ex.getCause());
-                    System.exit(0);
-                }
-                System.exit(0);
-            }
-        }.start();
     }
 }

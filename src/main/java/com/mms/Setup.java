@@ -23,12 +23,15 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 
 /**
  *
@@ -37,6 +40,8 @@ import javax.swing.JPanel;
 public class Setup extends javax.swing.JDialog {
     
     private final Component thisForm = this;
+    private boolean success = false;
+    public boolean success(){return success;}
     
     /**
      * Creates new form Setup
@@ -46,8 +51,6 @@ public class Setup extends javax.swing.JDialog {
     public Setup(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        setIconImage(MMS.systemIcon.getImage());
-        setLocationRelativeTo(parent);
         getRootPane().setDefaultButton(continueButton);
         try {
             derbyDirField.setText(new File(MMS.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile().getPath());
@@ -100,13 +103,7 @@ public class Setup extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Database Setup");
-        setPreferredSize(new java.awt.Dimension(320, 557));
         setResizable(false);
-        addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowClosing(java.awt.event.WindowEvent evt) {
-                formWindowClosing(evt);
-            }
-        });
 
         typeRadioGroup.add(derbyRadio);
         derbyRadio.setSelected(true);
@@ -187,11 +184,6 @@ public class Setup extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(microsoftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(microsoftPanelLayout.createSequentialGroup()
-                        .addComponent(mssqlRadio)
-                        .addGap(2, 2, 2)
-                        .addComponent(derbyServerRadio)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(microsoftPanelLayout.createSequentialGroup()
                         .addGroup(microsoftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(srvrDBLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(srvrPassLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -200,9 +192,14 @@ public class Setup extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(microsoftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(srvrField, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(srvrDBField, javax.swing.GroupLayout.DEFAULT_SIZE, 131, Short.MAX_VALUE)
+                            .addComponent(srvrDBField)
                             .addComponent(srvrUsrField, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(srvrPassField))))
+                            .addComponent(srvrPassField)))
+                    .addGroup(microsoftPanelLayout.createSequentialGroup()
+                        .addComponent(mssqlRadio)
+                        .addGap(2, 2, 2)
+                        .addComponent(derbyServerRadio)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         microsoftPanelLayout.setVerticalGroup(
@@ -406,7 +403,7 @@ public class Setup extends javax.swing.JDialog {
                         if(derbyNewRadio.isSelected()){//Create new
                             File f = new File(dbDir+"\\"+dbName);
                             if(f.exists()){ //If database exists
-                                if(JOptionPane.showConfirmDialog(thisForm, "A database with the same name was found at this location.\n\n"
+                                if(JOptionPane.showConfirmDialog(thisForm, "A database with the same name exists at this location.\n"
                                         + "Would you like to overwrite it?", "Database Exists", JOptionPane.YES_NO_OPTION) == 0){
                                     //Delete old database directory
                                     deleteDir(f);
@@ -423,7 +420,6 @@ public class Setup extends javax.swing.JDialog {
                             System.out.println("[DATABASE] Connected to Derby: "+dbName);
                             
                             //Create database tables
-                            statusLabel.setText("Creating DB...");
                             createTables();
                         }
                         else{ //Open existing
@@ -437,6 +433,7 @@ public class Setup extends javax.swing.JDialog {
                         MMS.getPrefs().put("derbyName", dbName);
                         MMS.getPrefs().putBoolean("firstRun", false);
                        
+                        success = true;
                         dispose();
                     } catch (SQLException ex) {
                         Logger.getLogger(MMS.class.getName()).log(Level.SEVERE, null, ex);
@@ -452,7 +449,7 @@ public class Setup extends javax.swing.JDialog {
             String srvr = srvrField.getText(), 
                db = srvrDBField.getText(),
                usr = srvrUsrField.getText(),
-               pass = srvrPassField.getText();
+               pass = new String(srvrPassField.getPassword());
             if(srvr.isEmpty()) srvrField.requestFocus();
             else if(db.isEmpty()) srvrDBField.requestFocus();
             else if(usr.isEmpty()) srvrUsrField.requestFocus();
@@ -474,6 +471,16 @@ public class Setup extends javax.swing.JDialog {
                                 MMS.setConnection(DriverManager.getConnection("jdbc:sqlserver://"+srvr+";databaseName="+db+";user="+usr+";password="+pass+";loginTimeout=4"));
                                 System.out.println("[DATABASE] Connected to MSSQL: "+db);
 
+                                //Create tables
+                                ResultSet rs = MMS.select("SELECT * FROM Users");
+                                if(rs == null){
+                                    if(JOptionPane.showConfirmDialog(thisForm, "No tables were found in this database.\n"
+                                        + "Would you like to create them now?", "Database Exists", JOptionPane.YES_NO_OPTION) == 0){
+                                        createTables();
+                                    }
+                                    else throw new SQLException("No tables found in DB.");
+                                }
+                                
                                 //Put preferences
                                 MMS.getPrefs().put("dbType", "mssql");
                                 MMS.getPrefs().put("mssqlsrvr", srvr);
@@ -481,11 +488,14 @@ public class Setup extends javax.swing.JDialog {
                                 MMS.getPrefs().put("mssqlusr", usr);
                                 MMS.getPrefs().put("mssqlpass", pass);
                                 MMS.getPrefs().putBoolean("firstRun", false);
-
+                                
+                                success = true;
                                 dispose();
                             }
                             else{ //Derby server
                                 //CONNECT TO DERBY SERVER
+                                success = true;
+                                dispose();
                             }
                         } catch (SQLException ex) {
                             Logger.getLogger(MMS.class.getName()).log(Level.SEVERE, null, ex);
@@ -539,45 +549,74 @@ public class Setup extends javax.swing.JDialog {
     private void srvrPassFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_srvrPassFieldFocusGained
         srvrPassField.selectAll();
     }//GEN-LAST:event_srvrPassFieldFocusGained
+    
+    private void createTables() throws SQLException{
+        statusLabel.setText("Creating tables...");
+        
+        //Get admin password
+        JPasswordField pf = new JPasswordField();
+        JOptionPane pane = new JOptionPane(pf, JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE) {
+            @Override
+            public void selectInitialValue() {
+                pf.requestFocusInWindow();
+            }
+        };
+        pane.createDialog(null, "Set Admin Password").setVisible(true);
+        String pass = new String(pf.getPassword());
+        if(pass.isEmpty()) throw new SQLException ("No admin password.");
 
-    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        MMS.shutdown();
-    }//GEN-LAST:event_formWindowClosing
-
-    private void createTables(){
         //Users
         MMS.executeQuery("CREATE TABLE Users("
-                + "Username VARCHAR(50) PRIMARY KEY,"
-                + "Password VARCHAR(50),"
+                + "UserName VARCHAR(50) PRIMARY KEY,"
+                + "UserPass VARCHAR(50),"
                 + "Salt VARCHAR(16),"
+                + "UserLvl int,"
                 + "Logged VARCHAR(1)"
                 + ")");
-        String salt = Hasher.getSalt(), pass = Hasher.getHash("admin", salt);
-        MMS.executeQuery("INSERT INTO Users (Username, Password, Salt, Logged) VALUES (?, ?, ?, ?)",
-                new Object[]{"Administrator", pass, salt, "N"});
+        //Insert Administrator
+        String salt = Hasher.getSalt();
+        pass = Hasher.getHash(pass, salt);
+        MMS.executeQuery("INSERT INTO Users (UserName, UserPass, Salt, UserLvl, Logged) VALUES (?, ?, ?, ?, ?)",
+                new Object[]{"Administrator", pass, salt, 0, "N"});
+        
         //Locations
         MMS.executeQuery("CREATE TABLE Locations("
-                + "LocationNo INT PRIMARY KEY,"
-                + "LocationName VARCHAR(100),"
-                + "LocationDescription VARCHAR(100),"
+                + "LocNo INT PRIMARY KEY,"
+                + "LocName VARCHAR(50),"
+                + "LocDesc VARCHAR(100),"
                 + "Archived VARCHAR(1)"
                 + ")");
+        
         //Assets
         MMS.executeQuery("CREATE TABLE Assets("
-                + "AssetNo INT PRIMARY KEY,"
-                + "AssetName VARCHAR(100),"
-                + "AssetDescription VARCHAR(100),"
-                + "LocationNo INT,"
+                + "AssNo INT PRIMARY KEY,"
+                + "AssName VARCHAR(50),"
+                + "AssDesc VARCHAR(100),"
+                + "LocNo INT,"
                 + "Archived VARCHAR(1)"
                 + ")");
+        
         //Employees
         MMS.executeQuery("CREATE TABLE Employees("
-                + "EmployeeNo INT PRIMARY KEY,"
-                + "EmployeeName VARCHAR(100),"
-                + "Designation VARCHAR(100),"
+                + "EmpNo INT PRIMARY KEY,"
+                + "EmpName VARCHAR(50),"
+                + "EmpDesc VARCHAR(50),"
+                + "EmpDept VARCHAR(50),"
                 + "Archived VARCHAR(1)"
                 + ")");
-        System.out.println("[DATABASE] Derby database created.");
+        
+        //CustomFields
+        MMS.executeQuery("CREATE TABLE CustomFields("
+                + "CusType VARCHAR(50),"
+                + "CusValue VARCHAR(50)"
+                + ")");
+        //Insert default values
+        MMS.executeQuery("INSERT INTO CustomFields (CusType, CusValue) VALUES (?, ?)", new Object[]{"EmpDept", "Maintenance"});
+        MMS.executeQuery("INSERT INTO CustomFields (CusType, CusValue) VALUES (?, ?)", new Object[]{"EmpDept", "Technical"});
+        MMS.executeQuery("INSERT INTO CustomFields (CusType, CusValue) VALUES (?, ?)", new Object[]{"EmpDept", "Production"});
+        MMS.executeQuery("INSERT INTO CustomFields (CusType, CusValue) VALUES (?, ?)", new Object[]{"EmpDept", "IT"});
+        
+        System.out.println("[DATABASE] Database tables created");
     }
     
     private void setPanelEnabled(JPanel panel, Boolean isEnabled) {

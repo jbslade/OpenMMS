@@ -43,7 +43,6 @@ public class LocationDialog extends javax.swing.JInternalFrame {
         getRootPane().setDefaultButton(button);
         table = t;
         row = r;
-        setTitle("Edit Location");
         button.setText("Save");
         nameField.setText(t.getModel().getValueAt(row, 1).toString());
         descField.setText(t.getModel().getValueAt(row, 2).toString());
@@ -72,7 +71,6 @@ public class LocationDialog extends javax.swing.JInternalFrame {
         setIconifiable(true);
         setTitle("New Location");
         setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/iframes/locations.png"))); // NOI18N
-        setPreferredSize(new java.awt.Dimension(285, 306));
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
             public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
             }
@@ -166,7 +164,7 @@ public class LocationDialog extends javax.swing.JInternalFrame {
             if(row == -1){ //New location
                     //Get next no
                     int locNum = 0;
-                    ResultSet rs = MMS.select("SELECT MAX(LocationNo) FROM Locations");
+                    ResultSet rs = MMS.select("SELECT MAX(LocNo) FROM Locations");
                     try {
                         if(rs.next()) locNum = rs.getInt(1);
                         rs.close();
@@ -175,7 +173,7 @@ public class LocationDialog extends javax.swing.JInternalFrame {
                     }
                     locNum++;
                     //Insert into DB
-                    MMS.executeQuery("INSERT INTO Locations (LocationNo, LocationName, LocationDescription, Archived) VALUES (?, ?, ?, 'N')",
+                    MMS.executeQuery("INSERT INTO Locations (LocNo, LocName, LocDesc, Archived) VALUES (?, ?, ?, 'N')",
                             new Object[]{locNum, name, desc});
                     //Insert into table
                     Object [] o = {locNum, name, desc};
@@ -188,7 +186,7 @@ public class LocationDialog extends javax.swing.JInternalFrame {
                 //Get selected number
                 int locNum = Integer.parseInt(table.getValueAt(row, 0).toString());
                 //Update database
-                MMS.executeQuery("UPDATE Locations SET LocationName = ?, LocationDescription = ? WHERE LocationNo = ?",
+                MMS.executeQuery("UPDATE Locations SET LocName = ?, LocDesc = ? WHERE LocNo = ?",
                         new Object[]{name, desc, locNum});
                 //Update table
                 table.setValueAt(name, row, 1);

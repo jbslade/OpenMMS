@@ -34,9 +34,19 @@ public class EmployeeDialog extends javax.swing.JInternalFrame {
     
     public EmployeeDialog(JTable t) {
         initComponents();
-        System.out.println(this.getHeight());
         getRootPane().setDefaultButton(button);
         table = t;
+        
+        //Set departments
+        ResultSet rs = MMS.select("SELECT CusValue FROM CustomFields WHERE CusType = 'EmpDept'");
+        try {
+            while(rs.next()){
+                deptCombo.addItem(rs.getString(1));
+            }
+            rs.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(EmployeeDialog.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     public EmployeeDialog(JTable t, int r) {
@@ -44,8 +54,20 @@ public class EmployeeDialog extends javax.swing.JInternalFrame {
         getRootPane().setDefaultButton(button);
         table = t;
         row = r;
-        setTitle("Edit Employee");
         button.setText("Save");
+        
+        //Set departments
+        ResultSet rs = MMS.select("SELECT CusValue FROM CustomFields WHERE CusType = 'EmpDept'");
+        try {
+            while(rs.next()){
+                deptCombo.addItem(rs.getString(1));
+            }
+            rs.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(EmployeeDialog.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        deptCombo.setSelectedItem(t.getValueAt(r, 3));
+        
         nameField.setText(t.getModel().getValueAt(row, 1).toString());
         descField.setText(t.getModel().getValueAt(row, 2).toString());
         nameField.requestFocus();
@@ -68,14 +90,13 @@ public class EmployeeDialog extends javax.swing.JInternalFrame {
         button = new javax.swing.JButton();
         descField = new javax.swing.JTextField();
         descLabel1 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        deptCombo = new javax.swing.JComboBox<>();
 
         setClosable(true);
         setIconifiable(true);
         setTitle("New Employee");
         setToolTipText("");
         setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/iframes/employees.png"))); // NOI18N
-        setPreferredSize(new java.awt.Dimension(285, 309));
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
             public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
             }
@@ -125,7 +146,7 @@ public class EmployeeDialog extends javax.swing.JInternalFrame {
                             .addComponent(descLabel)
                             .addComponent(descLabel1))
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(deptCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         backPanelLayout.setVerticalGroup(
@@ -142,7 +163,7 @@ public class EmployeeDialog extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(descLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(deptCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(button)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -169,14 +190,14 @@ public class EmployeeDialog extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonActionPerformed
-        String name = nameField.getText(), desc = descField.getText();
+        String name = nameField.getText(), desc = descField.getText(), dept = deptCombo.getSelectedItem().toString();
         if(name.isEmpty()) nameField.requestFocus();
         else if(desc.isEmpty()) descField.requestFocus();
         else{
             if(row == -1){ //New employee
                     //Get next no
                     int empNum = 0;
-                    ResultSet rs = MMS.select("SELECT MAX(EmployeeNo) FROM Employees");
+                    ResultSet rs = MMS.select("SELECT MAX(EmpNo) FROM Employees");
                     try {
                         if(rs.next()) empNum = rs.getInt(1);
                         rs.close();
@@ -185,10 +206,10 @@ public class EmployeeDialog extends javax.swing.JInternalFrame {
                     }
                     empNum++;
                     //Insert into DB
-                    MMS.executeQuery("INSERT INTO Employees (EmployeeNo, EmployeeName, Designation, Archived) VALUES (?, ?, ?, 'N')",
-                            new Object[]{empNum, name, desc});
+                    MMS.executeQuery("INSERT INTO Employees (EmpNo, EmpName, EmpDesc, EmpDept, Archived) VALUES (?, ?, ?, ?, 'N')",
+                            new Object[]{empNum, name, desc, dept});
                     //Insert into table
-                    Object [] o = {empNum, name, desc};
+                    Object [] o = {empNum, name, desc, dept};
                     DefaultTableModel m = (DefaultTableModel)table.getModel();
                     m.insertRow(0, o);
                     //Select new row
@@ -198,11 +219,12 @@ public class EmployeeDialog extends javax.swing.JInternalFrame {
                 //Get selected number
                 int empNum = Integer.parseInt(table.getValueAt(row, 0).toString());
                 //Update database
-                MMS.executeQuery("UPDATE Employees SET EmployeeName = ?, Designation = ? WHERE EmployeeNo = ?",
-                        new Object[]{name, desc, empNum});
+                MMS.executeQuery("UPDATE Employees SET EmpName = ?, EmpDesc = ?, EmpDept = ? WHERE EmployeeNo = ?",
+                        new Object[]{name, desc, dept, empNum});
                 //Update table
                 table.setValueAt(name, row, 1);
                 table.setValueAt(desc, row, 2);
+                table.setValueAt(dept, row, 3);
                 //Select updated row
                 table.setRowSelectionInterval(row, row);
             }
@@ -217,10 +239,10 @@ public class EmployeeDialog extends javax.swing.JInternalFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel backPanel;
     private javax.swing.JButton button;
+    private javax.swing.JComboBox<String> deptCombo;
     private javax.swing.JTextField descField;
     private javax.swing.JLabel descLabel;
     private javax.swing.JLabel descLabel1;
-    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JTextField nameField;
     private javax.swing.JLabel nameLabel;
     // End of variables declaration//GEN-END:variables
