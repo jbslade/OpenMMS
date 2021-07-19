@@ -70,7 +70,7 @@ public class LocationDialog extends javax.swing.JInternalFrame {
         setClosable(true);
         setIconifiable(true);
         setTitle("New Location");
-        setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/iframes/locations.png"))); // NOI18N
+        setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/dialogs/locations.png"))); // NOI18N
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
             public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
             }
@@ -164,7 +164,7 @@ public class LocationDialog extends javax.swing.JInternalFrame {
             if(row == -1){ //New location
                     //Get next no
                     int locNum = 0;
-                    ResultSet rs = MMS.select("SELECT MAX(LocNo) FROM Locations");
+                    ResultSet rs = MMS.select("SELECT MAX(id) FROM locations");
                     try {
                         if(rs.next()) locNum = rs.getInt(1);
                         rs.close();
@@ -173,7 +173,7 @@ public class LocationDialog extends javax.swing.JInternalFrame {
                     }
                     locNum++;
                     //Insert into DB
-                    MMS.executeQuery("INSERT INTO Locations (LocNo, LocName, LocDesc, Archived) VALUES (?, ?, ?, 'N')",
+                    MMS.executeQuery("INSERT INTO locations (id, location_name, location_desc, archived) VALUES (?, ?, ?, 'N')",
                             new Object[]{locNum, name, desc});
                     //Insert into table
                     Object [] o = {locNum, name, desc};
@@ -186,7 +186,7 @@ public class LocationDialog extends javax.swing.JInternalFrame {
                 //Get selected number
                 int locNum = Integer.parseInt(table.getValueAt(row, 0).toString());
                 //Update database
-                MMS.executeQuery("UPDATE Locations SET LocName = ?, LocDesc = ? WHERE LocNo = ?",
+                MMS.executeQuery("UPDATE locations SET location_name = ?, location_desc = ? WHERE id = ?",
                         new Object[]{name, desc, locNum});
                 //Update table
                 table.setValueAt(name, row, 1);

@@ -27,8 +27,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
@@ -472,7 +472,7 @@ public class Setup extends javax.swing.JDialog {
                                 System.out.println("[DATABASE] Connected to MSSQL: "+db);
 
                                 //Create tables
-                                ResultSet rs = MMS.select("SELECT * FROM Users");
+                                ResultSet rs = MMS.select("SELECT * FROM users");
                                 if(rs == null){
                                     if(JOptionPane.showConfirmDialog(thisForm, "No tables were found in this database.\n"
                                         + "Would you like to create them now?", "Database Exists", JOptionPane.YES_NO_OPTION) == 0){
@@ -561,60 +561,72 @@ public class Setup extends javax.swing.JDialog {
                 pf.requestFocusInWindow();
             }
         };
-        pane.createDialog(null, "Set Admin Password").setVisible(true);
+        JDialog d = pane.createDialog(this, "Set Admin Password");
+        d.setIconImage(MMS.systemIcon.getImage());
+        d.setSize(MMS.DIAG_WIDTH, d.getHeight());
+        d.setLocationRelativeTo(this);
+        d.setVisible(true);
         String pass = new String(pf.getPassword());
-        if(pass.isEmpty()) throw new SQLException ("No admin password.");
+        if(pane.getValue() == null || pass.isEmpty()) throw new SQLException ("No admin password.");
 
         //Users
-        MMS.executeQuery("CREATE TABLE Users("
-                + "UserName VARCHAR(50) PRIMARY KEY,"
-                + "UserPass VARCHAR(50),"
-                + "Salt VARCHAR(16),"
-                + "UserLvl int,"
-                + "Logged VARCHAR(1)"
+        MMS.executeQuery("CREATE TABLE users("
+                + "user_name VARCHAR(50) PRIMARY KEY,"
+                + "password VARCHAR(50),"
+                + "salt VARCHAR(16),"
+                + "user_level int,"
+                + "logged_in VARCHAR(1)"
                 + ")");
         //Insert Administrator
         String salt = Hasher.getSalt();
         pass = Hasher.getHash(pass, salt);
-        MMS.executeQuery("INSERT INTO Users (UserName, UserPass, Salt, UserLvl, Logged) VALUES (?, ?, ?, ?, ?)",
+        MMS.executeQuery("INSERT INTO users (user_name, password, salt, user_level, logged_in) VALUES (?, ?, ?, ?, ?)",
                 new Object[]{"Administrator", pass, salt, 0, "N"});
         
         //Locations
-        MMS.executeQuery("CREATE TABLE Locations("
-                + "LocNo INT PRIMARY KEY,"
-                + "LocName VARCHAR(50),"
-                + "LocDesc VARCHAR(100),"
-                + "Archived VARCHAR(1)"
+        MMS.executeQuery("CREATE TABLE locations("
+                + "id INT PRIMARY KEY,"
+                + "location_name VARCHAR(50),"
+                + "location_desc VARCHAR(100),"
+                + "archived VARCHAR(1)"
                 + ")");
         
         //Assets
-        MMS.executeQuery("CREATE TABLE Assets("
-                + "AssNo INT PRIMARY KEY,"
-                + "AssName VARCHAR(50),"
-                + "AssDesc VARCHAR(100),"
-                + "LocNo INT,"
-                + "Archived VARCHAR(1)"
+        MMS.executeQuery("CREATE TABLE assets("
+                + "id INT PRIMARY KEY,"
+                + "asset_name VARCHAR(50),"
+                + "asset_desc VARCHAR(100),"
+                + "location_id INT,"
+                + "archived VARCHAR(1)"
+                + ")");
+        
+        //Parts
+        MMS.executeQuery("CREATE TABLE parts("
+                + "id INT PRIMARY KEY,"
+                + "part_name VARCHAR(50),"
+                + "part_qty INT,"
+                + "archived VARCHAR(1)"
                 + ")");
         
         //Employees
-        MMS.executeQuery("CREATE TABLE Employees("
-                + "EmpNo INT PRIMARY KEY,"
-                + "EmpName VARCHAR(50),"
-                + "EmpDesc VARCHAR(50),"
-                + "EmpDept VARCHAR(50),"
-                + "Archived VARCHAR(1)"
+        MMS.executeQuery("CREATE TABLE employees("
+                + "id INT PRIMARY KEY,"
+                + "employee_name VARCHAR(50),"
+                + "employee_desc VARCHAR(50),"
+                + "employee_dept VARCHAR(50),"
+                + "archived VARCHAR(1)"
                 + ")");
         
         //CustomFields
-        MMS.executeQuery("CREATE TABLE CustomFields("
-                + "CusType VARCHAR(50),"
-                + "CusValue VARCHAR(50)"
+        MMS.executeQuery("CREATE TABLE custom_fields("
+                + "custom_type VARCHAR(50),"
+                + "custom_value VARCHAR(50)"
                 + ")");
         //Insert default values
-        MMS.executeQuery("INSERT INTO CustomFields (CusType, CusValue) VALUES (?, ?)", new Object[]{"EmpDept", "Maintenance"});
-        MMS.executeQuery("INSERT INTO CustomFields (CusType, CusValue) VALUES (?, ?)", new Object[]{"EmpDept", "Technical"});
-        MMS.executeQuery("INSERT INTO CustomFields (CusType, CusValue) VALUES (?, ?)", new Object[]{"EmpDept", "Production"});
-        MMS.executeQuery("INSERT INTO CustomFields (CusType, CusValue) VALUES (?, ?)", new Object[]{"EmpDept", "IT"});
+        MMS.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES (?, ?)", new Object[]{"employee_dept", "Maintenance"});
+        MMS.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES (?, ?)", new Object[]{"employee_dept", "Technical"});
+        MMS.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES (?, ?)", new Object[]{"employee_dept", "Production"});
+        MMS.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES (?, ?)", new Object[]{"employee_dept", "IT"});
         
         System.out.println("[DATABASE] Database tables created");
     }

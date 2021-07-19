@@ -7,7 +7,7 @@
     <Property name="title" type="java.lang.String" value="New Employee"/>
     <Property name="toolTipText" type="java.lang.String" value=""/>
     <Property name="frameIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-      <Image iconType="3" name="/iframes/employees.png"/>
+      <Image iconType="3" name="/dialogs/employees.png"/>
     </Property>
   </Properties>
   <SyntheticProperties>

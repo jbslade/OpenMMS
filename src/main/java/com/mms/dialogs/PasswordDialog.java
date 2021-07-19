@@ -130,7 +130,7 @@ public class PasswordDialog extends javax.swing.JInternalFrame {
         else{
             String salt = Hasher.getSalt();
             pass = Hasher.getHash(pass, salt);
-            MMS.executeQuery("UPDATE Users SET Salt = ?, UserPass = ? WHERE UserName = ?",
+            MMS.executeQuery("UPDATE users SET salt = ?, password = ? WHERE user_name = ?",
                 new Object[]{salt, pass, user});
             InternalDialog.showInternalConfirmDialog(this, "Password changed succesfully.", "Change Password", -1, JOptionPane.INFORMATION_MESSAGE, null);
             dispose();

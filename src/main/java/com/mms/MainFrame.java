@@ -21,6 +21,7 @@ import com.mms.panels.PopupPanel;
 import com.mms.dialogs.AssetDialog;
 import com.mms.dialogs.EmployeeDialog;
 import com.mms.dialogs.LocationDialog;
+import com.mms.dialogs.PartDialog;
 import com.mms.dialogs.PasswordDialog;
 import java.awt.Color;
 import java.sql.ResultSet;
@@ -152,12 +153,12 @@ public class MainFrame extends javax.swing.JFrame {
         assetTable = new javax.swing.JTable();
         partPanel = new javax.swing.JPanel();
         partTools = new javax.swing.JToolBar();
-        newButton4 = new javax.swing.JButton();
-        editButton4 = new javax.swing.JButton();
-        deleteButton4 = new javax.swing.JButton();
-        archiveButton4 = new javax.swing.JButton();
+        newPartButton = new javax.swing.JButton();
+        editPartButton = new javax.swing.JButton();
+        deletePartButton = new javax.swing.JButton();
+        archivePartButton = new javax.swing.JButton();
         filler5 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
-        jLabel5 = new javax.swing.JLabel();
+        partLoadLabel = new javax.swing.JLabel();
         partScroll = new javax.swing.JScrollPane();
         partTable = new javax.swing.JTable();
         employeePanel = new javax.swing.JPanel();
@@ -526,26 +527,46 @@ public class MainFrame extends javax.swing.JFrame {
         partTools.setFloatable(false);
         partTools.setRollover(true);
 
-        newButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/new.png"))); // NOI18N
-        newButton4.setText("New");
-        partTools.add(newButton4);
+        newPartButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/new.png"))); // NOI18N
+        newPartButton.setText("New");
+        newPartButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                newPartButtonActionPerformed(evt);
+            }
+        });
+        partTools.add(newPartButton);
 
-        editButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/edit.png"))); // NOI18N
-        editButton4.setText("Edit");
-        partTools.add(editButton4);
+        editPartButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/edit.png"))); // NOI18N
+        editPartButton.setText("Edit");
+        editPartButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editPartButtonActionPerformed(evt);
+            }
+        });
+        partTools.add(editPartButton);
 
-        deleteButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/delete.png"))); // NOI18N
-        deleteButton4.setText("Delete");
-        partTools.add(deleteButton4);
+        deletePartButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/delete.png"))); // NOI18N
+        deletePartButton.setText("Delete");
+        deletePartButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deletePartButtonActionPerformed(evt);
+            }
+        });
+        partTools.add(deletePartButton);
 
-        archiveButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/archive.png"))); // NOI18N
-        archiveButton4.setText("Archive");
-        partTools.add(archiveButton4);
+        archivePartButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/archive.png"))); // NOI18N
+        archivePartButton.setText("Archive");
+        archivePartButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                archivePartButtonActionPerformed(evt);
+            }
+        });
+        partTools.add(archivePartButton);
         partTools.add(filler5);
 
-        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ajax.gif"))); // NOI18N
-        jLabel5.setText("  ");
-        partTools.add(jLabel5);
+        partLoadLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ajax.gif"))); // NOI18N
+        partLoadLabel.setText("  ");
+        partTools.add(partLoadLabel);
 
         partScroll.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 0, 0, 0, new java.awt.Color(204, 204, 204)));
 
@@ -554,7 +575,7 @@ public class MainFrame extends javax.swing.JFrame {
 
             },
             new String [] {
-                "No.", "Name", "Description"
+                "No.", "Name", "Quantity"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -895,7 +916,7 @@ public class MainFrame extends javax.swing.JFrame {
             if(InternalDialog.showInternalConfirmDialog(desktopPane, "Are you sure you want to delete "+locationTable.getValueAt(locationTable.getSelectedRow(), 1)+"?", "Delete Location", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null) == 0){
             int locNum = Integer.parseInt(locationTable.getValueAt(locationTable.getSelectedRow(), 0).toString());
             //Delete from DB
-            MMS.executeQuery("DELETE FROM Locations WHERE LocNo = ?",
+            MMS.executeQuery("DELETE FROM locations WHERE id = ?",
                     new Object[]{locNum});
             //Delete from table
             DefaultTableModel m = (DefaultTableModel)locationTable.getModel();
@@ -910,7 +931,7 @@ public class MainFrame extends javax.swing.JFrame {
         if(InternalDialog.showInternalConfirmDialog(desktopPane, "Are you sure you want to archive "+locationTable.getValueAt(locationTable.getSelectedRow(), 1)+"?", "Archive Location", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null) == 0){
             int locNum = Integer.parseInt(locationTable.getValueAt(locationTable.getSelectedRow(), 0).toString());
             //Set Archived = Y
-            MMS.executeQuery("UPDATE Locations SET Archived = ? WHERE LocNo = ?",
+            MMS.executeQuery("UPDATE locations SET archived = ? WHERE id = ?",
                     new Object[]{"Y", locNum});
             //Delete from table
             DefaultTableModel m = (DefaultTableModel)locationTable.getModel();
@@ -951,7 +972,7 @@ public class MainFrame extends javax.swing.JFrame {
         if(InternalDialog.showInternalConfirmDialog(desktopPane, "Are you sure you want to delete "+assetTable.getValueAt(assetTable.getSelectedRow(), 1)+"?", "Delete Asset", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null) == 0){
             int assNum = Integer.parseInt(assetTable.getValueAt(assetTable.getSelectedRow(), 0).toString());
             //Delete from DB
-            MMS.executeQuery("DELETE FROM Assets WHERE AssNo = ?",
+            MMS.executeQuery("DELETE FROM assets WHERE id = ?",
                     new Object[]{assNum});
             //Delete from table
             DefaultTableModel m = (DefaultTableModel)assetTable.getModel();
@@ -966,7 +987,7 @@ public class MainFrame extends javax.swing.JFrame {
         if(InternalDialog.showInternalConfirmDialog(desktopPane, "Are you sure you want to archive "+assetTable.getValueAt(assetTable.getSelectedRow(), 1)+"?", "Archive Asset", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null) == 0){
             int assNum = Integer.parseInt(assetTable.getValueAt(assetTable.getSelectedRow(), 0).toString());
             //Set Archived = Y
-            MMS.executeQuery("UPDATE Assets SET Archived = ? WHERE AssNo = ?",
+            MMS.executeQuery("UPDATE assets SET archived = ? WHERE id = ?",
                     new Object[]{"Y", assNum});
             //Delete from table
             DefaultTableModel m = (DefaultTableModel)assetTable.getModel();
@@ -991,6 +1012,7 @@ public class MainFrame extends javax.swing.JFrame {
                 loadAssets(assetTable.getSelectedRow());
                 break;
             case 4: //Parts
+                loadParts(partTable.getSelectedRow());
                 break;
             case 5: //Employees
                 loadEmployees(employeeTable.getSelectedRow());
@@ -1022,10 +1044,10 @@ public class MainFrame extends javax.swing.JFrame {
     //Delete Employee
     private void deleteEmpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteEmpButtonActionPerformed
         if(InternalDialog.showInternalConfirmDialog(desktopPane, "Are you sure you want to delete "+employeeTable.getValueAt(employeeTable.getSelectedRow(), 1)+"?", "Delete Employee", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null) == 0){
-            int empNum = Integer.parseInt(employeeTable.getValueAt(employeeTable.getSelectedRow(), 0).toString());
+            int empNo = Integer.parseInt(employeeTable.getValueAt(employeeTable.getSelectedRow(), 0).toString());
             //Delete from DB
-            MMS.executeQuery("DELETE FROM Employees WHERE EmpNo = ?",
-                    new Object[]{empNum});
+            MMS.executeQuery("DELETE FROM employees WHERE id = ?",
+                    new Object[]{empNo});
             //Delete from table
             DefaultTableModel m = (DefaultTableModel)employeeTable.getModel();
             m.removeRow(employeeTable.getSelectedRow());
@@ -1037,10 +1059,10 @@ public class MainFrame extends javax.swing.JFrame {
     //Archive Employee
     private void archiveEmpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_archiveEmpButtonActionPerformed
         if(InternalDialog.showInternalConfirmDialog(desktopPane, "Are you sure you want to archive "+employeeTable.getValueAt(employeeTable.getSelectedRow(), 1)+"?", "Archive Employee", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null) == 0){
-            int empNum = Integer.parseInt(employeeTable.getValueAt(employeeTable.getSelectedRow(), 0).toString());
+            int empNo = Integer.parseInt(employeeTable.getValueAt(employeeTable.getSelectedRow(), 0).toString());
             //Set archived = Y
-            MMS.executeQuery("UPDATE Employees SET Archived = ? WHERE EmpNo = ?",
-                    new Object[]{"Y", empNum});
+            MMS.executeQuery("UPDATE employees SET archived = ? WHERE id = ?",
+                    new Object[]{"Y", empNo});
             //Delete from table
             DefaultTableModel m = (DefaultTableModel)employeeTable.getModel();
             m.removeRow(employeeTable.getSelectedRow());
@@ -1070,6 +1092,7 @@ public class MainFrame extends javax.swing.JFrame {
         if(filter != null) filter.close();
     }//GEN-LAST:event_tabbedPaneStateChanged
 
+    //Change password
     private void menuChangePasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuChangePasswordActionPerformed
         PasswordDialog pd = new PasswordDialog(MMS.getUser());
         pd.setSize(MMS.DIAG_WIDTH, pd.getHeight());
@@ -1079,9 +1102,60 @@ public class MainFrame extends javax.swing.JFrame {
         pd.setVisible(true);
     }//GEN-LAST:event_menuChangePasswordActionPerformed
 
+    //Logout
     private void menuLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuLogoutActionPerformed
         MMS.logout();
     }//GEN-LAST:event_menuLogoutActionPerformed
+
+    //New Part
+    private void newPartButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newPartButtonActionPerformed
+        PartDialog p = new PartDialog(partTable);
+        p.setSize(MMS.DIAG_WIDTH, p.getHeight());
+        p.setLocation(desktopPane.getWidth()/2-p.getWidth()/2, desktopPane.getHeight()/2-p.getHeight()/2-50);
+        desktopPane.add(p);
+        desktopPane.setLayer(p, 1);
+        p.setVisible(true);
+    }//GEN-LAST:event_newPartButtonActionPerformed
+
+    //Edit Part
+    private void editPartButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editPartButtonActionPerformed
+        PartDialog p = new PartDialog(partTable, partTable.getSelectedRow());
+        p.setSize(MMS.DIAG_WIDTH, p.getHeight());
+        p.setTitle("Edit Part");
+        p.setLocation(desktopPane.getWidth()/2-p.getWidth()/2, desktopPane.getHeight()/2-p.getHeight()/2-50);
+        desktopPane.add(p);
+        desktopPane.setLayer(p, 1);
+        p.setVisible(true);
+    }//GEN-LAST:event_editPartButtonActionPerformed
+
+    //Delete Part
+    private void deletePartButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deletePartButtonActionPerformed
+        if(InternalDialog.showInternalConfirmDialog(desktopPane, "Are you sure you want to delete "+partTable.getValueAt(partTable.getSelectedRow(), 1)+"?", "Delete Part", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null) == 0){
+            int partNo = Integer.parseInt(partTable.getValueAt(partTable.getSelectedRow(), 0).toString());
+            //Delete from DB
+            MMS.executeQuery("DELETE FROM parts WHERE id = ?",
+                    new Object[]{partNo});
+            //Delete from table
+            DefaultTableModel m = (DefaultTableModel)partTable.getModel();
+            m.removeRow(partTable.getSelectedRow());
+            //Select first row
+            if(partTable.getRowCount() != 0) partTable.setRowSelectionInterval(0, 0);
+        }
+    }//GEN-LAST:event_deletePartButtonActionPerformed
+
+    private void archivePartButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_archivePartButtonActionPerformed
+        if(InternalDialog.showInternalConfirmDialog(desktopPane, "Are you sure you want to archive "+partTable.getValueAt(partTable.getSelectedRow(), 1)+"?", "Archive Part", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null) == 0){
+            int partNo = Integer.parseInt(partTable.getValueAt(partTable.getSelectedRow(), 0).toString());
+            //Set archived = Y
+            MMS.executeQuery("UPDATE parts SET archived = ? WHERE id = ?",
+                    new Object[]{"Y", partNo});
+            //Delete from table
+            DefaultTableModel m = (DefaultTableModel)partTable.getModel();
+            m.removeRow(partTable.getSelectedRow());
+            //Select first row
+            if(partTable.getRowCount() != 0) partTable.setRowSelectionInterval(0, 0);
+        }
+    }//GEN-LAST:event_archivePartButtonActionPerformed
 
     //Load locations
     public void loadLocations(int row){
@@ -1092,7 +1166,7 @@ public class MainFrame extends javax.swing.JFrame {
                 DefaultTableModel t = (DefaultTableModel)locationTable.getModel();
                 t.setRowCount(0);
                 try {
-                    ResultSet rs = MMS.select("SELECT LocNo, LocName, LocDesc, Archived FROM Locations ORDER BY LocNo DESC");
+                    ResultSet rs = MMS.select("SELECT id, location_name, location_desc, archived FROM locations ORDER BY id DESC");
                     while(rs.next()){
                         Object [] o = new Object[4];
                         o[0] = rs.getObject(1).toString().trim();
@@ -1123,7 +1197,7 @@ public class MainFrame extends javax.swing.JFrame {
                 DefaultTableModel t = (DefaultTableModel)assetTable.getModel();
                 t.setRowCount(0);
                 try {
-                    ResultSet rs = MMS.select("SELECT t0.AssNo, t0.AssName, t0.AssDesc, t0.LocNo, t1.LocName, t0.Archived FROM Assets t0 JOIN Locations t1 ON t0.LocNo = t1.LocNo ORDER BY t0.AssNo DESC");
+                    ResultSet rs = MMS.select("SELECT t0.id, t0.asset_name, t0.asset_desc, t0.location_id, t1.location_name, t0.Archived FROM assets t0 JOIN locations t1 ON t0.location_id = t1.id ORDER BY t0.id DESC");
                     while(rs.next()){
                         Object [] o = new Object[5];
                         o[0] = rs.getObject(1).toString().trim();
@@ -1146,6 +1220,37 @@ public class MainFrame extends javax.swing.JFrame {
         }.start();
     }
     
+    //Load parts
+    public void loadParts(int row){
+        partLoadLabel.setVisible(true);
+        new Thread(){
+            @Override
+            public void run(){
+                DefaultTableModel t = (DefaultTableModel)partTable.getModel();
+                t.setRowCount(0);
+                try {
+                    ResultSet rs = MMS.select("SELECT id, part_name, part_qty, archived FROM parts ORDER BY id DESC");
+                    while(rs.next()){
+                        Object [] o = new Object[4];
+                        o[0] = rs.getObject(1).toString().trim();
+                        o[1] = rs.getObject(2).toString().trim();
+                        o[2] = rs.getObject(3).toString().trim();
+                        o[3] = rs.getObject(4).toString().trim();
+                        if(o[3].equals("N")){
+                            t.addRow(o);
+                        }
+                    }
+                    rs.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                MMS.resizeTable(partTable);
+                if(t.getRowCount() != 0) partTable.setRowSelectionInterval(row, row);
+                partLoadLabel.setVisible(false);
+            }
+        }.start();
+    }
+    
     //Load employees
     public void loadEmployees(int row){
         employeeLoadLabel.setVisible(true);
@@ -1155,7 +1260,7 @@ public class MainFrame extends javax.swing.JFrame {
                 DefaultTableModel t = (DefaultTableModel)employeeTable.getModel();
                 t.setRowCount(0);
                 try {
-                    ResultSet rs = MMS.select("SELECT EmpNo, EmpName, EmpDesc, EmpDept, Archived FROM Employees ORDER BY EmpNo DESC");
+                    ResultSet rs = MMS.select("SELECT id, employee_name, employee_desc, employee_dept, archived FROM employees ORDER BY id DESC");
                     while(rs.next()){
                         Object [] o = new Object[5];
                         o[0] = rs.getObject(1).toString().trim();
@@ -1183,9 +1288,9 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JTabbedPane adminTabbedPane;
     private javax.swing.JPanel adminUserPanel;
     private javax.swing.JButton archiveAssetButton;
-    private javax.swing.JButton archiveButton4;
     private javax.swing.JButton archiveEmpButton;
     private javax.swing.JButton archiveLocationButton;
+    private javax.swing.JButton archivePartButton;
     private javax.swing.JButton archiveScheduleButton;
     private javax.swing.JButton archiveWOButton;
     private javax.swing.JLabel assetLoadLabel;
@@ -1197,16 +1302,16 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JButton completeScheduleButton;
     private javax.swing.JButton createWOButton1;
     private javax.swing.JButton deleteAssetButton;
-    private javax.swing.JButton deleteButton4;
     private javax.swing.JButton deleteEmpButton;
     private javax.swing.JButton deleteLocationButton;
+    private javax.swing.JButton deletePartButton;
     private javax.swing.JButton deleteScheduleButton;
     private javax.swing.JButton deleteWOButton;
     private javax.swing.JDesktopPane desktopPane;
     private javax.swing.JButton editAssetButton;
-    private javax.swing.JButton editButton4;
     private javax.swing.JButton editEmpButton;
     private javax.swing.JButton editLocationButton;
+    private javax.swing.JButton editPartButton;
     private javax.swing.JButton editScheduleButton;
     private javax.swing.JButton editWOButton;
     private javax.swing.JLabel employeeLoadLabel;
@@ -1223,7 +1328,6 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
@@ -1243,11 +1347,12 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JMenuItem menuTableRefresh;
     private javax.swing.JMenu menuUser;
     private javax.swing.JButton newAssetButton;
-    private javax.swing.JButton newButton4;
     private javax.swing.JButton newEmpButton;
     private javax.swing.JButton newLocationButton;
+    private javax.swing.JButton newPartButton;
     private javax.swing.JButton newScheduleButton;
     private javax.swing.JButton newWOButton;
+    private javax.swing.JLabel partLoadLabel;
     private javax.swing.JPanel partPanel;
     private javax.swing.JScrollPane partScroll;
     private javax.swing.JTable partTable;

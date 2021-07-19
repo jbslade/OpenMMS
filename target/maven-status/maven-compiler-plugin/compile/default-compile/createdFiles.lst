@@ -1,4 +1,5 @@
 com\mms\dialogs\InternalDialog$2.class
+com\mms\MainFrame$32.class
 com\mms\Setup$13.class
 com\mms\MainFrame$22.class
 com\mms\MainFrame$12.class
@@ -16,9 +17,12 @@ com\mms\MainFrame$3.class
 com\mms\dialogs\PasswordDialog$1.class
 com\mms\panels\PopupPanel$1.class
 com\mms\dialogs\AssetDialog$2.class
+com\mms\dialogs\PartDialog$2.class
 com\mms\MainFrame$24.class
+com\mms\dialogs\PartDialog.class
 com\mms\utilities\RotatedIcon.class
 com\mms\MainFrame$18.class
+com\mms\MainFrame$28.class
 com\mms\MainFrame$4.class
 com\mms\Setup$4.class
 com\mms\Setup$11.class
@@ -31,8 +35,10 @@ com\mms\panels\FilterPanel$2.class
 com\mms\Setup$10.class
 com\mms\MainFrame$11.class
 com\mms\Setup$5.class
+com\mms\MainFrame$29.class
 com\mms\dialogs\EmployeeDialog$1.class
 com\mms\Setup$6.class
+com\mms\dialogs\PartDialog$1.class
 com\mms\MainFrame$16.class
 com\mms\MainFrame$26.class
 com\mms\utilities\RotatedIcon$Rotate.class
@@ -64,9 +70,11 @@ com\mms\dialogs\LocationDialog$2.class
 com\mms\MainFrame$20.class
 com\mms\dialogs\AssetDialog$1.class
 com\mms\MainFrame$7.class
+com\mms\MainFrame$30.class
 com\mms\MainFrame$25.class
 com\mms\MainFrame$1.class
 com\mms\Setup$2.class
 com\mms\dialogs\LoginDialog$1.class
 com\mms\MainFrame$8.class
+com\mms\MainFrame$31.class
 com\mms\MainFrame$14.class

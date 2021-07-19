@@ -18,6 +18,7 @@ package com.mms.dialogs;
 import com.mms.utilities.Hasher;
 import com.mms.utilities.RotatedIcon;
 import com.mms.MMS;
+import com.mms.MainFrame;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -41,10 +42,16 @@ public class LoginDialog extends javax.swing.JDialog {
         getRootPane().setDefaultButton(button);
         //Set combo box users
         userCombo.removeAllItems();
-        for(int i = 0; i < MMS.getUsers().size(); i++){
-            String user = MMS.getUsers().get(i);
-            if(user.contains("*")) user = user.substring(0, user.indexOf("*")-1);
-            userCombo.addItem(user);
+        
+        //Set users
+        try {
+            ResultSet rs = MMS.select("SELECT user_name, logged_in FROM users");
+            while(rs.next()){
+                userCombo.addItem(rs.getString(1).trim());
+            }
+            rs.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         //Select default user
@@ -152,7 +159,7 @@ public class LoginDialog extends javax.swing.JDialog {
         else{
             String password = "", salt = "";
             try {
-                ResultSet rs = MMS.select("SELECT UserPass, Salt FROM Users WHERE UserName = ?",
+                ResultSet rs = MMS.select("SELECT password, salt FROM users WHERE user_name = ?",
                         new Object[]{u});
                 if(rs.next()){
                     password = rs.getObject(1).toString().trim();
@@ -170,7 +177,7 @@ public class LoginDialog extends javax.swing.JDialog {
                 success = true;
                 MMS.setUser(u);
                 //Set user to logged in
-                MMS.executeQuery("UPDATE Users SET Logged = 'Y' WHERE UserName = ?",
+                MMS.executeQuery("UPDATE users SET logged_in = 'Y' WHERE user_name = ?",
                         new Object[]{u});
                 
                 //Put user in preferences

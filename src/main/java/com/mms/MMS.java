@@ -26,7 +26,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
@@ -52,7 +51,6 @@ public class MMS {
     private static MainFrame m;
     private static Connection conn;
     private static String user;
-    private static ArrayList<String> users;
     private static Preferences p;
     
     //Image icons
@@ -69,7 +67,6 @@ public class MMS {
     //Getters
     public static MainFrame getMainFrame(){return m;}
     public static String getUser(){return user;}
-    public static ArrayList<String> getUsers(){return users;}
     public static Preferences getPrefs(){return p;}
     
     //Setters
@@ -85,11 +82,12 @@ public class MMS {
         
         //Shutdown thread
         shutdown = new Thread(){
+            @Override
             public void run(){
                 try {
                     //Set user to logged out
                     if(user != null){
-                        executeQuery("UPDATE Users SET Logged = 'N' WHERE UserName = ?",
+                        executeQuery("UPDATE users SET logged_in = 'N' WHERE user_name = ?",
                                 new Object[]{user});
                     }
                     //Close connection
@@ -176,27 +174,10 @@ public class MMS {
 //        MMS.executeQuery("UPDATE Users SET Password = ?, Salt = ? WHERE Username = ?",
 //                new Object[]{pass, salt, "Administrator"});
         
-        //Load users & login
-        loadUsers();
+        //Login
         login();
     }
 
-    //Load users
-    public static void loadUsers(){
-        users = new ArrayList<>();
-            try {
-                ResultSet rs = select("SELECT UserName, Logged FROM Users");
-                while(rs.next()){
-                    String s = rs.getString(1).trim();
-                    String logged = rs.getString(2) == null ? "N" : rs.getString(2);
-                    if(logged.equals("Y")) s = s += " **";
-                    users.add(s);
-                }
-                rs.close();
-            } catch (SQLException ex) {
-                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-            }
-    }
     //Login
     private static void login(){
         phf.setVisible(true);
@@ -219,6 +200,7 @@ public class MMS {
             //Load tables
             m.loadLocations(0);
             m.loadAssets(0);
+            m.loadParts(0);
             m.loadEmployees(0);
 
             m.setVisible(true);
@@ -231,7 +213,7 @@ public class MMS {
             public void run(){  
                 //Set user to logged out
                 if(user != null){
-                    executeQuery("UPDATE Users SET Logged = 'N' WHERE UserName = ?",
+                    executeQuery("UPDATE users SET logged_in = 'N' WHERE user_name = ?",
                             new Object[]{user});
                 }
                 m.dispose();

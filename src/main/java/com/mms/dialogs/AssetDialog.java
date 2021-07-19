@@ -38,7 +38,7 @@ public class AssetDialog extends javax.swing.JInternalFrame {
         assetTable = t;
         
         //Set locations
-        ResultSet rs = MMS.select("SELECT LocNo, LocName FROM Locations WHERE Archived = 'N'");
+        ResultSet rs = MMS.select("SELECT id, location_name FROM locations WHERE archived = 'N'");
         try {
             while(rs.next()){
                 locationCombo.addItem(rs.getString(1)+" - "+rs.getString(2));
@@ -57,7 +57,7 @@ public class AssetDialog extends javax.swing.JInternalFrame {
         button.setText("Save");
         
         //Set locations
-        ResultSet rs = MMS.select("SELECT LocNo, LocName FROM Locations WHERE Archived = 'N'");
+        ResultSet rs = MMS.select("SELECT id, location_name FROM locations WHERE archived = 'N'");
         try {
             while(rs.next()){
                 locationCombo.addItem(rs.getString(1)+" - "+rs.getString(2));
@@ -96,7 +96,7 @@ public class AssetDialog extends javax.swing.JInternalFrame {
         setClosable(true);
         setIconifiable(true);
         setTitle("New Asset");
-        setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/iframes/assets.png"))); // NOI18N
+        setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/dialogs/assets.png"))); // NOI18N
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
             public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
             }
@@ -202,7 +202,7 @@ public class AssetDialog extends javax.swing.JInternalFrame {
             if(row == -1){ //New asset
                     //Get next no
                     int assNum = 0;
-                    ResultSet rs = MMS.select("SELECT MAX(AssNo) FROM Assets");
+                    ResultSet rs = MMS.select("SELECT MAX(id) FROM assets");
                     try {
                         if(rs.next()) assNum = rs.getInt(1);
                         rs.close();
@@ -211,7 +211,7 @@ public class AssetDialog extends javax.swing.JInternalFrame {
                     }
                     assNum++;
                     //Insert into DB
-                    MMS.executeQuery("INSERT INTO Assets (AssNo, AssName, AssDesc, LocNo, Archived) VALUES (?, ?, ?, ?, 'N')",
+                    MMS.executeQuery("INSERT INTO assets (id, asset_name, asset_desc, location_id, archived) VALUES (?, ?, ?, ?, 'N')",
                             new Object[]{assNum, name, desc, locNum});
                     //Insert into table
                     Object [] o = {assNum, name, desc, locName};
@@ -224,7 +224,7 @@ public class AssetDialog extends javax.swing.JInternalFrame {
                 //Get selected number
                 int assNum = Integer.parseInt(assetTable.getValueAt(row, 0).toString());
                 //Update database
-                MMS.executeQuery("UPDATE Assets SET AssName = ?, AssDesc = ?, LocNo = ? WHERE AssNo = ?",
+                MMS.executeQuery("UPDATE assets SET asset_name = ?, asset_desc = ?, location_id = ? WHERE id = ?",
                         new Object[]{name, desc, locNum, assNum});
                 //Update table
                 assetTable.setValueAt(name, row, 1);

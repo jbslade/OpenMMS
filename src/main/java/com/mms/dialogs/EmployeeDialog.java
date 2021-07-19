@@ -38,7 +38,7 @@ public class EmployeeDialog extends javax.swing.JInternalFrame {
         table = t;
         
         //Set departments
-        ResultSet rs = MMS.select("SELECT CusValue FROM CustomFields WHERE CusType = 'EmpDept'");
+        ResultSet rs = MMS.select("SELECT custom_value FROM custom_fields WHERE custom_type = 'employee_dept'");
         try {
             while(rs.next()){
                 deptCombo.addItem(rs.getString(1));
@@ -57,7 +57,7 @@ public class EmployeeDialog extends javax.swing.JInternalFrame {
         button.setText("Save");
         
         //Set departments
-        ResultSet rs = MMS.select("SELECT CusValue FROM CustomFields WHERE CusType = 'EmpDept'");
+        ResultSet rs = MMS.select("SELECT custom_value FROM custom_fields WHERE custom_type = 'employee_dept'");
         try {
             while(rs.next()){
                 deptCombo.addItem(rs.getString(1));
@@ -96,7 +96,7 @@ public class EmployeeDialog extends javax.swing.JInternalFrame {
         setIconifiable(true);
         setTitle("New Employee");
         setToolTipText("");
-        setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/iframes/employees.png"))); // NOI18N
+        setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/dialogs/employees.png"))); // NOI18N
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
             public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
             }
@@ -197,7 +197,7 @@ public class EmployeeDialog extends javax.swing.JInternalFrame {
             if(row == -1){ //New employee
                     //Get next no
                     int empNum = 0;
-                    ResultSet rs = MMS.select("SELECT MAX(EmpNo) FROM Employees");
+                    ResultSet rs = MMS.select("SELECT MAX(id) FROM employees");
                     try {
                         if(rs.next()) empNum = rs.getInt(1);
                         rs.close();
@@ -206,7 +206,7 @@ public class EmployeeDialog extends javax.swing.JInternalFrame {
                     }
                     empNum++;
                     //Insert into DB
-                    MMS.executeQuery("INSERT INTO Employees (EmpNo, EmpName, EmpDesc, EmpDept, Archived) VALUES (?, ?, ?, ?, 'N')",
+                    MMS.executeQuery("INSERT INTO employees (id, employee_name, employee_desc, employee_dept, archived) VALUES (?, ?, ?, ?, 'N')",
                             new Object[]{empNum, name, desc, dept});
                     //Insert into table
                     Object [] o = {empNum, name, desc, dept};
@@ -219,7 +219,7 @@ public class EmployeeDialog extends javax.swing.JInternalFrame {
                 //Get selected number
                 int empNum = Integer.parseInt(table.getValueAt(row, 0).toString());
                 //Update database
-                MMS.executeQuery("UPDATE Employees SET EmpName = ?, EmpDesc = ?, EmpDept = ? WHERE EmployeeNo = ?",
+                MMS.executeQuery("UPDATE employees SET employee_name = ?, employee_desc = ?, employee_dept = ? WHERE id = ?",
                         new Object[]{name, desc, dept, empNum});
                 //Update table
                 table.setValueAt(name, row, 1);

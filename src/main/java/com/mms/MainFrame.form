@@ -780,37 +780,49 @@
 
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBoxLayout"/>
                       <SubComponents>
-                        <Component class="javax.swing.JButton" name="newButton4">
+                        <Component class="javax.swing.JButton" name="newPartButton">
                           <Properties>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/buttons/new.png"/>
                             </Property>
                             <Property name="text" type="java.lang.String" value="New"/>
                           </Properties>
+                          <Events>
+                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="newPartButtonActionPerformed"/>
+                          </Events>
                         </Component>
-                        <Component class="javax.swing.JButton" name="editButton4">
+                        <Component class="javax.swing.JButton" name="editPartButton">
                           <Properties>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/buttons/edit.png"/>
                             </Property>
                             <Property name="text" type="java.lang.String" value="Edit"/>
                           </Properties>
+                          <Events>
+                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="editPartButtonActionPerformed"/>
+                          </Events>
                         </Component>
-                        <Component class="javax.swing.JButton" name="deleteButton4">
+                        <Component class="javax.swing.JButton" name="deletePartButton">
                           <Properties>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/buttons/delete.png"/>
                             </Property>
                             <Property name="text" type="java.lang.String" value="Delete"/>
                           </Properties>
+                          <Events>
+                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="deletePartButtonActionPerformed"/>
+                          </Events>
                         </Component>
-                        <Component class="javax.swing.JButton" name="archiveButton4">
+                        <Component class="javax.swing.JButton" name="archivePartButton">
                           <Properties>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/buttons/archive.png"/>
                             </Property>
                             <Property name="text" type="java.lang.String" value="Archive"/>
                           </Properties>
+                          <Events>
+                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="archivePartButtonActionPerformed"/>
+                          </Events>
                         </Component>
                         <Component class="javax.swing.Box$Filler" name="filler5">
                           <Properties>
@@ -822,7 +834,7 @@
                             <AuxValue name="classDetails" type="java.lang.String" value="Box.Filler.HorizontalGlue"/>
                           </AuxValues>
                         </Component>
-                        <Component class="javax.swing.JLabel" name="jLabel5">
+                        <Component class="javax.swing.JLabel" name="partLoadLabel">
                           <Properties>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/ajax.gif"/>
@@ -854,7 +866,7 @@
                               <Table columnCount="3" rowCount="0">
                                 <Column editable="false" title="No." type="java.lang.Object"/>
                                 <Column editable="false" title="Name" type="java.lang.Object"/>
-                                <Column editable="false" title="Description" type="java.lang.Object"/>
+                                <Column editable="false" title="Quantity" type="java.lang.Object"/>
                               </Table>
                             </Property>
                             <Property name="dragEnabled" type="boolean" value="true"/>
