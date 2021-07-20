@@ -46,10 +46,10 @@ public class MMS {
     
     //Variables
     public static final String NAME = "OpenMMS", VERSION = "1.0";
-    public static final boolean DEBUG = false;
+    public static final boolean DEBUG = true;
     public static final JFrame phf = new JFrame();
-    public static final int DIAG_WIDTH = Toolkit.getDefaultToolkit(). getScreenSize().width/5 > 300 ? 300 : Toolkit.getDefaultToolkit(). getScreenSize().width/5;
-    private static MouseListener ml;
+    public static final int DIAG_WIDTH = Toolkit.getDefaultToolkit(). getScreenSize().width/5 > 310 ? 310 : Toolkit.getDefaultToolkit(). getScreenSize().width/5;
+    private static MouseListener mouseListener;
     private static Thread shutdown;
     private static MainFrame m;
     private static Connection conn;
@@ -72,7 +72,7 @@ public class MMS {
     public static MainFrame getMainFrame(){return m;}
     public static String getUser(){return user;}
     public static Preferences getPrefs(){return p;}
-    public static MouseListener getMouseListener(){return ml;}
+    public static MouseListener getMouseListener(){return mouseListener;}
     
     //Setters
     public static void setUser(String u){user = u;}
@@ -86,7 +86,7 @@ public class MMS {
         UIManager.put("TabbedPane.selectedBackground", Color.white);
         
         //Mouse listener
-        ml = new ContextMenuMouseListener();
+        mouseListener = new ContextMenuMouseListener();
         
         //Shutdown thread
         shutdown = new Thread(){
@@ -121,7 +121,20 @@ public class MMS {
         phf.setUndecorated(true);
         phf.setLocationRelativeTo(null);
         
-        //Setup
+        //Setup & login
+        setup();
+        
+        //RESET OLD ADMIN PASSWORD MSSQL (REMOVE ONCE FIXED)
+//        String salt = Hasher.getSalt(), pass = Hasher.getHash("admin", salt);
+//        MMS.executeQuery("UPDATE Users SET Password = ?, Salt = ? WHERE Username = ?",
+//                new Object[]{pass, salt, "Administrator"});
+    }
+
+    //Setup
+    public static void setup(){
+        //Close MainFrame if open
+        if(m != null) m.dispose();
+       
         if(DEBUG) p.putBoolean("firstRun", true);
         OUTER:
         while (true) {
@@ -176,21 +189,14 @@ public class MMS {
                 }
             }
         }
-        
-        //RESET OLD ADMIN PASSWORD MSSQL (REMOVE ONCE FIXED)
-//        String salt = Hasher.getSalt(), pass = Hasher.getHash("admin", salt);
-//        MMS.executeQuery("UPDATE Users SET Password = ?, Salt = ? WHERE Username = ?",
-//                new Object[]{pass, salt, "Administrator"});
-        
-        //Login
         login();
     }
-
+   
     //Login
     private static void login(){
         phf.setVisible(true);
         LoginDialog lg = new LoginDialog(phf, true);
-        lg.setSize(300, lg.getHeight());
+        lg.setSize(DIAG_WIDTH, lg.getHeight());
         lg.setIconImage(systemIcon.getImage());
         lg.setLocationRelativeTo(phf);
         lg.setVisible(true);
@@ -215,6 +221,7 @@ public class MMS {
         }
         else shutdown(); //FAIL       
     }
+    
     //Logout
     public static void logout(){
         new Thread(){
@@ -229,6 +236,7 @@ public class MMS {
             }
         }.start();
     }
+    
     //Shutdown
     public static void shutdown(){
         shutdown.start();

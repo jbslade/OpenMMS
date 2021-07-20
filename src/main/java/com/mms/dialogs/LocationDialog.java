@@ -34,12 +34,16 @@ public class LocationDialog extends javax.swing.JInternalFrame {
     
     public LocationDialog(JTable t) {
         initComponents();
+        nameField.addMouseListener(MMS.getMouseListener());
+        descField.addMouseListener(MMS.getMouseListener());
         getRootPane().setDefaultButton(button);
         table = t;
     }
     
     public LocationDialog(JTable t, int r) {
         initComponents();
+        nameField.addMouseListener(MMS.getMouseListener());
+        descField.addMouseListener(MMS.getMouseListener());
         getRootPane().setDefaultButton(button);
         table = t;
         row = r;

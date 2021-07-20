@@ -24,6 +24,7 @@ import com.mms.dialogs.LocationDialog;
 import com.mms.dialogs.PartDialog;
 import com.mms.dialogs.PasswordDialog;
 import java.awt.Color;
+import java.awt.event.KeyEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -66,7 +67,6 @@ public class MainFrame extends javax.swing.JFrame {
         tabbedPane.setIconAt(7, MMS.reportsIcon);
         tabbedPane.setIconAt(8, MMS.systemIcon);
         adminTabbedPane.putClientProperty("JTabbedPane.tabWidthMode", "equal");
-        adminTabbedPane.putClientProperty("JTabbedPane.tabAreaAlignment", SwingConstants.CENTER);
         
         //Tables
         workOrderTable.setBackground(Color.white);
@@ -112,6 +112,7 @@ public class MainFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        tableSizeGroup = new javax.swing.ButtonGroup();
         backPanel = new javax.swing.JPanel();
         desktopPane = new javax.swing.JDesktopPane();
         tabbedPane = new javax.swing.JTabbedPane();
@@ -179,10 +180,10 @@ public class MainFrame extends javax.swing.JFrame {
         partTable = new javax.swing.JTable();
         employeePanel = new javax.swing.JPanel();
         employeeTools = new javax.swing.JToolBar();
-        newEmpButton = new javax.swing.JButton();
-        editEmpButton = new javax.swing.JButton();
-        deleteEmpButton = new javax.swing.JButton();
-        archiveEmpButton = new javax.swing.JButton();
+        newEmployeeButton = new javax.swing.JButton();
+        editEmployeeButton = new javax.swing.JButton();
+        deleteEmployeeButton = new javax.swing.JButton();
+        archiveEmployeeButton = new javax.swing.JButton();
         filler6 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
         employeeLoadLabel = new javax.swing.JLabel();
         employeeScroll = new javax.swing.JScrollPane();
@@ -203,15 +204,16 @@ public class MainFrame extends javax.swing.JFrame {
         adminUpdatePanel = new javax.swing.JPanel();
         menuBar = new javax.swing.JMenuBar();
         menuFile = new javax.swing.JMenu();
-        menuEdit = new javax.swing.JMenu();
-        menuEditCut = new javax.swing.JMenuItem();
-        menuEditCopy = new javax.swing.JMenuItem();
-        menuEditPaste = new javax.swing.JMenuItem();
-        menuEditDelete = new javax.swing.JMenuItem();
-        menuEditSelect = new javax.swing.JMenuItem();
+        menuFileDisconnect = new javax.swing.JMenuItem();
         menuTable = new javax.swing.JMenu();
         menuTableFilter = new javax.swing.JMenuItem();
         menuTableRefresh = new javax.swing.JMenuItem();
+        menuTableSize = new javax.swing.JMenu();
+        menuTableSizeAll = new javax.swing.JRadioButtonMenuItem();
+        menuTableSize1000 = new javax.swing.JRadioButtonMenuItem();
+        menuTableSize500 = new javax.swing.JRadioButtonMenuItem();
+        menuTableSize250 = new javax.swing.JRadioButtonMenuItem();
+        menuHelp = new javax.swing.JMenu();
         menuUser = new javax.swing.JMenu();
         menuChangePassword = new javax.swing.JMenuItem();
         menuLogout = new javax.swing.JMenuItem();
@@ -231,7 +233,7 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
 
-        dashButtonPanel.setLayout(new java.awt.GridLayout());
+        dashButtonPanel.setLayout(new java.awt.GridLayout(1, 0));
 
         jButton1.setBackground(new java.awt.Color(255, 255, 255));
         jButton1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
@@ -270,7 +272,7 @@ public class MainFrame extends javax.swing.JFrame {
             dashPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(dashPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(dashButtonPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 768, Short.MAX_VALUE)
+                .addComponent(dashButtonPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 927, Short.MAX_VALUE)
                 .addContainerGap())
         );
         dashPanelLayout.setVerticalGroup(
@@ -345,13 +347,18 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
         workOrderTable.setDragEnabled(true);
+        workOrderTable.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                workOrderTableKeyPressed(evt);
+            }
+        });
         workOrderScroll.setViewportView(workOrderTable);
 
         javax.swing.GroupLayout workOrderPanelLayout = new javax.swing.GroupLayout(workOrderPanel);
         workOrderPanel.setLayout(workOrderPanelLayout);
         workOrderPanelLayout.setHorizontalGroup(
             workOrderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(workOrderScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 788, Short.MAX_VALUE)
+            .addComponent(workOrderScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 951, Short.MAX_VALUE)
             .addComponent(workOrderTools, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         workOrderPanelLayout.setVerticalGroup(
@@ -426,14 +433,19 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
         scheduleTable.setDragEnabled(true);
+        scheduleTable.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                scheduleTableKeyPressed(evt);
+            }
+        });
         scheduleScroll.setViewportView(scheduleTable);
 
         javax.swing.GroupLayout schedulePanelLayout = new javax.swing.GroupLayout(schedulePanel);
         schedulePanel.setLayout(schedulePanelLayout);
         schedulePanelLayout.setHorizontalGroup(
             schedulePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(scheduleTools, javax.swing.GroupLayout.DEFAULT_SIZE, 788, Short.MAX_VALUE)
-            .addComponent(scheduleScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 788, Short.MAX_VALUE)
+            .addComponent(scheduleTools, javax.swing.GroupLayout.DEFAULT_SIZE, 951, Short.MAX_VALUE)
+            .addComponent(scheduleScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 951, Short.MAX_VALUE)
         );
         schedulePanelLayout.setVerticalGroup(
             schedulePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -510,14 +522,19 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
         assetTable.setDragEnabled(true);
+        assetTable.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                assetTableKeyPressed(evt);
+            }
+        });
         assetScroll.setViewportView(assetTable);
 
         javax.swing.GroupLayout assetPanelLayout = new javax.swing.GroupLayout(assetPanel);
         assetPanel.setLayout(assetPanelLayout);
         assetPanelLayout.setHorizontalGroup(
             assetPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(assetTools, javax.swing.GroupLayout.DEFAULT_SIZE, 788, Short.MAX_VALUE)
-            .addComponent(assetScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 788, Short.MAX_VALUE)
+            .addComponent(assetTools, javax.swing.GroupLayout.DEFAULT_SIZE, 951, Short.MAX_VALUE)
+            .addComponent(assetScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 951, Short.MAX_VALUE)
         );
         assetPanelLayout.setVerticalGroup(
             assetPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -594,14 +611,19 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
         locationTable.setDragEnabled(true);
+        locationTable.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                locationTableKeyPressed(evt);
+            }
+        });
         locationScroll.setViewportView(locationTable);
 
         javax.swing.GroupLayout locationPanelLayout = new javax.swing.GroupLayout(locationPanel);
         locationPanel.setLayout(locationPanelLayout);
         locationPanelLayout.setHorizontalGroup(
             locationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(locationTools, javax.swing.GroupLayout.DEFAULT_SIZE, 788, Short.MAX_VALUE)
-            .addComponent(locationScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 788, Short.MAX_VALUE)
+            .addComponent(locationTools, javax.swing.GroupLayout.DEFAULT_SIZE, 951, Short.MAX_VALUE)
+            .addComponent(locationScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 951, Short.MAX_VALUE)
         );
         locationPanelLayout.setVerticalGroup(
             locationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -678,14 +700,19 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
         partTable.setDragEnabled(true);
+        partTable.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                partTableKeyPressed(evt);
+            }
+        });
         partScroll.setViewportView(partTable);
 
         javax.swing.GroupLayout partPanelLayout = new javax.swing.GroupLayout(partPanel);
         partPanel.setLayout(partPanelLayout);
         partPanelLayout.setHorizontalGroup(
             partPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(partTools, javax.swing.GroupLayout.DEFAULT_SIZE, 788, Short.MAX_VALUE)
-            .addComponent(partScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 788, Short.MAX_VALUE)
+            .addComponent(partTools, javax.swing.GroupLayout.DEFAULT_SIZE, 951, Short.MAX_VALUE)
+            .addComponent(partScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 951, Short.MAX_VALUE)
         );
         partPanelLayout.setVerticalGroup(
             partPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -701,41 +728,41 @@ public class MainFrame extends javax.swing.JFrame {
         employeeTools.setFloatable(false);
         employeeTools.setRollover(true);
 
-        newEmpButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/new.png"))); // NOI18N
-        newEmpButton.setText("New");
-        newEmpButton.addActionListener(new java.awt.event.ActionListener() {
+        newEmployeeButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/new.png"))); // NOI18N
+        newEmployeeButton.setText("New");
+        newEmployeeButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                newEmpButtonActionPerformed(evt);
+                newEmployeeButtonActionPerformed(evt);
             }
         });
-        employeeTools.add(newEmpButton);
+        employeeTools.add(newEmployeeButton);
 
-        editEmpButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/edit.png"))); // NOI18N
-        editEmpButton.setText("Edit");
-        editEmpButton.addActionListener(new java.awt.event.ActionListener() {
+        editEmployeeButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/edit.png"))); // NOI18N
+        editEmployeeButton.setText("Edit");
+        editEmployeeButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                editEmpButtonActionPerformed(evt);
+                editEmployeeButtonActionPerformed(evt);
             }
         });
-        employeeTools.add(editEmpButton);
+        employeeTools.add(editEmployeeButton);
 
-        deleteEmpButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/delete.png"))); // NOI18N
-        deleteEmpButton.setText("Delete");
-        deleteEmpButton.addActionListener(new java.awt.event.ActionListener() {
+        deleteEmployeeButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/delete.png"))); // NOI18N
+        deleteEmployeeButton.setText("Delete");
+        deleteEmployeeButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                deleteEmpButtonActionPerformed(evt);
+                deleteEmployeeButtonActionPerformed(evt);
             }
         });
-        employeeTools.add(deleteEmpButton);
+        employeeTools.add(deleteEmployeeButton);
 
-        archiveEmpButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/archive.png"))); // NOI18N
-        archiveEmpButton.setText("Archive");
-        archiveEmpButton.addActionListener(new java.awt.event.ActionListener() {
+        archiveEmployeeButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/archive.png"))); // NOI18N
+        archiveEmployeeButton.setText("Archive");
+        archiveEmployeeButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                archiveEmpButtonActionPerformed(evt);
+                archiveEmployeeButtonActionPerformed(evt);
             }
         });
-        employeeTools.add(archiveEmpButton);
+        employeeTools.add(archiveEmployeeButton);
         employeeTools.add(filler6);
 
         employeeLoadLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ajax.gif"))); // NOI18N
@@ -762,14 +789,19 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
         employeeTable.setDragEnabled(true);
+        employeeTable.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                employeeTableKeyPressed(evt);
+            }
+        });
         employeeScroll.setViewportView(employeeTable);
 
         javax.swing.GroupLayout employeePanelLayout = new javax.swing.GroupLayout(employeePanel);
         employeePanel.setLayout(employeePanelLayout);
         employeePanelLayout.setHorizontalGroup(
             employeePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(employeeTools, javax.swing.GroupLayout.DEFAULT_SIZE, 788, Short.MAX_VALUE)
-            .addComponent(employeeScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 788, Short.MAX_VALUE)
+            .addComponent(employeeTools, javax.swing.GroupLayout.DEFAULT_SIZE, 951, Short.MAX_VALUE)
+            .addComponent(employeeScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 951, Short.MAX_VALUE)
         );
         employeePanelLayout.setVerticalGroup(
             employeePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -785,7 +817,7 @@ public class MainFrame extends javax.swing.JFrame {
         reportPanel.setLayout(reportPanelLayout);
         reportPanelLayout.setHorizontalGroup(
             reportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 788, Short.MAX_VALUE)
+            .addGap(0, 951, Short.MAX_VALUE)
         );
         reportPanelLayout.setVerticalGroup(
             reportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -852,7 +884,7 @@ public class MainFrame extends javax.swing.JFrame {
         adminUserPanel.setLayout(adminUserPanelLayout);
         adminUserPanelLayout.setHorizontalGroup(
             adminUserPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(adminUserScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 783, Short.MAX_VALUE)
+            .addComponent(adminUserScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 946, Short.MAX_VALUE)
             .addComponent(adminUserTools, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         adminUserPanelLayout.setVerticalGroup(
@@ -869,7 +901,7 @@ public class MainFrame extends javax.swing.JFrame {
         adminArchivePanel.setLayout(adminArchivePanelLayout);
         adminArchivePanelLayout.setHorizontalGroup(
             adminArchivePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 783, Short.MAX_VALUE)
+            .addGap(0, 946, Short.MAX_VALUE)
         );
         adminArchivePanelLayout.setVerticalGroup(
             adminArchivePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -882,7 +914,7 @@ public class MainFrame extends javax.swing.JFrame {
         adminCustomPanel.setLayout(adminCustomPanelLayout);
         adminCustomPanelLayout.setHorizontalGroup(
             adminCustomPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 783, Short.MAX_VALUE)
+            .addGap(0, 946, Short.MAX_VALUE)
         );
         adminCustomPanelLayout.setVerticalGroup(
             adminCustomPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -895,7 +927,7 @@ public class MainFrame extends javax.swing.JFrame {
         adminUpdatePanel.setLayout(adminUpdatePanelLayout);
         adminUpdatePanelLayout.setHorizontalGroup(
             adminUpdatePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 783, Short.MAX_VALUE)
+            .addGap(0, 946, Short.MAX_VALUE)
         );
         adminUpdatePanelLayout.setVerticalGroup(
             adminUpdatePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -942,40 +974,16 @@ public class MainFrame extends javax.swing.JFrame {
         );
 
         menuFile.setText("File");
-        menuBar.add(menuFile);
 
-        menuEdit.setText("Edit");
-
-        menuEditCut.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, java.awt.event.InputEvent.CTRL_DOWN_MASK));
-        menuEditCut.setText("Cut");
-        menuEdit.add(menuEditCut);
-
-        menuEditCopy.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.CTRL_DOWN_MASK));
-        menuEditCopy.setText("Copy");
-        menuEdit.add(menuEditCopy);
-
-        menuEditPaste.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_V, java.awt.event.InputEvent.CTRL_DOWN_MASK));
-        menuEditPaste.setText("Paste");
-        menuEditPaste.setToolTipText("");
-        menuEdit.add(menuEditPaste);
-
-        menuEditDelete.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DELETE, 0));
-        menuEditDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/delete.png"))); // NOI18N
-        menuEditDelete.setText("Delete");
-        menuEditDelete.setToolTipText("");
-        menuEditDelete.addActionListener(new java.awt.event.ActionListener() {
+        menuFileDisconnect.setText("Disconnect Database");
+        menuFileDisconnect.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuEditDeleteActionPerformed(evt);
+                menuFileDisconnectActionPerformed(evt);
             }
         });
-        menuEdit.add(menuEditDelete);
+        menuFile.add(menuFileDisconnect);
 
-        menuEditSelect.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.CTRL_DOWN_MASK));
-        menuEditSelect.setText("Select All");
-        menuEditSelect.setToolTipText("");
-        menuEdit.add(menuEditSelect);
-
-        menuBar.add(menuEdit);
+        menuBar.add(menuFile);
 
         menuTable.setText("Table");
 
@@ -1001,7 +1009,51 @@ public class MainFrame extends javax.swing.JFrame {
         });
         menuTable.add(menuTableRefresh);
 
+        menuTableSize.setText("Size");
+
+        tableSizeGroup.add(menuTableSizeAll);
+        menuTableSizeAll.setSelected(true);
+        menuTableSizeAll.setText("All Rows");
+        menuTableSizeAll.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                menuTableSizeAllStateChanged(evt);
+            }
+        });
+        menuTableSize.add(menuTableSizeAll);
+
+        tableSizeGroup.add(menuTableSize1000);
+        menuTableSize1000.setText("Top 1000");
+        menuTableSize1000.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                menuTableSize1000StateChanged(evt);
+            }
+        });
+        menuTableSize.add(menuTableSize1000);
+
+        tableSizeGroup.add(menuTableSize500);
+        menuTableSize500.setText("Top 500");
+        menuTableSize500.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                menuTableSize500StateChanged(evt);
+            }
+        });
+        menuTableSize.add(menuTableSize500);
+
+        tableSizeGroup.add(menuTableSize250);
+        menuTableSize250.setText("Top 250");
+        menuTableSize250.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                menuTableSize250StateChanged(evt);
+            }
+        });
+        menuTableSize.add(menuTableSize250);
+
+        menuTable.add(menuTableSize);
+
         menuBar.add(menuTable);
+
+        menuHelp.setText("Help");
+        menuBar.add(menuHelp);
 
         menuUser.setIcon(new javax.swing.ImageIcon(getClass().getResource("/user.png"))); // NOI18N
         menuUser.setText("Administrator");
@@ -1070,7 +1122,7 @@ public class MainFrame extends javax.swing.JFrame {
 
     //Delete Location
     private void deleteLocationButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteLocationButtonActionPerformed
-            if(InternalDialog.showInternalConfirmDialog(desktopPane, "Are you sure you want to delete "+locationTable.getValueAt(locationTable.getSelectedRow(), 1)+"?", "Delete Location", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null) == 0){
+        if(InternalDialog.showInternalConfirmDialog(desktopPane, "Are you sure you want to delete "+locationTable.getValueAt(locationTable.getSelectedRow(), 1)+"?", "Delete Location", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null) == 0){
             int locNum = Integer.parseInt(locationTable.getValueAt(locationTable.getSelectedRow(), 0).toString());
             //Delete from DB
             MMS.executeQuery("DELETE FROM locations WHERE id = ?",
@@ -1175,17 +1227,17 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_menuTableRefreshActionPerformed
 
     //New Employee
-    private void newEmpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newEmpButtonActionPerformed
+    private void newEmployeeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newEmployeeButtonActionPerformed
         EmployeeDialog e = new EmployeeDialog(employeeTable);
         e.setSize(MMS.DIAG_WIDTH, e.getHeight());
         e.setLocation(desktopPane.getWidth()/2-e.getWidth()/2, desktopPane.getHeight()/2-e.getHeight()/2-50);
         desktopPane.add(e);
         desktopPane.setLayer(e, 1);
         e.setVisible(true);
-    }//GEN-LAST:event_newEmpButtonActionPerformed
+    }//GEN-LAST:event_newEmployeeButtonActionPerformed
 
     //Edit Employee
-    private void editEmpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editEmpButtonActionPerformed
+    private void editEmployeeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editEmployeeButtonActionPerformed
         EmployeeDialog e = new EmployeeDialog(employeeTable, employeeTable.getSelectedRow());
         e.setSize(MMS.DIAG_WIDTH, e.getHeight());
         e.setTitle("Edit Employee");
@@ -1193,10 +1245,10 @@ public class MainFrame extends javax.swing.JFrame {
         desktopPane.add(e);
         desktopPane.setLayer(e, 1);
         e.setVisible(true);
-    }//GEN-LAST:event_editEmpButtonActionPerformed
+    }//GEN-LAST:event_editEmployeeButtonActionPerformed
 
     //Delete Employee
-    private void deleteEmpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteEmpButtonActionPerformed
+    private void deleteEmployeeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteEmployeeButtonActionPerformed
         if(InternalDialog.showInternalConfirmDialog(desktopPane, "Are you sure you want to delete "+employeeTable.getValueAt(employeeTable.getSelectedRow(), 1)+"?", "Delete Employee", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null) == 0){
             int empNo = Integer.parseInt(employeeTable.getValueAt(employeeTable.getSelectedRow(), 0).toString());
             //Delete from DB
@@ -1208,10 +1260,10 @@ public class MainFrame extends javax.swing.JFrame {
             //Select first row
             if(employeeTable.getRowCount() != 0) employeeTable.setRowSelectionInterval(0, 0);
         }
-    }//GEN-LAST:event_deleteEmpButtonActionPerformed
+    }//GEN-LAST:event_deleteEmployeeButtonActionPerformed
 
     //Archive Employee
-    private void archiveEmpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_archiveEmpButtonActionPerformed
+    private void archiveEmployeeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_archiveEmployeeButtonActionPerformed
         if(InternalDialog.showInternalConfirmDialog(desktopPane, "Are you sure you want to archive "+employeeTable.getValueAt(employeeTable.getSelectedRow(), 1)+"?", "Archive Employee", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null) == 0){
             int empNo = Integer.parseInt(employeeTable.getValueAt(employeeTable.getSelectedRow(), 0).toString());
             //Set archived = Y
@@ -1223,9 +1275,9 @@ public class MainFrame extends javax.swing.JFrame {
             //Select first row
             if(employeeTable.getRowCount() != 0) employeeTable.setRowSelectionInterval(0, 0);
         }
-    }//GEN-LAST:event_archiveEmpButtonActionPerformed
+    }//GEN-LAST:event_archiveEmployeeButtonActionPerformed
 
-    //find
+    //Find
     private void menuTableFilterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuTableFilterActionPerformed
         JTable table = null;
         JPanel panel = null;
@@ -1246,25 +1298,55 @@ public class MainFrame extends javax.swing.JFrame {
     private void tabbedPaneStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_tabbedPaneStateChanged
         //Close find
         if(find != null) find.close();
-        //Remove Table from menu
+        //Tab specific
         switch(tabbedPane.getSelectedIndex()){
             case 0: //Dashboard
-            case 7: //Reports
-            case 8: //Admin
                 menuTable.setVisible(false);
                 break;
             case 1: //Work Orders
+                menuTable.setVisible(true);
+                setTableSizeRadio("tableSizeWO");
+                break;
             case 2: //Schedule
+                menuTable.setVisible(true);
+                setTableSizeRadio("tableSizeSchedule");
+                break;
             case 3: //Assets
+                menuTable.setVisible(true);
+                setTableSizeRadio("tableSizeAssets");
+                break;
             case 4: //Locations
+                menuTable.setVisible(true);
+                setTableSizeRadio("tableSizeLocations");
+                break;
             case 5: //Parts
+                menuTable.setVisible(true);
+                setTableSizeRadio("tableSizeParts");
+                break;
             case 6: //Employees
                 menuTable.setVisible(true);
+                setTableSizeRadio("tableSizeEmployees");
+                break;
+            case 7: //Reports
+                menuTable.setVisible(false);
+                break;
+            case 8: //Admin
+                menuTable.setVisible(false);
                 break;
             default: break;
         }
     }//GEN-LAST:event_tabbedPaneStateChanged
 
+    private void setTableSizeRadio(String s){
+        //Table size
+        switch(MMS.getPrefs().getInt(s, -1)){
+            case 1000: menuTableSize1000.setSelected(true); break;
+            case 500: menuTableSize500.setSelected(true); break;
+            case 250: menuTableSize250.setSelected(true); break;
+            default: menuTableSizeAll.setSelected(true); break;
+        }
+    }
+    
     //Change password
     private void menuChangePasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuChangePasswordActionPerformed
         PasswordDialog pd = new PasswordDialog(MMS.getUser());
@@ -1336,24 +1418,13 @@ public class MainFrame extends javax.swing.JFrame {
         find = new FindPanel(workOrderTable, workOrderPanel, "Open");
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    //Menu delete
-    private void menuEditDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuEditDeleteActionPerformed
-        switch(tabbedPane.getSelectedIndex()){
-            case 1: //Work Orders
-                deleteWOButtonActionPerformed(null); break;
-            case 2: //Schedule
-                deleteScheduleButtonActionPerformed(null); break;
-            case 3: //Assets
-                deleteAssetButtonActionPerformed(null); break;
-            case 4: //Locations
-                deleteLocationButtonActionPerformed(null); break;
-            case 5: //Parts
-                deletePartButtonActionPerformed(null); break;
-            case 6: //Employees
-                deleteEmpButtonActionPerformed(null); break;
-            default: break;
-        }
-    }//GEN-LAST:event_menuEditDeleteActionPerformed
+    private void locationTableKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_locationTableKeyPressed
+        if(evt.getKeyCode() == KeyEvent.VK_DELETE) deleteLocationButtonActionPerformed(null);
+    }//GEN-LAST:event_locationTableKeyPressed
+
+    private void workOrderTableKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_workOrderTableKeyPressed
+        if(evt.getKeyCode() == KeyEvent.VK_DELETE) deleteWOButtonActionPerformed(null);
+    }//GEN-LAST:event_workOrderTableKeyPressed
 
     //Delete Work Order
     private void deleteWOButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteWOButtonActionPerformed
@@ -1365,6 +1436,62 @@ public class MainFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_deleteScheduleButtonActionPerformed
 
+    private void scheduleTableKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_scheduleTableKeyPressed
+        if(evt.getKeyCode() == KeyEvent.VK_DELETE) deleteScheduleButtonActionPerformed(null);
+    }//GEN-LAST:event_scheduleTableKeyPressed
+
+    private void assetTableKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_assetTableKeyPressed
+        if(evt.getKeyCode() == KeyEvent.VK_DELETE) deleteAssetButtonActionPerformed(null);
+    }//GEN-LAST:event_assetTableKeyPressed
+
+    private void partTableKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_partTableKeyPressed
+        if(evt.getKeyCode() == KeyEvent.VK_DELETE) deletePartButtonActionPerformed(null);
+    }//GEN-LAST:event_partTableKeyPressed
+
+    private void employeeTableKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_employeeTableKeyPressed
+        if(evt.getKeyCode() == KeyEvent.VK_DELETE) deleteEmployeeButtonActionPerformed(null);
+    }//GEN-LAST:event_employeeTableKeyPressed
+
+    //Table size ALL
+    private void menuTableSizeAllStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_menuTableSizeAllStateChanged
+        if(menuTableSizeAll.isSelected()){
+            String [] names = {"", "tableSizeWO", "tableSizeSchedule", "tableSizeAssets", "tableSizeLocations", "tableSizeParts", "tableSizeEmployees"};
+            MMS.getPrefs().putInt(names[tabbedPane.getSelectedIndex()], -1);
+        }
+    }//GEN-LAST:event_menuTableSizeAllStateChanged
+
+    //Table size TOP 1000
+    private void menuTableSize1000StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_menuTableSize1000StateChanged
+        if(menuTableSize1000.isSelected()){
+            String [] names = {"", "tableSizeWO", "tableSizeSchedule", "tableSizeAssets", "tableSizeLocations", "tableSizeParts", "tableSizeEmployees"};
+            MMS.getPrefs().putInt(names[tabbedPane.getSelectedIndex()], 1000);
+        }
+    }//GEN-LAST:event_menuTableSize1000StateChanged
+
+    //Table size TOP 500
+    private void menuTableSize500StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_menuTableSize500StateChanged
+        if(menuTableSize500.isSelected()){
+            String [] names = {"", "tableSizeWO", "tableSizeSchedule", "tableSizeAssets", "tableSizeLocations", "tableSizeParts", "tableSizeEmployees"};
+            MMS.getPrefs().putInt(names[tabbedPane.getSelectedIndex()], 500);
+        }
+    }//GEN-LAST:event_menuTableSize500StateChanged
+
+    //Table size TOP 250
+    private void menuTableSize250StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_menuTableSize250StateChanged
+        if(menuTableSize250.isSelected()){
+            String [] names = {"", "tableSizeWO", "tableSizeSchedule", "tableSizeAssets", "tableSizeLocations", "tableSizeParts", "tableSizeEmployees"};
+            MMS.getPrefs().putInt(names[tabbedPane.getSelectedIndex()], 250);
+        }
+    }//GEN-LAST:event_menuTableSize250StateChanged
+
+    //Disconnect database
+    private void menuFileDisconnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuFileDisconnectActionPerformed
+        if(InternalDialog.showInternalConfirmDialog(desktopPane, "Disconnecting will close "+MMS.NAME+" and run Database Setup again.\nAre you sure you want to disconnect?", "Disconnect Database", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null) == 0){
+            MMS.getPrefs().putBoolean("firstRun", true);
+            MMS.setup();
+        }
+    }//GEN-LAST:event_menuFileDisconnectActionPerformed
+
     //Load locations
     public void loadLocations(int row){
         locationLoadLabel.setVisible(true);
@@ -1375,7 +1502,8 @@ public class MainFrame extends javax.swing.JFrame {
                 t.setRowCount(0);
                 try {
                     ResultSet rs = MMS.select("SELECT id, location_name, location_desc, archived FROM locations ORDER BY id DESC");
-                    while(rs.next()){
+                    int size = MMS.getPrefs().getInt("tableSizeLocations", -1), count = 0;
+                    while(rs.next() && (size == -1 || count <= size)){
                         Object [] o = new Object[4];
                         o[0] = rs.getObject(1).toString().trim();
                         o[1] = rs.getObject(2).toString().trim();
@@ -1384,6 +1512,7 @@ public class MainFrame extends javax.swing.JFrame {
                         if(o[3].equals("N")){
                             t.addRow(o);
                         }
+                        count++;
                     }
                     rs.close();
                 } catch (SQLException ex) {
@@ -1406,7 +1535,8 @@ public class MainFrame extends javax.swing.JFrame {
                 t.setRowCount(0);
                 try {
                     ResultSet rs = MMS.select("SELECT t0.id, t0.asset_name, t0.asset_desc, t0.asset_type, t0.location_id, t1.location_name, t0.Archived FROM assets t0 JOIN locations t1 ON t0.location_id = t1.id ORDER BY t0.id DESC");
-                    while(rs.next()){
+                    int size = MMS.getPrefs().getInt("tableSizeAssets", -1), count = 0;
+                    while(rs.next() && (size == -1 || count <= size)){
                         Object [] o = new Object[6];
                         o[0] = rs.getObject(1).toString().trim();
                         o[1] = rs.getObject(2).toString().trim();
@@ -1417,6 +1547,7 @@ public class MainFrame extends javax.swing.JFrame {
                         if(o[5].equals("N")){
                             t.addRow(o);
                         }
+                        count++;
                     }
                     rs.close();
                 } catch (SQLException ex) {
@@ -1438,8 +1569,9 @@ public class MainFrame extends javax.swing.JFrame {
                 DefaultTableModel t = (DefaultTableModel)partTable.getModel();
                 t.setRowCount(0);
                 try {
-                    ResultSet rs = MMS.select("SELECT id, part_name, part_qty, part_price, archived FROM parts ORDER BY id DESC");
-                    while(rs.next()){
+                    ResultSet rs = MMS.select("SELECT id, part_name, part_qty, part_cost, archived FROM parts ORDER BY id DESC");
+                    int size = MMS.getPrefs().getInt("tableSizeParts", -1), count = 0;
+                    while(rs.next() && (size == -1 || count <= size)){
                         Object [] o = new Object[5];
                         o[0] = rs.getObject(1).toString().trim();
                         o[1] = rs.getObject(2).toString().trim();
@@ -1449,6 +1581,7 @@ public class MainFrame extends javax.swing.JFrame {
                         if(o[4].equals("N")){
                             t.addRow(o);
                         }
+                        count++;
                     }
                     rs.close();
                 } catch (SQLException ex) {
@@ -1471,7 +1604,8 @@ public class MainFrame extends javax.swing.JFrame {
                 t.setRowCount(0);
                 try {
                     ResultSet rs = MMS.select("SELECT id, employee_name, employee_desc, employee_dept, archived FROM employees ORDER BY id DESC");
-                    while(rs.next()){
+                    int size = MMS.getPrefs().getInt("tableSizeEmployees", -1), count = 0;
+                    while(rs.next() && (size == -1 || count <= size)){
                         Object [] o = new Object[5];
                         o[0] = rs.getObject(1).toString().trim();
                         o[1] = rs.getObject(2).toString().trim();
@@ -1481,6 +1615,7 @@ public class MainFrame extends javax.swing.JFrame {
                         if(o[4].equals("N")){
                             t.addRow(o);
                         }
+                        count++;
                     }
                     rs.close();
                 } catch (SQLException ex) {
@@ -1504,7 +1639,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JTable adminUserTable;
     private javax.swing.JToolBar adminUserTools;
     private javax.swing.JButton archiveAssetButton;
-    private javax.swing.JButton archiveEmpButton;
+    private javax.swing.JButton archiveEmployeeButton;
     private javax.swing.JButton archiveLocationButton;
     private javax.swing.JButton archivePartButton;
     private javax.swing.JButton archiveScheduleButton;
@@ -1520,7 +1655,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JPanel dashButtonPanel;
     private javax.swing.JPanel dashPanel;
     private javax.swing.JButton deleteAssetButton;
-    private javax.swing.JButton deleteEmpButton;
+    private javax.swing.JButton deleteEmployeeButton;
     private javax.swing.JButton deleteLocationButton;
     private javax.swing.JButton deletePartButton;
     private javax.swing.JButton deleteScheduleButton;
@@ -1528,7 +1663,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JButton deleteWOButton;
     private javax.swing.JDesktopPane desktopPane;
     private javax.swing.JButton editAssetButton;
-    private javax.swing.JButton editEmpButton;
+    private javax.swing.JButton editEmployeeButton;
     private javax.swing.JButton editLocationButton;
     private javax.swing.JButton editPartButton;
     private javax.swing.JButton editScheduleButton;
@@ -1556,20 +1691,21 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JToolBar locationTools;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem menuChangePassword;
-    private javax.swing.JMenu menuEdit;
-    private javax.swing.JMenuItem menuEditCopy;
-    private javax.swing.JMenuItem menuEditCut;
-    private javax.swing.JMenuItem menuEditDelete;
-    private javax.swing.JMenuItem menuEditPaste;
-    private javax.swing.JMenuItem menuEditSelect;
     private javax.swing.JMenu menuFile;
+    private javax.swing.JMenuItem menuFileDisconnect;
+    private javax.swing.JMenu menuHelp;
     private javax.swing.JMenuItem menuLogout;
     private javax.swing.JMenu menuTable;
     private javax.swing.JMenuItem menuTableFilter;
     private javax.swing.JMenuItem menuTableRefresh;
+    private javax.swing.JMenu menuTableSize;
+    private javax.swing.JRadioButtonMenuItem menuTableSize1000;
+    private javax.swing.JRadioButtonMenuItem menuTableSize250;
+    private javax.swing.JRadioButtonMenuItem menuTableSize500;
+    private javax.swing.JRadioButtonMenuItem menuTableSizeAll;
     private javax.swing.JMenu menuUser;
     private javax.swing.JButton newAssetButton;
-    private javax.swing.JButton newEmpButton;
+    private javax.swing.JButton newEmployeeButton;
     private javax.swing.JButton newLocationButton;
     private javax.swing.JButton newPartButton;
     private javax.swing.JButton newScheduleButton;
@@ -1590,6 +1726,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JToolBar scheduleTools;
     private javax.swing.JButton statusWOButton;
     private javax.swing.JTabbedPane tabbedPane;
+    private javax.swing.ButtonGroup tableSizeGroup;
     private javax.swing.JButton viewScheduleButton;
     private javax.swing.JButton viewWOButton;
     private javax.swing.JLabel workLoadLabel;

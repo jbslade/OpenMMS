@@ -26,6 +26,10 @@ import javax.swing.Action;
 import javax.swing.JPopupMenu;
 import javax.swing.text.JTextComponent;
 
+/**
+ *
+ * @author J.B. Slade
+ */
 public class ContextMenuMouseListener extends MouseAdapter {
     private final JPopupMenu popup = new JPopupMenu();
 
@@ -43,11 +47,10 @@ public class ContextMenuMouseListener extends MouseAdapter {
 
     public JPopupMenu getPopupMenu(){return popup;}
     
-    public ContextMenuMouseListener() {
-        undoAction = new AbstractAction("Undo") {
-
+    public ContextMenuMouseListener(){
+        undoAction = new AbstractAction("Undo"){
             @Override
-            public void actionPerformed(ActionEvent ae) {
+            public void actionPerformed(ActionEvent ae){
                     textComponent.setText("");
                     textComponent.replaceSelection(savedString);
 
@@ -58,10 +61,9 @@ public class ContextMenuMouseListener extends MouseAdapter {
         popup.add(undoAction);
         popup.addSeparator();
 
-        cutAction = new AbstractAction("Cut") {
-
+        cutAction = new AbstractAction("Cut"){
             @Override
-            public void actionPerformed(ActionEvent ae) {
+            public void actionPerformed(ActionEvent ae){
                 lastActionSelected = Actions.CUT;
                 savedString = textComponent.getText();
                 textComponent.cut();
@@ -70,10 +72,9 @@ public class ContextMenuMouseListener extends MouseAdapter {
 
         popup.add(cutAction);
 
-        copyAction = new AbstractAction("Copy") {
-
+        copyAction = new AbstractAction("Copy"){
             @Override
-            public void actionPerformed(ActionEvent ae) {
+            public void actionPerformed(ActionEvent ae){
                 lastActionSelected = Actions.COPY;
                 textComponent.copy();
             }
@@ -81,10 +82,9 @@ public class ContextMenuMouseListener extends MouseAdapter {
 
         popup.add(copyAction);
 
-        pasteAction = new AbstractAction("Paste") {
-
+        pasteAction = new AbstractAction("Paste"){
             @Override
-            public void actionPerformed(ActionEvent ae) {
+            public void actionPerformed(ActionEvent ae){
                 lastActionSelected = Actions.PASTE;
                 savedString = textComponent.getText();
                 textComponent.paste();
@@ -94,10 +94,9 @@ public class ContextMenuMouseListener extends MouseAdapter {
         popup.add(pasteAction);
         popup.addSeparator();
 
-        selectAllAction = new AbstractAction("Select All") {
-
+        selectAllAction = new AbstractAction("Select All"){
             @Override
-            public void actionPerformed(ActionEvent ae) {
+            public void actionPerformed(ActionEvent ae){
                 lastActionSelected = Actions.SELECT_ALL;
                 textComponent.selectAll();
             }
@@ -107,9 +106,9 @@ public class ContextMenuMouseListener extends MouseAdapter {
     }
 
     @Override
-    public void mouseClicked(MouseEvent e) {
-        if (e.getModifiers() == InputEvent.BUTTON3_MASK) {
-            if (!(e.getSource() instanceof JTextComponent)) {
+    public void mouseClicked(MouseEvent e){
+        if (e.getModifiers() == InputEvent.BUTTON3_MASK){
+            if (!(e.getSource() instanceof JTextComponent)){
                 return;
             }
 
@@ -131,7 +130,7 @@ public class ContextMenuMouseListener extends MouseAdapter {
 
             int nx = e.getX();
 
-            if (nx > 500) {
+            if (nx > 500){
                 nx = nx - popup.getSize().width;
             }
 

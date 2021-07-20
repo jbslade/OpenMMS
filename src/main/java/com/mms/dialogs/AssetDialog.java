@@ -34,6 +34,8 @@ public class AssetDialog extends javax.swing.JInternalFrame {
     
     public AssetDialog(JTable t) {
         initComponents();
+        nameField.addMouseListener(MMS.getMouseListener());
+        descField.addMouseListener(MMS.getMouseListener());
         getRootPane().setDefaultButton(button);
         table = t;
         
@@ -43,6 +45,8 @@ public class AssetDialog extends javax.swing.JInternalFrame {
     
     public AssetDialog(JTable t, int r) {
         initComponents();
+        nameField.addMouseListener(MMS.getMouseListener());
+        descField.addMouseListener(MMS.getMouseListener());
         getRootPane().setDefaultButton(button);
         table = t;
         row = r;

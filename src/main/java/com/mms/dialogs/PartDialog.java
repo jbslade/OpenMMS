@@ -34,12 +34,16 @@ public class PartDialog extends javax.swing.JInternalFrame {
     
     public PartDialog(JTable t) {
         initComponents();
+        nameField.addMouseListener(MMS.getMouseListener());
+        priceField.addMouseListener(MMS.getMouseListener());
         getRootPane().setDefaultButton(button);
         table = t;
     }
     
     public PartDialog(JTable t, int r) {
         initComponents();
+        nameField.addMouseListener(MMS.getMouseListener());
+        priceField.addMouseListener(MMS.getMouseListener());
         getRootPane().setDefaultButton(button);
         table = t;
         row = r;
@@ -60,7 +64,6 @@ public class PartDialog extends javax.swing.JInternalFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-        java.awt.GridBagConstraints gridBagConstraints;
 
         backPanel = new javax.swing.JPanel();
         nameLabel = new javax.swing.JLabel();
@@ -107,7 +110,7 @@ public class PartDialog extends javax.swing.JInternalFrame {
             }
         });
 
-        priceLabel.setText("Price/Unit:");
+        priceLabel.setText("Cost/Unit:");
 
         priceField.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("###0.###"))));
         priceField.setText("0.00");
@@ -194,7 +197,7 @@ public class PartDialog extends javax.swing.JInternalFrame {
                     }
                     partNo++;
                     //Insert into DB
-                    MMS.executeQuery("INSERT INTO parts (id, part_name, part_qty, part_price, archived) VALUES (?, ?, ?, ?, 'N')",
+                    MMS.executeQuery("INSERT INTO parts (id, part_name, part_qty, part_cost, archived) VALUES (?, ?, ?, ?, 'N')",
                             new Object[]{partNo, name, qty, price});
                     //Insert into table
                     Object [] o = {partNo, name, qty, price};
@@ -207,7 +210,7 @@ public class PartDialog extends javax.swing.JInternalFrame {
                 //Get selected number
                 int partNo = Integer.parseInt(table.getValueAt(row, 0).toString());
                 //Update database
-                MMS.executeQuery("UPDATE parts SET part_name = ?, part_qty = ?, part_price = ? WHERE id = ?",
+                MMS.executeQuery("UPDATE parts SET part_name = ?, part_qty = ?, part_cost = ? WHERE id = ?",
                         new Object[]{name, qty, partNo, price});
                 //Update table
                 table.setValueAt(name, row, 1);

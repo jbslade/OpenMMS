@@ -51,6 +51,11 @@ public class Setup extends javax.swing.JDialog {
     public Setup(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        derbyNameField.addMouseListener(MMS.getMouseListener());
+        srvrField.addMouseListener(MMS.getMouseListener());
+        srvrDBField.addMouseListener(MMS.getMouseListener());
+        srvrUsrField.addMouseListener(MMS.getMouseListener());
+        srvrPassField.addMouseListener(MMS.getMouseListener());
         getRootPane().setDefaultButton(continueButton);
         try {
             derbyDirField.setText(new File(MMS.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile().getPath());
@@ -607,7 +612,7 @@ public class Setup extends javax.swing.JDialog {
                 + "id INT PRIMARY KEY,"
                 + "part_name VARCHAR(50),"
                 + "part_qty INT,"
-                + "part_price DECIMAL(19, 2),"
+                + "part_cost DECIMAL(19, 2),"
                 + "archived VARCHAR(1)"
                 + ")");
         
