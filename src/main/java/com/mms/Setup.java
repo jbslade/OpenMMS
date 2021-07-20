@@ -133,7 +133,7 @@ public class Setup extends javax.swing.JDialog {
         srvrLabel.setText("Address:");
         srvrLabel.setEnabled(false);
 
-        srvrDBField.setText(MMS.NAME+"_DB");
+        srvrDBField.setText(MMS.NAME);
         srvrDBField.setEnabled(false);
         srvrDBField.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -516,6 +516,7 @@ public class Setup extends javax.swing.JDialog {
     }//GEN-LAST:event_serverRadioStateChanged
 
     private void derbyDirButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_derbyDirButtonActionPerformed
+        dbSelector.setCurrentDirectory(new File(derbyDirField.getText()));
         if(dbSelector.showDialog(this, "Select") == JFileChooser.APPROVE_OPTION){
             derbyDirField.setText(dbSelector.getSelectedFile()+"");
         }
@@ -596,6 +597,7 @@ public class Setup extends javax.swing.JDialog {
                 + "id INT PRIMARY KEY,"
                 + "asset_name VARCHAR(50),"
                 + "asset_desc VARCHAR(100),"
+                + "asset_type VARCHAR(50),"
                 + "location_id INT,"
                 + "archived VARCHAR(1)"
                 + ")");
@@ -605,6 +607,7 @@ public class Setup extends javax.swing.JDialog {
                 + "id INT PRIMARY KEY,"
                 + "part_name VARCHAR(50),"
                 + "part_qty INT,"
+                + "part_price DECIMAL(19, 2),"
                 + "archived VARCHAR(1)"
                 + ")");
         
@@ -627,6 +630,8 @@ public class Setup extends javax.swing.JDialog {
         MMS.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES (?, ?)", new Object[]{"employee_dept", "Technical"});
         MMS.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES (?, ?)", new Object[]{"employee_dept", "Production"});
         MMS.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES (?, ?)", new Object[]{"employee_dept", "IT"});
+        MMS.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES (?, ?)", new Object[]{"employee_dept", "Contractor"});
+        MMS.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES (?, ?)", new Object[]{"asset_type", "Production Machine"});
         
         System.out.println("[DATABASE] Database tables created");
     }

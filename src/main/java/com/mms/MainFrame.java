@@ -15,7 +15,7 @@
  */
 package com.mms;
 
-import com.mms.panels.FilterPanel;
+import com.mms.panels.FindPanel;
 import com.mms.dialogs.InternalDialog;
 import com.mms.panels.PopupPanel;
 import com.mms.dialogs.AssetDialog;
@@ -42,8 +42,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class MainFrame extends javax.swing.JFrame {
     
-    private FilterPanel filter;
-    private boolean logout;
+    private FindPanel find;
     
     public MainFrame() {
         initComponents();
@@ -54,43 +53,54 @@ public class MainFrame extends javax.swing.JFrame {
         menuBar.add(Box.createHorizontalGlue());
         menuBar.add(menuUser);
         
-        //Tab pane
+        //Tab panes
         tabbedPane.putClientProperty("JTabbedPane.tabWidthMode", "equal");
         tabbedPane.putClientProperty("JTabbedPane.tabIconPlacement", SwingConstants.TOP);
-        tabbedPane.setIconAt(0, MMS.workOrdersIcon);
-        tabbedPane.setIconAt(1, MMS.scheduleIcon);
-        tabbedPane.setIconAt(2, MMS.locationIcon);
+        tabbedPane.setIconAt(0, MMS.dashboardIcon);
+        tabbedPane.setIconAt(1, MMS.workOrdersIcon);
+        tabbedPane.setIconAt(2, MMS.scheduleIcon);
         tabbedPane.setIconAt(3, MMS.assetsIcon);
-        tabbedPane.setIconAt(4, MMS.partsIcon);
-        tabbedPane.setIconAt(5, MMS.employeesIcon);
-        tabbedPane.setIconAt(6, MMS.reportsIcon);
-        tabbedPane.setIconAt(7, MMS.systemIcon);
+        tabbedPane.setIconAt(4, MMS.locationIcon);
+        tabbedPane.setIconAt(5, MMS.partsIcon);
+        tabbedPane.setIconAt(6, MMS.employeesIcon);
+        tabbedPane.setIconAt(7, MMS.reportsIcon);
+        tabbedPane.setIconAt(8, MMS.systemIcon);
+        adminTabbedPane.putClientProperty("JTabbedPane.tabWidthMode", "equal");
+        adminTabbedPane.putClientProperty("JTabbedPane.tabAreaAlignment", SwingConstants.CENTER);
         
         //Tables
         workOrderTable.setBackground(Color.white);
         workOrderTable.getTableHeader().setBackground(Color.white);
         workOrderTable.getTableHeader().setBorder(new MatteBorder(0,0,1,0, workOrderTable.getGridColor()));
-        workOrderTable.setAutoCreateRowSorter(true);
+        workOrderTable.setShowGrid(true);
         scheduleTable.setBackground(Color.white);
         scheduleTable.getTableHeader().setBackground(Color.white);
         scheduleTable.getTableHeader().setBorder(new MatteBorder(0,0,1,0, scheduleTable.getGridColor()));
-        scheduleTable.setAutoCreateRowSorter(true);
-        locationTable.setBackground(Color.white);
-        locationTable.getTableHeader().setBackground(Color.white);
-        locationTable.getTableHeader().setBorder(new MatteBorder(0,0,1,0, locationTable.getGridColor()));
-        locationTable.setAutoCreateRowSorter(true);
+        scheduleTable.setShowGrid(true);
         assetTable.setBackground(Color.white);
         assetTable.getTableHeader().setBackground(Color.white);
         assetTable.getTableHeader().setBorder(new MatteBorder(0,0,1,0, assetTable.getGridColor()));
-        assetTable.setAutoCreateRowSorter(true);
+        assetTable.setShowGrid(true);
+        locationTable.setBackground(Color.white);
+        locationTable.getTableHeader().setBackground(Color.white);
+        locationTable.getTableHeader().setBorder(new MatteBorder(0,0,1,0, locationTable.getGridColor()));
+        locationTable.setShowGrid(true);
+        partTable.setBackground(Color.white);
+        partTable.getTableHeader().setBackground(Color.white);
+        partTable.getTableHeader().setBorder(new MatteBorder(0,0,1,0, partTable.getGridColor()));
+        partTable.setAutoCreateRowSorter(true);
+        partTable.setShowGrid(true);
         employeeTable.setBackground(Color.white);
         employeeTable.getTableHeader().setBackground(Color.white);
         employeeTable.getTableHeader().setBorder(new MatteBorder(0,0,1,0, employeeTable.getGridColor()));
-        employeeTable.setAutoCreateRowSorter(true);
+        employeeTable.setShowGrid(true);
+        adminUserTable.setBackground(Color.white);
+        adminUserTable.getTableHeader().setBackground(Color.white);
+        adminUserTable.getTableHeader().setBorder(new MatteBorder(0,0,1,0, adminUserTable.getGridColor()));
+        adminUserTable.setShowGrid(true);
         
         //Set user
         menuUser.setText(MMS.getUser());
-        logout = false;
     }
 
     /**
@@ -105,6 +115,12 @@ public class MainFrame extends javax.swing.JFrame {
         backPanel = new javax.swing.JPanel();
         desktopPane = new javax.swing.JDesktopPane();
         tabbedPane = new javax.swing.JTabbedPane();
+        dashPanel = new javax.swing.JPanel();
+        dashButtonPanel = new javax.swing.JPanel();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
         workOrderPanel = new javax.swing.JPanel();
         workOrderTools = new javax.swing.JToolBar();
         newWOButton = new javax.swing.JButton();
@@ -131,16 +147,6 @@ public class MainFrame extends javax.swing.JFrame {
         scheduleLoadLabel = new javax.swing.JLabel();
         scheduleScroll = new javax.swing.JScrollPane();
         scheduleTable = new javax.swing.JTable();
-        locationPanel = new javax.swing.JPanel();
-        locationTools = new javax.swing.JToolBar();
-        newLocationButton = new javax.swing.JButton();
-        editLocationButton = new javax.swing.JButton();
-        deleteLocationButton = new javax.swing.JButton();
-        archiveLocationButton = new javax.swing.JButton();
-        filler3 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
-        locationLoadLabel = new javax.swing.JLabel();
-        locationScroll = new javax.swing.JScrollPane();
-        locationTable = new javax.swing.JTable();
         assetPanel = new javax.swing.JPanel();
         assetTools = new javax.swing.JToolBar();
         newAssetButton = new javax.swing.JButton();
@@ -151,6 +157,16 @@ public class MainFrame extends javax.swing.JFrame {
         assetLoadLabel = new javax.swing.JLabel();
         assetScroll = new javax.swing.JScrollPane();
         assetTable = new javax.swing.JTable();
+        locationPanel = new javax.swing.JPanel();
+        locationTools = new javax.swing.JToolBar();
+        newLocationButton = new javax.swing.JButton();
+        editLocationButton = new javax.swing.JButton();
+        deleteLocationButton = new javax.swing.JButton();
+        archiveLocationButton = new javax.swing.JButton();
+        filler3 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
+        locationLoadLabel = new javax.swing.JLabel();
+        locationScroll = new javax.swing.JScrollPane();
+        locationTable = new javax.swing.JTable();
         partPanel = new javax.swing.JPanel();
         partTools = new javax.swing.JToolBar();
         newPartButton = new javax.swing.JButton();
@@ -175,16 +191,24 @@ public class MainFrame extends javax.swing.JFrame {
         adminPanel = new javax.swing.JPanel();
         adminTabbedPane = new javax.swing.JTabbedPane();
         adminUserPanel = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jPanel2 = new javax.swing.JPanel();
-        jPanel3 = new javax.swing.JPanel();
+        adminUserScroll = new javax.swing.JScrollPane();
+        adminUserTable = new javax.swing.JTable();
+        adminUserTools = new javax.swing.JToolBar();
+        newUser = new javax.swing.JButton();
+        editUser = new javax.swing.JButton();
+        deleteUser = new javax.swing.JButton();
+        resetUserPass = new javax.swing.JButton();
+        adminArchivePanel = new javax.swing.JPanel();
+        adminCustomPanel = new javax.swing.JPanel();
+        adminUpdatePanel = new javax.swing.JPanel();
         menuBar = new javax.swing.JMenuBar();
         menuFile = new javax.swing.JMenu();
         menuEdit = new javax.swing.JMenu();
+        menuEditCut = new javax.swing.JMenuItem();
+        menuEditCopy = new javax.swing.JMenuItem();
+        menuEditPaste = new javax.swing.JMenuItem();
+        menuEditDelete = new javax.swing.JMenuItem();
+        menuEditSelect = new javax.swing.JMenuItem();
         menuTable = new javax.swing.JMenu();
         menuTableFilter = new javax.swing.JMenuItem();
         menuTableRefresh = new javax.swing.JMenuItem();
@@ -207,6 +231,58 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
 
+        dashButtonPanel.setLayout(new java.awt.GridLayout());
+
+        jButton1.setBackground(new java.awt.Color(255, 255, 255));
+        jButton1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/tabs/workOrders.png"))); // NOI18N
+        jButton1.setText("3 Open Work Orders");
+        jButton1.setFocusable(false);
+        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        dashButtonPanel.add(jButton1);
+
+        jButton2.setBackground(new java.awt.Color(255, 255, 255));
+        jButton2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/tabs/schedule.png"))); // NOI18N
+        jButton2.setText("3 Tasks Due Today");
+        jButton2.setFocusable(false);
+        jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        dashButtonPanel.add(jButton2);
+
+        jButton4.setText("jButton4");
+        jButton4.setFocusable(false);
+        dashButtonPanel.add(jButton4);
+
+        jButton3.setText("jButton3");
+        jButton3.setFocusable(false);
+        dashButtonPanel.add(jButton3);
+
+        javax.swing.GroupLayout dashPanelLayout = new javax.swing.GroupLayout(dashPanel);
+        dashPanel.setLayout(dashPanelLayout);
+        dashPanelLayout.setHorizontalGroup(
+            dashPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(dashPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(dashButtonPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 768, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        dashPanelLayout.setVerticalGroup(
+            dashPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(dashPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(dashButtonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(424, Short.MAX_VALUE))
+        );
+
+        tabbedPane.addTab("Dashboard", dashPanel);
+
         workOrderTools.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         workOrderTools.setFloatable(false);
         workOrderTools.setRollover(true);
@@ -221,6 +297,11 @@ public class MainFrame extends javax.swing.JFrame {
 
         deleteWOButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/delete.png"))); // NOI18N
         deleteWOButton.setText("Delete");
+        deleteWOButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteWOButtonActionPerformed(evt);
+            }
+        });
         workOrderTools.add(deleteWOButton);
 
         archiveWOButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/archive.png"))); // NOI18N
@@ -246,6 +327,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         workOrderScroll.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 0, 0, 0, new java.awt.Color(204, 204, 204)));
 
+        workOrderTable.setAutoCreateRowSorter(true);
         workOrderTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -296,6 +378,11 @@ public class MainFrame extends javax.swing.JFrame {
 
         deleteScheduleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/delete.png"))); // NOI18N
         deleteScheduleButton.setText("Delete");
+        deleteScheduleButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteScheduleButtonActionPerformed(evt);
+            }
+        });
         scheduleTools.add(deleteScheduleButton);
 
         archiveScheduleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/archive.png"))); // NOI18N
@@ -321,6 +408,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         scheduleScroll.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 0, 0, 0, new java.awt.Color(204, 204, 204)));
 
+        scheduleTable.setAutoCreateRowSorter(true);
         scheduleTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -356,89 +444,6 @@ public class MainFrame extends javax.swing.JFrame {
         );
 
         tabbedPane.addTab("Schedule", schedulePanel);
-
-        locationTools.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        locationTools.setFloatable(false);
-        locationTools.setRollover(true);
-
-        newLocationButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/new.png"))); // NOI18N
-        newLocationButton.setText("New");
-        newLocationButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                newLocationButtonActionPerformed(evt);
-            }
-        });
-        locationTools.add(newLocationButton);
-
-        editLocationButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/edit.png"))); // NOI18N
-        editLocationButton.setText("Edit");
-        editLocationButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                editLocationButtonActionPerformed(evt);
-            }
-        });
-        locationTools.add(editLocationButton);
-
-        deleteLocationButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/delete.png"))); // NOI18N
-        deleteLocationButton.setText("Delete");
-        deleteLocationButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                deleteLocationButtonActionPerformed(evt);
-            }
-        });
-        locationTools.add(deleteLocationButton);
-
-        archiveLocationButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/archive.png"))); // NOI18N
-        archiveLocationButton.setText("Archive");
-        archiveLocationButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                archiveLocationButtonActionPerformed(evt);
-            }
-        });
-        locationTools.add(archiveLocationButton);
-        locationTools.add(filler3);
-
-        locationLoadLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ajax.gif"))); // NOI18N
-        locationLoadLabel.setText("  ");
-        locationTools.add(locationLoadLabel);
-
-        locationScroll.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 0, 0, 0, new java.awt.Color(204, 204, 204)));
-
-        locationTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "No.", "Name", "Description"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        locationTable.setDragEnabled(true);
-        locationScroll.setViewportView(locationTable);
-
-        javax.swing.GroupLayout locationPanelLayout = new javax.swing.GroupLayout(locationPanel);
-        locationPanel.setLayout(locationPanelLayout);
-        locationPanelLayout.setHorizontalGroup(
-            locationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(locationTools, javax.swing.GroupLayout.DEFAULT_SIZE, 788, Short.MAX_VALUE)
-            .addComponent(locationScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 788, Short.MAX_VALUE)
-        );
-        locationPanelLayout.setVerticalGroup(
-            locationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(locationPanelLayout.createSequentialGroup()
-                .addComponent(locationTools, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(locationScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 544, Short.MAX_VALUE))
-        );
-
-        tabbedPane.addTab("Locations", locationPanel);
 
         assetTools.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         assetTools.setFloatable(false);
@@ -487,16 +492,17 @@ public class MainFrame extends javax.swing.JFrame {
 
         assetScroll.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 0, 0, 0, new java.awt.Color(204, 204, 204)));
 
+        assetTable.setAutoCreateRowSorter(true);
         assetTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "No.", "Name", "Description", "Location"
+                "No.", "Name", "Description", "Type", "Location"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -522,6 +528,90 @@ public class MainFrame extends javax.swing.JFrame {
         );
 
         tabbedPane.addTab("Assets", assetPanel);
+
+        locationTools.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        locationTools.setFloatable(false);
+        locationTools.setRollover(true);
+
+        newLocationButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/new.png"))); // NOI18N
+        newLocationButton.setText("New");
+        newLocationButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                newLocationButtonActionPerformed(evt);
+            }
+        });
+        locationTools.add(newLocationButton);
+
+        editLocationButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/edit.png"))); // NOI18N
+        editLocationButton.setText("Edit");
+        editLocationButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editLocationButtonActionPerformed(evt);
+            }
+        });
+        locationTools.add(editLocationButton);
+
+        deleteLocationButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/delete.png"))); // NOI18N
+        deleteLocationButton.setText("Delete");
+        deleteLocationButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteLocationButtonActionPerformed(evt);
+            }
+        });
+        locationTools.add(deleteLocationButton);
+
+        archiveLocationButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/archive.png"))); // NOI18N
+        archiveLocationButton.setText("Archive");
+        archiveLocationButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                archiveLocationButtonActionPerformed(evt);
+            }
+        });
+        locationTools.add(archiveLocationButton);
+        locationTools.add(filler3);
+
+        locationLoadLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ajax.gif"))); // NOI18N
+        locationLoadLabel.setText("  ");
+        locationTools.add(locationLoadLabel);
+
+        locationScroll.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 0, 0, 0, new java.awt.Color(204, 204, 204)));
+
+        locationTable.setAutoCreateRowSorter(true);
+        locationTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "No.", "Name", "Description"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        locationTable.setDragEnabled(true);
+        locationScroll.setViewportView(locationTable);
+
+        javax.swing.GroupLayout locationPanelLayout = new javax.swing.GroupLayout(locationPanel);
+        locationPanel.setLayout(locationPanelLayout);
+        locationPanelLayout.setHorizontalGroup(
+            locationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(locationTools, javax.swing.GroupLayout.DEFAULT_SIZE, 788, Short.MAX_VALUE)
+            .addComponent(locationScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 788, Short.MAX_VALUE)
+        );
+        locationPanelLayout.setVerticalGroup(
+            locationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(locationPanelLayout.createSequentialGroup()
+                .addComponent(locationTools, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(locationScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 544, Short.MAX_VALUE))
+        );
+
+        tabbedPane.addTab("Locations", locationPanel);
 
         partTools.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         partTools.setFloatable(false);
@@ -570,16 +660,17 @@ public class MainFrame extends javax.swing.JFrame {
 
         partScroll.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 0, 0, 0, new java.awt.Color(204, 204, 204)));
 
+        partTable.setAutoCreateRowSorter(true);
         partTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "No.", "Name", "Quantity"
+                "No.", "Name", "Quantity", "Price/Unit"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false
+                false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -653,6 +744,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         employeeScroll.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 0, 0, 0, new java.awt.Color(204, 204, 204)));
 
+        employeeTable.setAutoCreateRowSorter(true);
         employeeTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -704,78 +796,113 @@ public class MainFrame extends javax.swing.JFrame {
 
         adminTabbedPane.setFocusable(false);
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        adminUserScroll.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 0, 0, 0, new java.awt.Color(204, 204, 204)));
+
+        adminUserTable.setAutoCreateRowSorter(true);
+        adminUserTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Username", "Access Level", "Logged"
+                "Username", "User Level", "Logged In"
             }
-        ));
-        jScrollPane1.setViewportView(jTable1);
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
 
-        jButton1.setText("Add");
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        adminUserTable.setDragEnabled(true);
+        adminUserScroll.setViewportView(adminUserTable);
 
-        jButton2.setText("Edit");
+        adminUserTools.setFloatable(false);
+        adminUserTools.setRollover(true);
 
-        jButton3.setText("Reset Password");
+        newUser.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/new.png"))); // NOI18N
+        newUser.setText("New");
+        newUser.setFocusable(false);
+        newUser.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        newUser.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        adminUserTools.add(newUser);
+
+        editUser.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/edit.png"))); // NOI18N
+        editUser.setText("Edit");
+        editUser.setFocusable(false);
+        editUser.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        editUser.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        adminUserTools.add(editUser);
+
+        deleteUser.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/delete.png"))); // NOI18N
+        deleteUser.setText("Delete");
+        deleteUser.setFocusable(false);
+        deleteUser.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        deleteUser.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        adminUserTools.add(deleteUser);
+
+        resetUserPass.setText("Reset Password");
+        resetUserPass.setFocusable(false);
+        resetUserPass.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        resetUserPass.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        adminUserTools.add(resetUserPass);
 
         javax.swing.GroupLayout adminUserPanelLayout = new javax.swing.GroupLayout(adminUserPanel);
         adminUserPanel.setLayout(adminUserPanelLayout);
         adminUserPanelLayout.setHorizontalGroup(
             adminUserPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(adminUserPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 634, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(adminUserPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton2, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton3, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addContainerGap())
+            .addComponent(adminUserScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 783, Short.MAX_VALUE)
+            .addComponent(adminUserTools, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         adminUserPanelLayout.setVerticalGroup(
             adminUserPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(adminUserPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(adminUserPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(adminUserPanelLayout.createSequentialGroup()
-                        .addComponent(jButton1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton3))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(97, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, adminUserPanelLayout.createSequentialGroup()
+                .addComponent(adminUserTools, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(adminUserScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 516, Short.MAX_VALUE))
         );
 
         adminTabbedPane.addTab("Users", adminUserPanel);
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout adminArchivePanelLayout = new javax.swing.GroupLayout(adminArchivePanel);
+        adminArchivePanel.setLayout(adminArchivePanelLayout);
+        adminArchivePanelLayout.setHorizontalGroup(
+            adminArchivePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 783, Short.MAX_VALUE)
         );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        adminArchivePanelLayout.setVerticalGroup(
+            adminArchivePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 539, Short.MAX_VALUE)
         );
 
-        adminTabbedPane.addTab("Updates", jPanel2);
+        adminTabbedPane.addTab("Archive", adminArchivePanel);
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout adminCustomPanelLayout = new javax.swing.GroupLayout(adminCustomPanel);
+        adminCustomPanel.setLayout(adminCustomPanelLayout);
+        adminCustomPanelLayout.setHorizontalGroup(
+            adminCustomPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 783, Short.MAX_VALUE)
         );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        adminCustomPanelLayout.setVerticalGroup(
+            adminCustomPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 539, Short.MAX_VALUE)
         );
 
-        adminTabbedPane.addTab("tab3", jPanel3);
+        adminTabbedPane.addTab("Custom Fields", adminCustomPanel);
+
+        javax.swing.GroupLayout adminUpdatePanelLayout = new javax.swing.GroupLayout(adminUpdatePanel);
+        adminUpdatePanel.setLayout(adminUpdatePanelLayout);
+        adminUpdatePanelLayout.setHorizontalGroup(
+            adminUpdatePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 783, Short.MAX_VALUE)
+        );
+        adminUpdatePanelLayout.setVerticalGroup(
+            adminUpdatePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 541, Short.MAX_VALUE)
+        );
+
+        adminTabbedPane.addTab("Updates", adminUpdatePanel);
 
         javax.swing.GroupLayout adminPanelLayout = new javax.swing.GroupLayout(adminPanel);
         adminPanel.setLayout(adminPanelLayout);
@@ -818,14 +945,44 @@ public class MainFrame extends javax.swing.JFrame {
         menuBar.add(menuFile);
 
         menuEdit.setText("Edit");
+
+        menuEditCut.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        menuEditCut.setText("Cut");
+        menuEdit.add(menuEditCut);
+
+        menuEditCopy.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        menuEditCopy.setText("Copy");
+        menuEdit.add(menuEditCopy);
+
+        menuEditPaste.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_V, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        menuEditPaste.setText("Paste");
+        menuEditPaste.setToolTipText("");
+        menuEdit.add(menuEditPaste);
+
+        menuEditDelete.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DELETE, 0));
+        menuEditDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/delete.png"))); // NOI18N
+        menuEditDelete.setText("Delete");
+        menuEditDelete.setToolTipText("");
+        menuEditDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuEditDeleteActionPerformed(evt);
+            }
+        });
+        menuEdit.add(menuEditDelete);
+
+        menuEditSelect.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        menuEditSelect.setText("Select All");
+        menuEditSelect.setToolTipText("");
+        menuEdit.add(menuEditSelect);
+
         menuBar.add(menuEdit);
 
         menuTable.setText("Table");
 
         menuTableFilter.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F, java.awt.event.InputEvent.CTRL_DOWN_MASK));
-        menuTableFilter.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/filter.png"))); // NOI18N
+        menuTableFilter.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/find.png"))); // NOI18N
         menuTableFilter.setMnemonic('F');
-        menuTableFilter.setText("Filter");
+        menuTableFilter.setText("Find");
         menuTableFilter.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 menuTableFilterActionPerformed(evt);
@@ -1001,22 +1158,19 @@ public class MainFrame extends javax.swing.JFrame {
     private void menuTableRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuTableRefreshActionPerformed
         int index = tabbedPane.getSelectedIndex();
         switch(index){
-            case 0: //Work orders
+            case 1: //Work orders
                 break;
-            case 1: //Schedule
-                break;
-            case 2: //Locations
-                loadLocations(locationTable.getSelectedRow());
+            case 2: //Schedule
                 break;
             case 3: //Assets
-                loadAssets(assetTable.getSelectedRow());
-                break;
-            case 4: //Parts
-                loadParts(partTable.getSelectedRow());
-                break;
-            case 5: //Employees
-                loadEmployees(employeeTable.getSelectedRow());
-                break;
+                loadAssets(assetTable.getSelectedRow()); break;
+            case 4: //Locations
+                loadLocations(locationTable.getSelectedRow()); break;
+            case 5: //Parts
+                loadParts(partTable.getSelectedRow()); break;
+            case 6: //Employees
+                loadEmployees(employeeTable.getSelectedRow()); break;
+            default: break;
         }
     }//GEN-LAST:event_menuTableRefreshActionPerformed
 
@@ -1071,25 +1225,44 @@ public class MainFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_archiveEmpButtonActionPerformed
 
-    //Table Filter
+    //find
     private void menuTableFilterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuTableFilterActionPerformed
         JTable table = null;
         JPanel panel = null;
         switch(tabbedPane.getSelectedIndex()){
-            case 0: table = workOrderTable; panel = workOrderPanel; break;
-            case 1: table = scheduleTable; panel = schedulePanel; break;
-            case 2: table = locationTable; panel = locationPanel; break;
+            case 1: table = workOrderTable; panel = workOrderPanel; break;
+            case 2: table = scheduleTable; panel = schedulePanel; break;     
             case 3: table = assetTable; panel = assetPanel; break;
-            case 4: table = partTable; panel = partPanel; break;
-            case 5: table = employeeTable; panel = employeePanel; break;
+            case 4: table = locationTable; panel = locationPanel; break;
+            case 5: table = partTable; panel = partPanel; break;
+            case 6: table = employeeTable; panel = employeePanel; break;
+            default: break;
         }
-        if(filter == null) filter = new FilterPanel(table, panel);
-        else if(!filter.isActive()) filter = new FilterPanel(table, panel);
+        if(table != null && find == null) find = new FindPanel(table, panel, "");
+        else if(table != null && !find.isActive()) find = new FindPanel(table, panel, "");
     }//GEN-LAST:event_menuTableFilterActionPerformed
 
-    //Close filter (if tab changed)
+    //Tab changed
     private void tabbedPaneStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_tabbedPaneStateChanged
-        if(filter != null) filter.close();
+        //Close find
+        if(find != null) find.close();
+        //Remove Table from menu
+        switch(tabbedPane.getSelectedIndex()){
+            case 0: //Dashboard
+            case 7: //Reports
+            case 8: //Admin
+                menuTable.setVisible(false);
+                break;
+            case 1: //Work Orders
+            case 2: //Schedule
+            case 3: //Assets
+            case 4: //Locations
+            case 5: //Parts
+            case 6: //Employees
+                menuTable.setVisible(true);
+                break;
+            default: break;
+        }
     }//GEN-LAST:event_tabbedPaneStateChanged
 
     //Change password
@@ -1143,6 +1316,7 @@ public class MainFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_deletePartButtonActionPerformed
 
+    //Archive Part
     private void archivePartButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_archivePartButtonActionPerformed
         if(InternalDialog.showInternalConfirmDialog(desktopPane, "Are you sure you want to archive "+partTable.getValueAt(partTable.getSelectedRow(), 1)+"?", "Archive Part", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null) == 0){
             int partNo = Integer.parseInt(partTable.getValueAt(partTable.getSelectedRow(), 0).toString());
@@ -1156,6 +1330,40 @@ public class MainFrame extends javax.swing.JFrame {
             if(partTable.getRowCount() != 0) partTable.setRowSelectionInterval(0, 0);
         }
     }//GEN-LAST:event_archivePartButtonActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        tabbedPane.setSelectedIndex(1);
+        find = new FindPanel(workOrderTable, workOrderPanel, "Open");
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    //Menu delete
+    private void menuEditDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuEditDeleteActionPerformed
+        switch(tabbedPane.getSelectedIndex()){
+            case 1: //Work Orders
+                deleteWOButtonActionPerformed(null); break;
+            case 2: //Schedule
+                deleteScheduleButtonActionPerformed(null); break;
+            case 3: //Assets
+                deleteAssetButtonActionPerformed(null); break;
+            case 4: //Locations
+                deleteLocationButtonActionPerformed(null); break;
+            case 5: //Parts
+                deletePartButtonActionPerformed(null); break;
+            case 6: //Employees
+                deleteEmpButtonActionPerformed(null); break;
+            default: break;
+        }
+    }//GEN-LAST:event_menuEditDeleteActionPerformed
+
+    //Delete Work Order
+    private void deleteWOButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteWOButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_deleteWOButtonActionPerformed
+
+    //Delete Schedule
+    private void deleteScheduleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteScheduleButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_deleteScheduleButtonActionPerformed
 
     //Load locations
     public void loadLocations(int row){
@@ -1197,15 +1405,16 @@ public class MainFrame extends javax.swing.JFrame {
                 DefaultTableModel t = (DefaultTableModel)assetTable.getModel();
                 t.setRowCount(0);
                 try {
-                    ResultSet rs = MMS.select("SELECT t0.id, t0.asset_name, t0.asset_desc, t0.location_id, t1.location_name, t0.Archived FROM assets t0 JOIN locations t1 ON t0.location_id = t1.id ORDER BY t0.id DESC");
+                    ResultSet rs = MMS.select("SELECT t0.id, t0.asset_name, t0.asset_desc, t0.asset_type, t0.location_id, t1.location_name, t0.Archived FROM assets t0 JOIN locations t1 ON t0.location_id = t1.id ORDER BY t0.id DESC");
                     while(rs.next()){
-                        Object [] o = new Object[5];
+                        Object [] o = new Object[6];
                         o[0] = rs.getObject(1).toString().trim();
                         o[1] = rs.getObject(2).toString().trim();
                         o[2] = rs.getObject(3).toString().trim();
-                        o[3] = rs.getObject(4).toString().trim()+" - "+rs.getObject(5).toString().trim();
-                        o[4] = rs.getObject(6).toString().trim();
-                        if(o[4].equals("N")){
+                        o[3] = rs.getObject(4).toString().trim();
+                        o[4] = rs.getObject(5).toString().trim()+" - "+rs.getObject(6).toString().trim();
+                        o[5] = rs.getObject(7).toString().trim();
+                        if(o[5].equals("N")){
                             t.addRow(o);
                         }
                     }
@@ -1229,14 +1438,15 @@ public class MainFrame extends javax.swing.JFrame {
                 DefaultTableModel t = (DefaultTableModel)partTable.getModel();
                 t.setRowCount(0);
                 try {
-                    ResultSet rs = MMS.select("SELECT id, part_name, part_qty, archived FROM parts ORDER BY id DESC");
+                    ResultSet rs = MMS.select("SELECT id, part_name, part_qty, part_price, archived FROM parts ORDER BY id DESC");
                     while(rs.next()){
-                        Object [] o = new Object[4];
+                        Object [] o = new Object[5];
                         o[0] = rs.getObject(1).toString().trim();
                         o[1] = rs.getObject(2).toString().trim();
                         o[2] = rs.getObject(3).toString().trim();
                         o[3] = rs.getObject(4).toString().trim();
-                        if(o[3].equals("N")){
+                        o[4] = rs.getObject(5).toString().trim();
+                        if(o[4].equals("N")){
                             t.addRow(o);
                         }
                     }
@@ -1284,9 +1494,15 @@ public class MainFrame extends javax.swing.JFrame {
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel adminArchivePanel;
+    private javax.swing.JPanel adminCustomPanel;
     private javax.swing.JPanel adminPanel;
     private javax.swing.JTabbedPane adminTabbedPane;
+    private javax.swing.JPanel adminUpdatePanel;
     private javax.swing.JPanel adminUserPanel;
+    private javax.swing.JScrollPane adminUserScroll;
+    private javax.swing.JTable adminUserTable;
+    private javax.swing.JToolBar adminUserTools;
     private javax.swing.JButton archiveAssetButton;
     private javax.swing.JButton archiveEmpButton;
     private javax.swing.JButton archiveLocationButton;
@@ -1301,11 +1517,14 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JPanel backPanel;
     private javax.swing.JButton completeScheduleButton;
     private javax.swing.JButton createWOButton1;
+    private javax.swing.JPanel dashButtonPanel;
+    private javax.swing.JPanel dashPanel;
     private javax.swing.JButton deleteAssetButton;
     private javax.swing.JButton deleteEmpButton;
     private javax.swing.JButton deleteLocationButton;
     private javax.swing.JButton deletePartButton;
     private javax.swing.JButton deleteScheduleButton;
+    private javax.swing.JButton deleteUser;
     private javax.swing.JButton deleteWOButton;
     private javax.swing.JDesktopPane desktopPane;
     private javax.swing.JButton editAssetButton;
@@ -1313,6 +1532,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JButton editLocationButton;
     private javax.swing.JButton editPartButton;
     private javax.swing.JButton editScheduleButton;
+    private javax.swing.JButton editUser;
     private javax.swing.JButton editWOButton;
     private javax.swing.JLabel employeeLoadLabel;
     private javax.swing.JPanel employeePanel;
@@ -1328,10 +1548,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JButton jButton4;
     private javax.swing.JLabel locationLoadLabel;
     private javax.swing.JPanel locationPanel;
     private javax.swing.JScrollPane locationScroll;
@@ -1340,6 +1557,11 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem menuChangePassword;
     private javax.swing.JMenu menuEdit;
+    private javax.swing.JMenuItem menuEditCopy;
+    private javax.swing.JMenuItem menuEditCut;
+    private javax.swing.JMenuItem menuEditDelete;
+    private javax.swing.JMenuItem menuEditPaste;
+    private javax.swing.JMenuItem menuEditSelect;
     private javax.swing.JMenu menuFile;
     private javax.swing.JMenuItem menuLogout;
     private javax.swing.JMenu menuTable;
@@ -1351,6 +1573,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JButton newLocationButton;
     private javax.swing.JButton newPartButton;
     private javax.swing.JButton newScheduleButton;
+    private javax.swing.JButton newUser;
     private javax.swing.JButton newWOButton;
     private javax.swing.JLabel partLoadLabel;
     private javax.swing.JPanel partPanel;
@@ -1359,6 +1582,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JToolBar partTools;
     private javax.swing.JButton printWOButton;
     private javax.swing.JPanel reportPanel;
+    private javax.swing.JButton resetUserPass;
     private javax.swing.JLabel scheduleLoadLabel;
     private javax.swing.JPanel schedulePanel;
     private javax.swing.JScrollPane scheduleScroll;

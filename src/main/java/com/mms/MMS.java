@@ -15,12 +15,14 @@
  */
 package com.mms;
 
+import com.mms.utilities.ContextMenuMouseListener;
 import com.formdev.flatlaf.intellijthemes.FlatGrayIJTheme;
 import com.mms.dialogs.LocationDialog;
 import com.mms.dialogs.LoginDialog;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Toolkit;
+import java.awt.event.MouseListener;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -44,9 +46,10 @@ public class MMS {
     
     //Variables
     public static final String NAME = "OpenMMS", VERSION = "1.0";
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
     public static final JFrame phf = new JFrame();
-    public static final int DIAG_WIDTH =Toolkit.getDefaultToolkit(). getScreenSize().width/5 > 300 ? 300 : Toolkit.getDefaultToolkit(). getScreenSize().width/5;
+    public static final int DIAG_WIDTH = Toolkit.getDefaultToolkit(). getScreenSize().width/5 > 300 ? 300 : Toolkit.getDefaultToolkit(). getScreenSize().width/5;
+    private static MouseListener ml;
     private static Thread shutdown;
     private static MainFrame m;
     private static Connection conn;
@@ -55,6 +58,7 @@ public class MMS {
     
     //Image icons
     public static final ImageIcon systemIcon = new ImageIcon(MMS.class.getResource("/icon.png"));
+    public static final ImageIcon dashboardIcon = new ImageIcon(MMS.class.getResource("/tabs/dashboard.png"));
     public static final ImageIcon workOrdersIcon = new ImageIcon(MMS.class.getResource("/tabs/workOrders.png"));
     public static final ImageIcon scheduleIcon = new ImageIcon(MMS.class.getResource("/tabs/schedule.png"));
     public static final ImageIcon locationIcon = new ImageIcon(MMS.class.getResource("/tabs/locations.png"));
@@ -68,6 +72,7 @@ public class MMS {
     public static MainFrame getMainFrame(){return m;}
     public static String getUser(){return user;}
     public static Preferences getPrefs(){return p;}
+    public static MouseListener getMouseListener(){return ml;}
     
     //Setters
     public static void setUser(String u){user = u;}
@@ -79,6 +84,9 @@ public class MMS {
         FlatGrayIJTheme.install();
         System.setProperty("flatlaf.menuBarEmbedded", "true");
         UIManager.put("TabbedPane.selectedBackground", Color.white);
+        
+        //Mouse listener
+        ml = new ContextMenuMouseListener();
         
         //Shutdown thread
         shutdown = new Thread(){
@@ -284,7 +292,7 @@ public class MMS {
     public static void resizeTable(JTable table) {
         final TableColumnModel columnModel = table.getColumnModel();
         for (int column = 0; column < table.getColumnCount(); column++) {
-            int width = 100; // Min width
+            int width = 15; // Min width
             for (int row = 0; row < table.getRowCount(); row++) {
                 TableCellRenderer renderer = table.getCellRenderer(row, column);
                 Component comp = table.prepareRenderer(renderer, row, column);

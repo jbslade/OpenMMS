@@ -34,44 +34,43 @@ public class EmployeeDialog extends javax.swing.JInternalFrame {
     
     public EmployeeDialog(JTable t) {
         initComponents();
-        getRootPane().setDefaultButton(button);
         table = t;
+        getRootPane().setDefaultButton(button);
+        nameField.addMouseListener(MMS.getMouseListener());
+        descField.addMouseListener(MMS.getMouseListener());
         
-        //Set departments
-        ResultSet rs = MMS.select("SELECT custom_value FROM custom_fields WHERE custom_type = 'employee_dept'");
-        try {
-            while(rs.next()){
-                deptCombo.addItem(rs.getString(1));
-            }
-            rs.close();
-        } catch (SQLException ex) {
-            Logger.getLogger(EmployeeDialog.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        setDepartments();
     }
     
     public EmployeeDialog(JTable t, int r) {
         initComponents();
-        getRootPane().setDefaultButton(button);
         table = t;
         row = r;
+        getRootPane().setDefaultButton(button);
         button.setText("Save");
+        nameField.addMouseListener(MMS.getMouseListener());
+        descField.addMouseListener(MMS.getMouseListener());
         
-        //Set departments
-        ResultSet rs = MMS.select("SELECT custom_value FROM custom_fields WHERE custom_type = 'employee_dept'");
-        try {
-            while(rs.next()){
-                deptCombo.addItem(rs.getString(1));
-            }
-            rs.close();
-        } catch (SQLException ex) {
-            Logger.getLogger(EmployeeDialog.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        deptCombo.setSelectedItem(t.getValueAt(r, 3));
+        setDepartments();
+        deptCombo.setSelectedItem(table.getValueAt(row, 3));
         
         nameField.setText(t.getModel().getValueAt(row, 1).toString());
         descField.setText(t.getModel().getValueAt(row, 2).toString());
         nameField.requestFocus();
         nameField.selectAll();
+    }
+    
+    private void setDepartments(){
+        //Set departments
+        ResultSet rs = MMS.select("SELECT custom_value FROM custom_fields WHERE custom_type = 'employee_dept'");
+        try {
+            while(rs.next()){
+                deptCombo.addItem(rs.getString(1));
+            }
+            rs.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(EmployeeDialog.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     /**
@@ -114,6 +113,8 @@ public class EmployeeDialog extends javax.swing.JInternalFrame {
             public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
             }
         });
+
+        backPanel.setInheritsPopupMenu(true);
 
         nameLabel.setText("Name:");
 

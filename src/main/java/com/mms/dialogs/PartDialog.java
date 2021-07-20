@@ -47,6 +47,7 @@ public class PartDialog extends javax.swing.JInternalFrame {
         
         nameField.setText(t.getModel().getValueAt(row, 1).toString());
         qtySpinner.setValue(t.getModel().getValueAt(row, 2).toString());
+        priceField.setValue(t.getModel().getValueAt(row, 3).toString());
         nameField.requestFocus();
         nameField.selectAll();
     }
@@ -59,13 +60,16 @@ public class PartDialog extends javax.swing.JInternalFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
         backPanel = new javax.swing.JPanel();
         nameLabel = new javax.swing.JLabel();
         nameField = new javax.swing.JTextField();
-        button = new javax.swing.JButton();
         qtyLabel = new javax.swing.JLabel();
         qtySpinner = new javax.swing.JSpinner();
+        button = new javax.swing.JButton();
+        priceLabel = new javax.swing.JLabel();
+        priceField = new javax.swing.JFormattedTextField();
 
         setClosable(true);
         setIconifiable(true);
@@ -92,6 +96,10 @@ public class PartDialog extends javax.swing.JInternalFrame {
 
         nameLabel.setText("Name:");
 
+        qtyLabel.setText("Quantity:");
+
+        qtySpinner.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
+
         button.setText("Add");
         button.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -99,9 +107,10 @@ public class PartDialog extends javax.swing.JInternalFrame {
             }
         });
 
-        qtyLabel.setText("Quantity:");
+        priceLabel.setText("Price/Unit:");
 
-        qtySpinner.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
+        priceField.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("###0.###"))));
+        priceField.setText("0.00");
 
         javax.swing.GroupLayout backPanelLayout = new javax.swing.GroupLayout(backPanel);
         backPanel.setLayout(backPanelLayout);
@@ -110,16 +119,19 @@ public class PartDialog extends javax.swing.JInternalFrame {
             .addGroup(backPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(backPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, backPanelLayout.createSequentialGroup()
-                        .addGap(0, 166, Short.MAX_VALUE)
-                        .addComponent(button))
                     .addComponent(nameField)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, backPanelLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(button))
+                    .addComponent(nameLabel)
                     .addGroup(backPanelLayout.createSequentialGroup()
                         .addGroup(backPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(nameLabel)
-                            .addComponent(qtyLabel))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(qtySpinner))
+                            .addComponent(qtyLabel)
+                            .addComponent(qtySpinner, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(backPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(priceLabel)
+                            .addComponent(priceField, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         backPanelLayout.setVerticalGroup(
@@ -130,9 +142,13 @@ public class PartDialog extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(nameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(qtyLabel)
+                .addGroup(backPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(qtyLabel)
+                    .addComponent(priceLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(qtySpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(backPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(qtySpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(priceField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(button)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -151,8 +167,8 @@ public class PartDialog extends javax.swing.JInternalFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(backPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(backPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -161,8 +177,11 @@ public class PartDialog extends javax.swing.JInternalFrame {
     private void buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonActionPerformed
         String name = nameField.getText();
         int qty = Integer.parseInt(qtySpinner.getValue().toString());
+        double price;
         if(name.isEmpty()) nameField.requestFocus();
+        else if(priceField.getText().isEmpty()) priceField.requestFocus();
         else{
+            price = Double.parseDouble(priceField.getText());
             if(row == -1){ //New part
                     //Get next no
                     int partNo = 0;
@@ -175,10 +194,10 @@ public class PartDialog extends javax.swing.JInternalFrame {
                     }
                     partNo++;
                     //Insert into DB
-                    MMS.executeQuery("INSERT INTO parts (id, part_name, part_qty, archived) VALUES (?, ?, ?, 'N')",
-                            new Object[]{partNo, name, qty});
+                    MMS.executeQuery("INSERT INTO parts (id, part_name, part_qty, part_price, archived) VALUES (?, ?, ?, ?, 'N')",
+                            new Object[]{partNo, name, qty, price});
                     //Insert into table
-                    Object [] o = {partNo, name, qty};
+                    Object [] o = {partNo, name, qty, price};
                     DefaultTableModel m = (DefaultTableModel)table.getModel();
                     m.insertRow(0, o);
                     //Select new row
@@ -188,11 +207,12 @@ public class PartDialog extends javax.swing.JInternalFrame {
                 //Get selected number
                 int partNo = Integer.parseInt(table.getValueAt(row, 0).toString());
                 //Update database
-                MMS.executeQuery("UPDATE parts SET part_name = ?, part_qty = ? WHERE id = ?",
-                        new Object[]{name, qty, partNo});
+                MMS.executeQuery("UPDATE parts SET part_name = ?, part_qty = ?, part_price = ? WHERE id = ?",
+                        new Object[]{name, qty, partNo, price});
                 //Update table
                 table.setValueAt(name, row, 1);
                 table.setValueAt(qty, row, 2);
+                table.setValueAt(price, row, 3);
                 //Select updated row
                 table.setRowSelectionInterval(row, row);
             }
@@ -209,6 +229,8 @@ public class PartDialog extends javax.swing.JInternalFrame {
     private javax.swing.JButton button;
     private javax.swing.JTextField nameField;
     private javax.swing.JLabel nameLabel;
+    private javax.swing.JFormattedTextField priceField;
+    private javax.swing.JLabel priceLabel;
     private javax.swing.JLabel qtyLabel;
     private javax.swing.JSpinner qtySpinner;
     // End of variables declaration//GEN-END:variables

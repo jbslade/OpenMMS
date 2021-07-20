@@ -189,6 +189,11 @@ public class LoginDialog extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_buttonActionPerformed
 
+    private void fail(){
+        passwordField.requestFocus();
+        passwordField.selectAll();
+    }
+    
     private void logoLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_logoLabelMouseClicked
         new Thread(){
             @Override
@@ -205,11 +210,6 @@ public class LoginDialog extends javax.swing.JDialog {
         }.start();
     }//GEN-LAST:event_logoLabelMouseClicked
 
-    private void fail(){
-        passwordField.requestFocus();
-        passwordField.selectAll();
-    }
-    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel backPanel;
     private javax.swing.JButton button;

@@ -30,7 +30,7 @@ import javax.swing.table.TableRowSorter;
  *
  * @author J.B. Slade
  */
-public class FilterPanel extends javax.swing.JPanel {
+public class FindPanel extends javax.swing.JPanel {
     
     private final Popup pop;
     private final JTable table;
@@ -39,7 +39,7 @@ public class FilterPanel extends javax.swing.JPanel {
     
     public boolean isActive(){ return active; }
     
-    public FilterPanel(JTable t, JPanel p) {
+    public FindPanel(JTable t, JPanel p, String s) {
         initComponents();
         button.putClientProperty("JButton.buttonType", "toolBarButton");
         table = t;
@@ -47,7 +47,8 @@ public class FilterPanel extends javax.swing.JPanel {
         pop = PopupFactory.getSharedInstance().getPopup(MMS.getMainFrame(), this, p.getLocationOnScreen().x, p.getLocationOnScreen().y+p.getHeight()-this.getPreferredSize().height);
         pop.show();
         active = true;
-        filterField.requestFocus();
+        findField.setText(s);
+        findField.requestFocus();
     }
 
     /**
@@ -60,19 +61,19 @@ public class FilterPanel extends javax.swing.JPanel {
     private void initComponents() {
 
         backPanel = new javax.swing.JPanel();
-        filterField = new javax.swing.JTextField();
+        findField = new javax.swing.JTextField();
         button = new javax.swing.JButton();
 
         setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
 
-        filterField.addCaretListener(new javax.swing.event.CaretListener() {
+        findField.addCaretListener(new javax.swing.event.CaretListener() {
             public void caretUpdate(javax.swing.event.CaretEvent evt) {
-                filterFieldCaretUpdate(evt);
+                findFieldCaretUpdate(evt);
             }
         });
-        filterField.addKeyListener(new java.awt.event.KeyAdapter() {
+        findField.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
-                filterFieldKeyPressed(evt);
+                findFieldKeyPressed(evt);
             }
         });
 
@@ -89,7 +90,7 @@ public class FilterPanel extends javax.swing.JPanel {
             backPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(backPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(filterField, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(findField, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(button)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -100,7 +101,7 @@ public class FilterPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(backPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(button, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(filterField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(findField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -120,15 +121,15 @@ public class FilterPanel extends javax.swing.JPanel {
         close();
     }//GEN-LAST:event_buttonActionPerformed
 
-    private void filterFieldCaretUpdate(javax.swing.event.CaretEvent evt) {//GEN-FIRST:event_filterFieldCaretUpdate
-        sorter.setRowFilter(RowFilter.regexFilter(filterField.getText()));
+    private void findFieldCaretUpdate(javax.swing.event.CaretEvent evt) {//GEN-FIRST:event_findFieldCaretUpdate
+        sorter.setRowFilter(RowFilter.regexFilter(findField.getText()));
         table.setRowSorter(sorter);
         if(table.getRowCount() != 0) table.setRowSelectionInterval(0, 0);
-    }//GEN-LAST:event_filterFieldCaretUpdate
+    }//GEN-LAST:event_findFieldCaretUpdate
 
-    private void filterFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_filterFieldKeyPressed
+    private void findFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_findFieldKeyPressed
         if(evt.getKeyCode() == KeyEvent.VK_ESCAPE) close();
-    }//GEN-LAST:event_filterFieldKeyPressed
+    }//GEN-LAST:event_findFieldKeyPressed
 
     public void close(){
         table.setRowSorter(null);
@@ -140,6 +141,6 @@ public class FilterPanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel backPanel;
     private javax.swing.JButton button;
-    private static javax.swing.JTextField filterField;
+    private static javax.swing.JTextField findField;
     // End of variables declaration//GEN-END:variables
 }

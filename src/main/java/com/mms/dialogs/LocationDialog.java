@@ -159,7 +159,6 @@ public class LocationDialog extends javax.swing.JInternalFrame {
     private void buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonActionPerformed
         String name = nameField.getText(), desc = descField.getText();
         if(name.isEmpty()) nameField.requestFocus();
-        else if(desc.isEmpty()) descField.requestFocus();
         else{
             if(row == -1){ //New location
                     //Get next no
