@@ -227,11 +227,10 @@ public class ScheduleDialog extends javax.swing.JInternalFrame {
         leftPanel.setLayout(leftPanelLayout);
         leftPanelLayout.setHorizontalGroup(
             leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(nameLabel)
-                .addComponent(nameField, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)
-                .addComponent(dateLabel)
-                .addComponent(dateField))
+            .addComponent(nameLabel)
+            .addComponent(nameField, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)
+            .addComponent(dateLabel)
+            .addComponent(dateField)
             .addComponent(assetLabel)
             .addComponent(assetCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
@@ -312,7 +311,7 @@ public class ScheduleDialog extends javax.swing.JInternalFrame {
                     .addGroup(backPanelLayout.createSequentialGroup()
                         .addComponent(leftPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGap(12, 12, 12)
-                        .addComponent(rightPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)))
+                        .addComponent(rightPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         backPanelLayout.setVerticalGroup(
@@ -360,16 +359,15 @@ public class ScheduleDialog extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_formInternalFrameDeiconified
 
     private void boldButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boldButtonActionPerformed
-        //formatSelection("<b>", "</b>");
-        format();
+
     }//GEN-LAST:event_boldButtonActionPerformed
 
     private void italicsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_italicsButtonActionPerformed
-        formatSelection("<i>", "</i>");
+       
     }//GEN-LAST:event_italicsButtonActionPerformed
 
     private void underlineButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_underlineButtonActionPerformed
-        formatSelection("<u>", "</u>");
+       
     }//GEN-LAST:event_underlineButtonActionPerformed
 
     private void format(){
@@ -435,7 +433,6 @@ public class ScheduleDialog extends javax.swing.JInternalFrame {
     private javax.swing.JComboBox<String> freqCombo;
     private javax.swing.JLabel freqLabel;
     private javax.swing.JButton italicsButton;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel leftPanel;
     private javax.swing.JComboBox<String> locationCombo;
     private javax.swing.JLabel locationLabel;

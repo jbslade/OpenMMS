@@ -67,7 +67,7 @@
                       <Group type="102" attributes="0">
                           <Component id="leftPanel" max="32767" attributes="0"/>
                           <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
-                          <Component id="rightPanel" pref="175" max="32767" attributes="0"/>
+                          <Component id="rightPanel" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
@@ -184,12 +184,10 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="nameLabel" min="-2" max="-2" attributes="0"/>
-                      <Component id="nameField" pref="175" max="32767" attributes="0"/>
-                      <Component id="dateLabel" min="-2" max="-2" attributes="0"/>
-                      <Component id="dateField" alignment="0" max="32767" attributes="0"/>
-                  </Group>
+                  <Component id="nameLabel" min="-2" max="-2" attributes="0"/>
+                  <Component id="nameField" pref="175" max="32767" attributes="0"/>
+                  <Component id="dateLabel" min="-2" max="-2" attributes="0"/>
+                  <Component id="dateField" alignment="0" max="32767" attributes="0"/>
                   <Component id="assetLabel" min="-2" max="-2" attributes="0"/>
                   <Component id="assetCombo" max="32767" attributes="0"/>
               </Group>
