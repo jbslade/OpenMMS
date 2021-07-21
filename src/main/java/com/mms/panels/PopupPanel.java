@@ -33,7 +33,11 @@ public class PopupPanel extends javax.swing.JPanel {
         pop.show();
     }
     
-    public PopupPanel(String text) {
+    public static void close(){
+        if(pop != null) pop.hide();
+    }
+    
+    private PopupPanel(String text) {
         initComponents();
         textLabel.setText(text);
     }

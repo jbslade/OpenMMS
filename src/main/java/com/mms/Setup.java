@@ -433,10 +433,10 @@ public class Setup extends javax.swing.JDialog {
                         }
 
                         //Put preferences
-                        MMS.getPrefs().put("dbType", "derby");
-                        MMS.getPrefs().put("derbyHome", dbDir);
-                        MMS.getPrefs().put("derbyName", dbName);
-                        MMS.getPrefs().putBoolean("firstRun", false);
+                        MMS.getPrefs().put("db_type", "derby");
+                        MMS.getPrefs().put("derby_home", dbDir);
+                        MMS.getPrefs().put("derby_name", dbName);
+                        MMS.getPrefs().putBoolean("first_run", false);
                        
                         success = true;
                         dispose();
@@ -487,12 +487,12 @@ public class Setup extends javax.swing.JDialog {
                                 }
                                 
                                 //Put preferences
-                                MMS.getPrefs().put("dbType", "mssql");
-                                MMS.getPrefs().put("mssqlsrvr", srvr);
-                                MMS.getPrefs().put("mssqldb", db);
-                                MMS.getPrefs().put("mssqlusr", usr);
-                                MMS.getPrefs().put("mssqlpass", pass);
-                                MMS.getPrefs().putBoolean("firstRun", false);
+                                MMS.getPrefs().put("db_type", "mssql");
+                                MMS.getPrefs().put("srvr_ip", srvr);
+                                MMS.getPrefs().put("srvr_db", db);
+                                MMS.getPrefs().put("srvr_user", usr);
+                                MMS.getPrefs().put("srvr_pass", pass);
+                                MMS.getPrefs().putBoolean("first_run", false);
                                 
                                 success = true;
                                 dispose();
@@ -521,7 +521,6 @@ public class Setup extends javax.swing.JDialog {
     }//GEN-LAST:event_serverRadioStateChanged
 
     private void derbyDirButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_derbyDirButtonActionPerformed
-        dbSelector.setCurrentDirectory(new File(derbyDirField.getText()));
         if(dbSelector.showDialog(this, "Select") == JFileChooser.APPROVE_OPTION){
             derbyDirField.setText(dbSelector.getSelectedFile()+"");
         }
@@ -625,6 +624,20 @@ public class Setup extends javax.swing.JDialog {
                 + "archived VARCHAR(1)"
                 + ")");
         
+        //Schedule
+        MMS.executeQuery("CREATE TABLE schedule("
+                + "id INT PRIMARY KEY,"
+                + "schedule_name VARCHAR(50),"
+                + "schedule_type VARCHAR(50),"
+                + "schedule_from_date DATE,"
+                + "schedule_last_date DATE,"
+                + "schedule_freq VARCHAR(20),"
+                + "schedule_desc NVARCHAR(2000),"
+                + "location_id INT,"
+                + "asset_id INT,"
+                + "archived VARCHAR(1)"
+                + ")");
+        
         //CustomFields
         MMS.executeQuery("CREATE TABLE custom_fields("
                 + "custom_type VARCHAR(50),"
@@ -637,6 +650,11 @@ public class Setup extends javax.swing.JDialog {
         MMS.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES (?, ?)", new Object[]{"employee_dept", "IT"});
         MMS.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES (?, ?)", new Object[]{"employee_dept", "Contractor"});
         MMS.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES (?, ?)", new Object[]{"asset_type", "Production Machine"});
+        MMS.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES (?, ?)", new Object[]{"schedule_type", "General"});
+        MMS.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES (?, ?)", new Object[]{"schedule_type", "Inspection"});
+        MMS.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES (?, ?)", new Object[]{"schedule_type", "Shutdown Maintenance"});
+        MMS.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES (?, ?)", new Object[]{"schedule_type", "Building Maintenance"});
+        MMS.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES (?, ?)", new Object[]{"schedule_type", "Safety"});
         
         System.out.println("[DATABASE] Database tables created");
     }

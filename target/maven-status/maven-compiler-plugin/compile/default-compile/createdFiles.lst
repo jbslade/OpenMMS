@@ -5,6 +5,7 @@ com\mms\MainFrame$22.class
 com\mms\MainFrame$42.class
 com\mms\MainFrame$12.class
 com\mms\MainFrame$9.class
+com\mms\dialogs\ScheduleDialog$1.class
 com\mms\MainFrame$45.class
 com\mms\utilities\ContextMenuMouseListener$1.class
 com\mms\dialogs\LoginDialog$3.class
@@ -86,10 +87,12 @@ com\mms\MainFrame$38.class
 com\mms\utilities\ContextMenuMouseListener$3.class
 com\mms\dialogs\LocationDialog$2.class
 com\mms\MainFrame$20.class
+com\mms\MainFrame$48.class
 com\mms\dialogs\AssetDialog$1.class
 com\mms\MainFrame$7.class
 com\mms\MainFrame$30.class
 com\mms\MainFrame$25.class
+com\mms\dialogs\ScheduleDialog.class
 com\mms\MainFrame$43.class
 com\mms\MainFrame$1.class
 com\mms\Setup$2.class
@@ -97,6 +100,7 @@ com\mms\dialogs\LoginDialog$1.class
 com\mms\utilities\ContextMenuMouseListener$4.class
 com\mms\MainFrame$37.class
 com\mms\utilities\ContextMenuMouseListener$Actions.class
+com\mms\dialogs\ScheduleDialog$2.class
 com\mms\MainFrame$8.class
 com\mms\MainFrame$31.class
 com\mms\MainFrame$14.class

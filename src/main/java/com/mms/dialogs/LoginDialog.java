@@ -55,7 +55,7 @@ public class LoginDialog extends javax.swing.JDialog {
         }
         
         //Select default user
-        String u = MMS.getPrefs().get("defaultUser", "");
+        String u = MMS.getPrefs().get("default_user", "");
         if(!u.isEmpty()){
             userCombo.setSelectedItem(u);
             passwordField.requestFocus();
@@ -182,7 +182,7 @@ public class LoginDialog extends javax.swing.JDialog {
                         new Object[]{u});
                 
                 //Put user in preferences
-                MMS.getPrefs().put("defaultUser", u);
+                MMS.getPrefs().put("default_user", u);
                 
                 dispose();//LOGIN SUCCESSFUL
             }

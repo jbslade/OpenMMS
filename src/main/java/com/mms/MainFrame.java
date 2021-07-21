@@ -23,6 +23,7 @@ import com.mms.dialogs.EmployeeDialog;
 import com.mms.dialogs.LocationDialog;
 import com.mms.dialogs.PartDialog;
 import com.mms.dialogs.PasswordDialog;
+import com.mms.dialogs.ScheduleDialog;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.sql.ResultSet;
@@ -258,8 +259,12 @@ public class MainFrame extends javax.swing.JFrame {
         jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         dashButtonPanel.add(jButton2);
 
-        jButton4.setText("jButton4");
+        jButton4.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/tabs/parts.png"))); // NOI18N
+        jButton4.setText("5 Parts Running Low");
         jButton4.setFocusable(false);
+        jButton4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton4.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         dashButtonPanel.add(jButton4);
 
         jButton3.setText("jButton3");
@@ -335,11 +340,11 @@ public class MainFrame extends javax.swing.JFrame {
 
             },
             new String [] {
-                "No.", "Date", "Type", "Description", "Priority", "Asset", "Location", "Employee(s)", "Status"
+                "No.", "Date", "Type", "Priority", "Asset", "Location", "Employee(s)", "Status"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -377,6 +382,11 @@ public class MainFrame extends javax.swing.JFrame {
 
         newScheduleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/new.png"))); // NOI18N
         newScheduleButton.setText("New");
+        newScheduleButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                newScheduleButtonActionPerformed(evt);
+            }
+        });
         scheduleTools.add(newScheduleButton);
 
         editScheduleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/edit.png"))); // NOI18N
@@ -421,11 +431,11 @@ public class MainFrame extends javax.swing.JFrame {
 
             },
             new String [] {
-                "No.", "Date", "Type", "Description", "Priority", "Asset", "Location", "Employee(s)", "Status"
+                "No.", "Name", "Type", "Frequency", "Last Done", "Next Due", "Location", "Asset"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -1122,14 +1132,29 @@ public class MainFrame extends javax.swing.JFrame {
 
     //Delete Location
     private void deleteLocationButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteLocationButtonActionPerformed
-        if(InternalDialog.showInternalConfirmDialog(desktopPane, "Are you sure you want to delete "+locationTable.getValueAt(locationTable.getSelectedRow(), 1)+"?", "Delete Location", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null) == 0){
-            int locNum = Integer.parseInt(locationTable.getValueAt(locationTable.getSelectedRow(), 0).toString());
+        String message, title;
+        if(locationTable.getSelectedRowCount() > 1){
+            message = "Are you sure you want to delete these "+locationTable.getSelectedRowCount()+" locations?";
+            title = "Delete Locations";
+        }
+        else{
+            message = "Are you sure you want to delete "+locationTable.getValueAt(locationTable.getSelectedRow(), 1)+"?";
+            title = "Delete Location";
+        }
+        if(InternalDialog.showInternalConfirmDialog(desktopPane, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null) == 0){
+            int rows [] = locationTable.getSelectedRows();
             //Delete from DB
-            MMS.executeQuery("DELETE FROM locations WHERE id = ?",
-                    new Object[]{locNum});
+            for(int row : rows){
+                int id = Integer.parseInt(locationTable.getValueAt(row, 0).toString());
+                MMS.executeQuery("DELETE FROM locations WHERE id = ?",
+                        new Object[]{id});
+            }
             //Delete from table
-            DefaultTableModel m = (DefaultTableModel)locationTable.getModel();
-            m.removeRow(locationTable.getSelectedRow());
+            for(int i = rows.length-1; i >= 0; i--){
+                DefaultTableModel m = (DefaultTableModel)locationTable.getModel();
+                m.removeRow(rows[i]);
+            }
+            
             //Select first row
             if(locationTable.getRowCount() != 0) locationTable.setRowSelectionInterval(0, 0);
         }
@@ -1137,14 +1162,30 @@ public class MainFrame extends javax.swing.JFrame {
 
     //Archive Location
     private void archiveLocationButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_archiveLocationButtonActionPerformed
-        if(InternalDialog.showInternalConfirmDialog(desktopPane, "Are you sure you want to archive "+locationTable.getValueAt(locationTable.getSelectedRow(), 1)+"?", "Archive Location", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null) == 0){
-            int locNum = Integer.parseInt(locationTable.getValueAt(locationTable.getSelectedRow(), 0).toString());
+        String message, title;
+        if(locationTable.getSelectedRowCount() > 1){
+            message = "Are you sure you want to archive these "+locationTable.getSelectedRowCount()+" locations?";
+            title = "Archive Locations";
+        }
+        else{
+            message = "Are you sure you want to archive "+locationTable.getValueAt(locationTable.getSelectedRow(), 1)+"?";
+            title = "Archive Location";
+        }
+        
+        if(InternalDialog.showInternalConfirmDialog(desktopPane, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null) == 0){
+            int rows [] = locationTable.getSelectedRows();
             //Set Archived = Y
-            MMS.executeQuery("UPDATE locations SET archived = ? WHERE id = ?",
-                    new Object[]{"Y", locNum});
+            for(int row : rows){
+                int id = Integer.parseInt(locationTable.getValueAt(row, 0).toString());
+                MMS.executeQuery("UPDATE locations SET archived = ? WHERE id = ?",
+                        new Object[]{"Y", id});
+            }
             //Delete from table
-            DefaultTableModel m = (DefaultTableModel)locationTable.getModel();
-            m.removeRow(locationTable.getSelectedRow());
+            for(int i = rows.length-1; i >= 0; i--){
+                DefaultTableModel m = (DefaultTableModel)locationTable.getModel();
+                m.removeRow(rows[i]);
+            }
+            
             //Select first row
             if(locationTable.getRowCount() != 0) locationTable.setRowSelectionInterval(0, 0);
         }
@@ -1178,14 +1219,29 @@ public class MainFrame extends javax.swing.JFrame {
 
     //Delete Asset
     private void deleteAssetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteAssetButtonActionPerformed
-        if(InternalDialog.showInternalConfirmDialog(desktopPane, "Are you sure you want to delete "+assetTable.getValueAt(assetTable.getSelectedRow(), 1)+"?", "Delete Asset", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null) == 0){
-            int assNum = Integer.parseInt(assetTable.getValueAt(assetTable.getSelectedRow(), 0).toString());
+        String message, title;
+        if(assetTable.getSelectedRowCount() > 1){
+            message = "Are you sure you want to delete these "+assetTable.getSelectedRowCount()+" assets?";
+            title = "Delete Assets";
+        }
+        else{
+            message = "Are you sure you want to delete "+assetTable.getValueAt(assetTable.getSelectedRow(), 1)+"?";
+            title = "Delete Assets";
+        }
+        if(InternalDialog.showInternalConfirmDialog(desktopPane, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null) == 0){
+            int rows [] = assetTable.getSelectedRows();
             //Delete from DB
-            MMS.executeQuery("DELETE FROM assets WHERE id = ?",
-                    new Object[]{assNum});
+            for(int row : rows){
+                int id = Integer.parseInt(assetTable.getValueAt(row, 0).toString());
+                MMS.executeQuery("DELETE FROM assets WHERE id = ?",
+                        new Object[]{id});
+            }
             //Delete from table
-            DefaultTableModel m = (DefaultTableModel)assetTable.getModel();
-            m.removeRow(assetTable.getSelectedRow());
+            for(int i = rows.length-1; i >= 0; i--){
+                DefaultTableModel m = (DefaultTableModel)assetTable.getModel();
+                m.removeRow(rows[i]);
+            }
+            
             //Select first row
             if(assetTable.getRowCount() != 0) assetTable.setRowSelectionInterval(0, 0);
         }
@@ -1193,14 +1249,30 @@ public class MainFrame extends javax.swing.JFrame {
 
     //Archive Asset
     private void archiveAssetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_archiveAssetButtonActionPerformed
-        if(InternalDialog.showInternalConfirmDialog(desktopPane, "Are you sure you want to archive "+assetTable.getValueAt(assetTable.getSelectedRow(), 1)+"?", "Archive Asset", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null) == 0){
-            int assNum = Integer.parseInt(assetTable.getValueAt(assetTable.getSelectedRow(), 0).toString());
+        String message, title;
+        if(assetTable.getSelectedRowCount() > 1){
+            message = "Are you sure you want to archive these "+assetTable.getSelectedRowCount()+" assets?";
+            title = "Archive Assets";
+        }
+        else{
+            message = "Are you sure you want to archive "+assetTable.getValueAt(assetTable.getSelectedRow(), 1)+"?";
+            title = "Archive Assets";
+        }
+        
+        if(InternalDialog.showInternalConfirmDialog(desktopPane, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null) == 0){
+            int rows [] = assetTable.getSelectedRows();
             //Set Archived = Y
-            MMS.executeQuery("UPDATE assets SET archived = ? WHERE id = ?",
-                    new Object[]{"Y", assNum});
+            for(int row : rows){
+                int id = Integer.parseInt(assetTable.getValueAt(row, 0).toString());
+                MMS.executeQuery("UPDATE assets SET archived = ? WHERE id = ?",
+                        new Object[]{"Y", id});
+            }
             //Delete from table
-            DefaultTableModel m = (DefaultTableModel)assetTable.getModel();
-            m.removeRow(assetTable.getSelectedRow());
+            for(int i = rows.length-1; i >= 0; i--){
+                DefaultTableModel m = (DefaultTableModel)assetTable.getModel();
+                m.removeRow(rows[i]);
+            }
+            
             //Select first row
             if(assetTable.getRowCount() != 0) assetTable.setRowSelectionInterval(0, 0);
         }
@@ -1249,14 +1321,29 @@ public class MainFrame extends javax.swing.JFrame {
 
     //Delete Employee
     private void deleteEmployeeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteEmployeeButtonActionPerformed
-        if(InternalDialog.showInternalConfirmDialog(desktopPane, "Are you sure you want to delete "+employeeTable.getValueAt(employeeTable.getSelectedRow(), 1)+"?", "Delete Employee", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null) == 0){
-            int empNo = Integer.parseInt(employeeTable.getValueAt(employeeTable.getSelectedRow(), 0).toString());
+        String message, title;
+        if(employeeTable.getSelectedRowCount() > 1){
+            message = "Are you sure you want to delete these "+employeeTable.getSelectedRowCount()+" employees?";
+            title = "Delete Employees";
+        }
+        else{
+            message = "Are you sure you want to delete "+employeeTable.getValueAt(employeeTable.getSelectedRow(), 1)+"?";
+            title = "Delete Employee";
+        }
+        if(InternalDialog.showInternalConfirmDialog(desktopPane, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null) == 0){
+            int rows [] = employeeTable.getSelectedRows();
             //Delete from DB
-            MMS.executeQuery("DELETE FROM employees WHERE id = ?",
-                    new Object[]{empNo});
+            for(int row : rows){
+                int id = Integer.parseInt(employeeTable.getValueAt(row, 0).toString());
+                MMS.executeQuery("DELETE FROM employees WHERE id = ?",
+                        new Object[]{id});
+            }
             //Delete from table
-            DefaultTableModel m = (DefaultTableModel)employeeTable.getModel();
-            m.removeRow(employeeTable.getSelectedRow());
+            for(int i = rows.length-1; i >= 0; i--){
+                DefaultTableModel m = (DefaultTableModel)employeeTable.getModel();
+                m.removeRow(rows[i]);
+            }
+            
             //Select first row
             if(employeeTable.getRowCount() != 0) employeeTable.setRowSelectionInterval(0, 0);
         }
@@ -1264,14 +1351,30 @@ public class MainFrame extends javax.swing.JFrame {
 
     //Archive Employee
     private void archiveEmployeeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_archiveEmployeeButtonActionPerformed
-        if(InternalDialog.showInternalConfirmDialog(desktopPane, "Are you sure you want to archive "+employeeTable.getValueAt(employeeTable.getSelectedRow(), 1)+"?", "Archive Employee", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null) == 0){
-            int empNo = Integer.parseInt(employeeTable.getValueAt(employeeTable.getSelectedRow(), 0).toString());
-            //Set archived = Y
-            MMS.executeQuery("UPDATE employees SET archived = ? WHERE id = ?",
-                    new Object[]{"Y", empNo});
+        String message, title;
+        if(employeeTable.getSelectedRowCount() > 1){
+            message = "Are you sure you want to archive these "+employeeTable.getSelectedRowCount()+" employees?";
+            title = "Archive Employees";
+        }
+        else{
+            message = "Are you sure you want to archive "+employeeTable.getValueAt(employeeTable.getSelectedRow(), 1)+"?";
+            title = "Archive Employee";
+        }
+        
+        if(InternalDialog.showInternalConfirmDialog(desktopPane, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null) == 0){
+            int rows [] = employeeTable.getSelectedRows();
+            //Set Archived = Y
+            for(int row : rows){
+                int id = Integer.parseInt(employeeTable.getValueAt(row, 0).toString());
+                MMS.executeQuery("UPDATE employees SET archived = ? WHERE id = ?",
+                        new Object[]{"Y", id});
+            }
             //Delete from table
-            DefaultTableModel m = (DefaultTableModel)employeeTable.getModel();
-            m.removeRow(employeeTable.getSelectedRow());
+            for(int i = rows.length-1; i >= 0; i--){
+                DefaultTableModel m = (DefaultTableModel)employeeTable.getModel();
+                m.removeRow(rows[i]);
+            }
+            
             //Select first row
             if(employeeTable.getRowCount() != 0) employeeTable.setRowSelectionInterval(0, 0);
         }
@@ -1298,6 +1401,8 @@ public class MainFrame extends javax.swing.JFrame {
     private void tabbedPaneStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_tabbedPaneStateChanged
         //Close find
         if(find != null) find.close();
+        //Close popup
+        PopupPanel.close();
         //Tab specific
         switch(tabbedPane.getSelectedIndex()){
             case 0: //Dashboard
@@ -1385,14 +1490,29 @@ public class MainFrame extends javax.swing.JFrame {
 
     //Delete Part
     private void deletePartButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deletePartButtonActionPerformed
-        if(InternalDialog.showInternalConfirmDialog(desktopPane, "Are you sure you want to delete "+partTable.getValueAt(partTable.getSelectedRow(), 1)+"?", "Delete Part", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null) == 0){
-            int partNo = Integer.parseInt(partTable.getValueAt(partTable.getSelectedRow(), 0).toString());
+        String message, title;
+        if(partTable.getSelectedRowCount() > 1){
+            message = "Are you sure you want to delete these "+partTable.getSelectedRowCount()+" parts?";
+            title = "Delete Parts";
+        }
+        else{
+            message = "Are you sure you want to delete "+partTable.getValueAt(partTable.getSelectedRow(), 1)+"?";
+            title = "Delete Part";
+        }
+        if(InternalDialog.showInternalConfirmDialog(desktopPane, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null) == 0){
+            int rows [] = partTable.getSelectedRows();
             //Delete from DB
-            MMS.executeQuery("DELETE FROM parts WHERE id = ?",
-                    new Object[]{partNo});
+            for(int row : rows){
+                int id = Integer.parseInt(partTable.getValueAt(row, 0).toString());
+                MMS.executeQuery("DELETE FROM parts WHERE id = ?",
+                        new Object[]{id});
+            }
             //Delete from table
-            DefaultTableModel m = (DefaultTableModel)partTable.getModel();
-            m.removeRow(partTable.getSelectedRow());
+            for(int i = rows.length-1; i >= 0; i--){
+                DefaultTableModel m = (DefaultTableModel)partTable.getModel();
+                m.removeRow(rows[i]);
+            }
+            
             //Select first row
             if(partTable.getRowCount() != 0) partTable.setRowSelectionInterval(0, 0);
         }
@@ -1400,14 +1520,30 @@ public class MainFrame extends javax.swing.JFrame {
 
     //Archive Part
     private void archivePartButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_archivePartButtonActionPerformed
-        if(InternalDialog.showInternalConfirmDialog(desktopPane, "Are you sure you want to archive "+partTable.getValueAt(partTable.getSelectedRow(), 1)+"?", "Archive Part", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null) == 0){
-            int partNo = Integer.parseInt(partTable.getValueAt(partTable.getSelectedRow(), 0).toString());
-            //Set archived = Y
-            MMS.executeQuery("UPDATE parts SET archived = ? WHERE id = ?",
-                    new Object[]{"Y", partNo});
+        String message, title;
+        if(partTable.getSelectedRowCount() > 1){
+            message = "Are you sure you want to archive these "+employeeTable.getSelectedRowCount()+" parts?";
+            title = "Archive Parts";
+        }
+        else{
+            message = "Are you sure you want to archive "+partTable.getValueAt(partTable.getSelectedRow(), 1)+"?";
+            title = "Archive Part";
+        }
+        
+        if(InternalDialog.showInternalConfirmDialog(desktopPane, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null) == 0){
+            int rows [] = partTable.getSelectedRows();
+            //Set Archived = Y
+            for(int row : rows){
+                int id = Integer.parseInt(partTable.getValueAt(row, 0).toString());
+                MMS.executeQuery("UPDATE parts SET archived = ? WHERE id = ?",
+                        new Object[]{"Y", id});
+            }
             //Delete from table
-            DefaultTableModel m = (DefaultTableModel)partTable.getModel();
-            m.removeRow(partTable.getSelectedRow());
+            for(int i = rows.length-1; i >= 0; i--){
+                DefaultTableModel m = (DefaultTableModel)partTable.getModel();
+                m.removeRow(rows[i]);
+            }
+            
             //Select first row
             if(partTable.getRowCount() != 0) partTable.setRowSelectionInterval(0, 0);
         }
@@ -1433,7 +1569,7 @@ public class MainFrame extends javax.swing.JFrame {
 
     //Delete Schedule
     private void deleteScheduleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteScheduleButtonActionPerformed
-        // TODO add your handling code here:
+        
     }//GEN-LAST:event_deleteScheduleButtonActionPerformed
 
     private void scheduleTableKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_scheduleTableKeyPressed
@@ -1455,7 +1591,7 @@ public class MainFrame extends javax.swing.JFrame {
     //Table size ALL
     private void menuTableSizeAllStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_menuTableSizeAllStateChanged
         if(menuTableSizeAll.isSelected()){
-            String [] names = {"", "tableSizeWO", "tableSizeSchedule", "tableSizeAssets", "tableSizeLocations", "tableSizeParts", "tableSizeEmployees"};
+            String [] names = {"", "table_size_wo", "table_size_schedule", "table_size_assets", "table_size_locations", "table_size_parts", "table_size_employees"};
             MMS.getPrefs().putInt(names[tabbedPane.getSelectedIndex()], -1);
         }
     }//GEN-LAST:event_menuTableSizeAllStateChanged
@@ -1463,7 +1599,7 @@ public class MainFrame extends javax.swing.JFrame {
     //Table size TOP 1000
     private void menuTableSize1000StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_menuTableSize1000StateChanged
         if(menuTableSize1000.isSelected()){
-            String [] names = {"", "tableSizeWO", "tableSizeSchedule", "tableSizeAssets", "tableSizeLocations", "tableSizeParts", "tableSizeEmployees"};
+        String [] names = {"", "table_size_wo", "table_size_schedule", "table_size_assets", "table_size_locations", "table_size_parts", "table_size_employees"};
             MMS.getPrefs().putInt(names[tabbedPane.getSelectedIndex()], 1000);
         }
     }//GEN-LAST:event_menuTableSize1000StateChanged
@@ -1471,7 +1607,7 @@ public class MainFrame extends javax.swing.JFrame {
     //Table size TOP 500
     private void menuTableSize500StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_menuTableSize500StateChanged
         if(menuTableSize500.isSelected()){
-            String [] names = {"", "tableSizeWO", "tableSizeSchedule", "tableSizeAssets", "tableSizeLocations", "tableSizeParts", "tableSizeEmployees"};
+            String [] names = {"", "table_size_wo", "table_size_schedule", "table_size_assets", "table_size_locations", "table_size_parts", "table_size_employees"};
             MMS.getPrefs().putInt(names[tabbedPane.getSelectedIndex()], 500);
         }
     }//GEN-LAST:event_menuTableSize500StateChanged
@@ -1479,18 +1615,28 @@ public class MainFrame extends javax.swing.JFrame {
     //Table size TOP 250
     private void menuTableSize250StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_menuTableSize250StateChanged
         if(menuTableSize250.isSelected()){
-            String [] names = {"", "tableSizeWO", "tableSizeSchedule", "tableSizeAssets", "tableSizeLocations", "tableSizeParts", "tableSizeEmployees"};
+            String [] names = {"", "table_size_wo", "table_size_schedule", "table_size_assets", "table_size_locations", "table_size_parts", "table_size_employees"};
             MMS.getPrefs().putInt(names[tabbedPane.getSelectedIndex()], 250);
         }
     }//GEN-LAST:event_menuTableSize250StateChanged
 
     //Disconnect database
     private void menuFileDisconnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuFileDisconnectActionPerformed
-        if(InternalDialog.showInternalConfirmDialog(desktopPane, "Disconnecting will close "+MMS.NAME+" and run Database Setup again.\nAre you sure you want to disconnect?", "Disconnect Database", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null) == 0){
-            MMS.getPrefs().putBoolean("firstRun", true);
+        if(InternalDialog.showInternalConfirmDialog(desktopPane, "Disconnecting will close "+MMS.NAME+" and run the setup window again.\nAre you sure you want to disconnect?", "Disconnect Database", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null) == 0){
+            MMS.getPrefs().putBoolean("first_run", true);
             MMS.setup();
         }
     }//GEN-LAST:event_menuFileDisconnectActionPerformed
+
+    //New Schedule
+    private void newScheduleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newScheduleButtonActionPerformed
+        ScheduleDialog s = new ScheduleDialog(scheduleTable);
+        s.setSize(MMS.DIAG_WIDTH*2-10, s.getHeight());
+        s.setLocation(desktopPane.getWidth()/2-s.getWidth()/2, desktopPane.getHeight()/2-s.getHeight()/2-50);
+        desktopPane.add(s);
+        desktopPane.setLayer(s, 1);
+        s.setVisible(true);
+    }//GEN-LAST:event_newScheduleButtonActionPerformed
 
     //Load locations
     public void loadLocations(int row){
@@ -1502,7 +1648,7 @@ public class MainFrame extends javax.swing.JFrame {
                 t.setRowCount(0);
                 try {
                     ResultSet rs = MMS.select("SELECT id, location_name, location_desc, archived FROM locations ORDER BY id DESC");
-                    int size = MMS.getPrefs().getInt("tableSizeLocations", -1), count = 0;
+                    int size = MMS.getPrefs().getInt("table_size_locations", -1), count = 0;
                     while(rs.next() && (size == -1 || count <= size)){
                         Object [] o = new Object[4];
                         o[0] = rs.getObject(1).toString().trim();
@@ -1535,7 +1681,7 @@ public class MainFrame extends javax.swing.JFrame {
                 t.setRowCount(0);
                 try {
                     ResultSet rs = MMS.select("SELECT t0.id, t0.asset_name, t0.asset_desc, t0.asset_type, t0.location_id, t1.location_name, t0.Archived FROM assets t0 JOIN locations t1 ON t0.location_id = t1.id ORDER BY t0.id DESC");
-                    int size = MMS.getPrefs().getInt("tableSizeAssets", -1), count = 0;
+                    int size = MMS.getPrefs().getInt("table_size_assets", -1), count = 0;
                     while(rs.next() && (size == -1 || count <= size)){
                         Object [] o = new Object[6];
                         o[0] = rs.getObject(1).toString().trim();
@@ -1570,7 +1716,7 @@ public class MainFrame extends javax.swing.JFrame {
                 t.setRowCount(0);
                 try {
                     ResultSet rs = MMS.select("SELECT id, part_name, part_qty, part_cost, archived FROM parts ORDER BY id DESC");
-                    int size = MMS.getPrefs().getInt("tableSizeParts", -1), count = 0;
+                    int size = MMS.getPrefs().getInt("table_size_parts", -1), count = 0;
                     while(rs.next() && (size == -1 || count <= size)){
                         Object [] o = new Object[5];
                         o[0] = rs.getObject(1).toString().trim();
@@ -1604,7 +1750,7 @@ public class MainFrame extends javax.swing.JFrame {
                 t.setRowCount(0);
                 try {
                     ResultSet rs = MMS.select("SELECT id, employee_name, employee_desc, employee_dept, archived FROM employees ORDER BY id DESC");
-                    int size = MMS.getPrefs().getInt("tableSizeEmployees", -1), count = 0;
+                    int size = MMS.getPrefs().getInt("table_size_employees", -1), count = 0;
                     while(rs.next() && (size == -1 || count <= size)){
                         Object [] o = new Object[5];
                         o[0] = rs.getObject(1).toString().trim();

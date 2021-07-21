@@ -46,7 +46,7 @@ public class MMS {
     
     //Variables
     public static final String NAME = "OpenMMS", VERSION = "1.0";
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
     public static final JFrame phf = new JFrame();
     public static final int DIAG_WIDTH = Toolkit.getDefaultToolkit(). getScreenSize().width/5 > 310 ? 310 : Toolkit.getDefaultToolkit(). getScreenSize().width/5;
     private static MouseListener mouseListener;
@@ -104,7 +104,7 @@ public class MMS {
                         System.out.println("[DATABASE] Connection closed");
                     }
                     //Shutdown Derby
-                    if(p.get("dbType", "").equals("derby")) DriverManager.getConnection("jdbc:derby:;shutdown=true");
+                    if(p.get("db_type", "").equals("derby")) DriverManager.getConnection("jdbc:derby:;shutdown=true");
                 } catch (SQLException ex) {
                     System.out.println("[DATABASE] "+ex.getCause());
                     System.exit(0);
@@ -135,10 +135,10 @@ public class MMS {
         //Close MainFrame if open
         if(m != null) m.dispose();
        
-        if(DEBUG) p.putBoolean("firstRun", true);
+        if(DEBUG) p.putBoolean("first_run", true);
         OUTER:
         while (true) {
-            if (p.getBoolean("firstRun", true)) {
+            if (p.getBoolean("first_run", true)) {
                 Setup setup = new Setup(phf, true);
                 setup.setSize(DIAG_WIDTH, setup.getHeight());
                 setup.setIconImage(systemIcon.getImage());
@@ -154,9 +154,9 @@ public class MMS {
                     }
                 }
             } else {
-                switch (p.get("dbType", "")) {
+                switch (p.get("db_type", "")) {
                     case "derby":
-                        String dir = p.get("derbyHome", ""), name = p.get("derbyName", "");
+                        String dir = p.get("derby_home", ""), name = p.get("derby_name", "");
                         System.setProperty("derby.system.home", dir);
                         System.setProperty("user.dir", dir);
                         try {
@@ -168,10 +168,10 @@ public class MMS {
                             break OUTER; 
                         } catch (SQLException ex) {
                             Logger.getLogger(MMS.class.getName()).log(Level.SEVERE, null, ex);
-                            p.putBoolean("firstRun", true);
+                            p.putBoolean("first_run", true);
                         }                 
                     case "mssql":
-                        String srvr = p.get("mssqlsrvr", ""), db = p.get("mssqldb", ""), usr = p.get("mssqlusr", ""), pass = p.get("mssqlpass", "");
+                        String srvr = p.get("srvr_ip", ""), db = p.get("srvr_db", ""), usr = p.get("srvr_user", ""), pass = p.get("srvr_pass", "");
                         try {
                             //Register driver
                             DriverManager.registerDriver(new com.microsoft.sqlserver.jdbc.SQLServerDriver());
@@ -181,10 +181,10 @@ public class MMS {
                             break OUTER;
                         } catch (SQLException ex) {
                             Logger.getLogger(MMS.class.getName()).log(Level.SEVERE, null, ex);
-                            p.putBoolean("firstRun", true);
+                            p.putBoolean("first_run", true);
                         }
                     default:
-                        p.putBoolean("firstRun", true);
+                        p.putBoolean("first_run", true);
                         break;
                 }
             }
