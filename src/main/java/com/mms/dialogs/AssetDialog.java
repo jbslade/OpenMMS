@@ -29,41 +29,19 @@ import javax.swing.table.DefaultTableModel;
  */
 public class AssetDialog extends javax.swing.JInternalFrame {
     
-    private int row = -1;
+    private final int row;
     private final JTable table;
-    
-    public AssetDialog(JTable t) {
-        initComponents();
-        nameField.addMouseListener(MMS.getMouseListener());
-        descField.addMouseListener(MMS.getMouseListener());
-        getRootPane().setDefaultButton(button);
-        table = t;
-        
-        setTypes();
-        setLocations();
-    }
     
     public AssetDialog(JTable t, int r) {
         initComponents();
-        nameField.addMouseListener(MMS.getMouseListener());
-        descField.addMouseListener(MMS.getMouseListener());
-        getRootPane().setDefaultButton(button);
         table = t;
         row = r;
-        button.setText("Save");
+        getRootPane().setDefaultButton(continueButton);
         
-        setTypes();
-        typeCombo.setSelectedItem(table.getValueAt(row, 3));
-        setLocations();
-        locationCombo.setSelectedItem(table.getValueAt(row, 4));
+        //Set right click listeners
+        nameField.addMouseListener(MMS.getMouseListener());
+        descField.addMouseListener(MMS.getMouseListener());
 
-        nameField.setText(t.getModel().getValueAt(r, 1).toString());
-        descField.setText(t.getModel().getValueAt(r, 2).toString());
-        nameField.requestFocus();
-        nameField.selectAll();
-    }
-    
-    private void setLocations(){
         //Set locations
         ResultSet rs = MMS.select("SELECT id, location_name FROM locations WHERE archived = 'N'");
         try {
@@ -74,11 +52,9 @@ public class AssetDialog extends javax.swing.JInternalFrame {
         } catch (SQLException ex) {
             Logger.getLogger(EmployeeDialog.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-    
-    private void setTypes(){
+        
         //Set departments
-        ResultSet rs = MMS.select("SELECT custom_value FROM custom_fields WHERE custom_type = 'asset_type'");
+        rs = MMS.select("SELECT custom_value FROM custom_fields WHERE custom_type = 'asset_type'");
         try {
             while(rs.next()){
                 typeCombo.addItem(rs.getString(1));
@@ -87,6 +63,18 @@ public class AssetDialog extends javax.swing.JInternalFrame {
         } catch (SQLException ex) {
             Logger.getLogger(AssetDialog.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+        //Edit
+        if(row != -1){
+            continueButton.setText("Save");
+            typeCombo.setSelectedItem(table.getValueAt(row, 3));
+            locationCombo.setSelectedItem(table.getValueAt(row, 4));
+            nameField.setText(t.getModel().getValueAt(r, 1).toString());
+            descField.setText(t.getModel().getValueAt(r, 2).toString());
+            nameField.requestFocus();
+            nameField.selectAll();
+        }
+        
     }
     
     /**
@@ -104,7 +92,7 @@ public class AssetDialog extends javax.swing.JInternalFrame {
         descLabel = new javax.swing.JLabel();
         descScroll = new javax.swing.JScrollPane();
         descField = new javax.swing.JTextArea();
-        button = new javax.swing.JButton();
+        continueButton = new javax.swing.JButton();
         locationLabel = new javax.swing.JLabel();
         locationCombo = new javax.swing.JComboBox<>();
         typeLabel = new javax.swing.JLabel();
@@ -140,16 +128,20 @@ public class AssetDialog extends javax.swing.JInternalFrame {
         descField.setRows(4);
         descScroll.setViewportView(descField);
 
-        button.setText("Add");
-        button.addActionListener(new java.awt.event.ActionListener() {
+        continueButton.setText("Add");
+        continueButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonActionPerformed(evt);
+                continueButtonActionPerformed(evt);
             }
         });
 
         locationLabel.setText("Location:");
 
+        locationCombo.setPreferredSize(nameField.getPreferredSize());
+
         typeLabel.setText("Type:");
+
+        typeCombo.setPreferredSize(nameField.getPreferredSize());
 
         javax.swing.GroupLayout backPanelLayout = new javax.swing.GroupLayout(backPanel);
         backPanel.setLayout(backPanelLayout);
@@ -162,7 +154,7 @@ public class AssetDialog extends javax.swing.JInternalFrame {
                     .addComponent(descScroll)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, backPanelLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(button))
+                        .addComponent(continueButton))
                     .addComponent(typeCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(locationCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(backPanelLayout.createSequentialGroup()
@@ -194,7 +186,7 @@ public class AssetDialog extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(locationCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(button)
+                .addComponent(continueButton)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -218,7 +210,7 @@ public class AssetDialog extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonActionPerformed
+    private void continueButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_continueButtonActionPerformed
         String name = nameField.getText(), desc = descField.getText(),
                 locName = locationCombo.getSelectedItem().toString(),
                 type = typeCombo.getSelectedItem().toString();
@@ -262,15 +254,15 @@ public class AssetDialog extends javax.swing.JInternalFrame {
             }
             dispose();
         }
-    }//GEN-LAST:event_buttonActionPerformed
+    }//GEN-LAST:event_continueButtonActionPerformed
 
     private void formInternalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameDeiconified
-        getRootPane().setDefaultButton(button);
+        getRootPane().setDefaultButton(continueButton);
     }//GEN-LAST:event_formInternalFrameDeiconified
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel backPanel;
-    private javax.swing.JButton button;
+    private javax.swing.JButton continueButton;
     private javax.swing.JTextArea descField;
     private javax.swing.JLabel descLabel;
     private javax.swing.JScrollPane descScroll;

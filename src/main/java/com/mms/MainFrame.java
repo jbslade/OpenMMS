@@ -238,7 +238,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         jButton1.setBackground(new java.awt.Color(255, 255, 255));
         jButton1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/tabs/workOrders.png"))); // NOI18N
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/dashboard/workOrders.png"))); // NOI18N
         jButton1.setText("3 Open Work Orders");
         jButton1.setFocusable(false);
         jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -1111,7 +1111,7 @@ public class MainFrame extends javax.swing.JFrame {
 
     //New Location
     private void newLocationButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newLocationButtonActionPerformed
-        LocationDialog l = new LocationDialog(locationTable);
+        LocationDialog l = new LocationDialog(locationTable, -1);
         l.setSize(MMS.DIAG_WIDTH, l.getHeight());
         l.setLocation(desktopPane.getWidth()/2-l.getWidth()/2, desktopPane.getHeight()/2-l.getHeight()/2-50);
         desktopPane.add(l);
@@ -1197,7 +1197,7 @@ public class MainFrame extends javax.swing.JFrame {
             PopupPanel.display("You must add a location before you can add an asset.", newAssetButton.getLocationOnScreen().x+10, newAssetButton.getLocationOnScreen().y+newAssetButton.getHeight()+10);
         }
         else{
-            AssetDialog a = new AssetDialog(assetTable);
+            AssetDialog a = new AssetDialog(assetTable, -1);
             a.setSize(MMS.DIAG_WIDTH, a.getHeight());
             a.setLocation(desktopPane.getWidth()/2-a.getWidth()/2, desktopPane.getHeight()/2-a.getHeight()/2-50);
             desktopPane.add(a);
@@ -1300,7 +1300,7 @@ public class MainFrame extends javax.swing.JFrame {
 
     //New Employee
     private void newEmployeeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newEmployeeButtonActionPerformed
-        EmployeeDialog e = new EmployeeDialog(employeeTable);
+        EmployeeDialog e = new EmployeeDialog(employeeTable, -1);
         e.setSize(MMS.DIAG_WIDTH, e.getHeight());
         e.setLocation(desktopPane.getWidth()/2-e.getWidth()/2, desktopPane.getHeight()/2-e.getHeight()/2-50);
         desktopPane.add(e);
@@ -1469,7 +1469,7 @@ public class MainFrame extends javax.swing.JFrame {
 
     //New Part
     private void newPartButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newPartButtonActionPerformed
-        PartDialog p = new PartDialog(partTable);
+        PartDialog p = new PartDialog(partTable, -1);
         p.setSize(MMS.DIAG_WIDTH, p.getHeight());
         p.setLocation(desktopPane.getWidth()/2-p.getWidth()/2, desktopPane.getHeight()/2-p.getHeight()/2-50);
         desktopPane.add(p);
@@ -1630,7 +1630,7 @@ public class MainFrame extends javax.swing.JFrame {
 
     //New Schedule
     private void newScheduleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newScheduleButtonActionPerformed
-        ScheduleDialog s = new ScheduleDialog(scheduleTable);
+        ScheduleDialog s = new ScheduleDialog(scheduleTable, -1);
         s.setSize(MMS.DIAG_WIDTH*2-10, s.getHeight());
         s.setLocation(desktopPane.getWidth()/2-s.getWidth()/2, desktopPane.getHeight()/2-s.getHeight()/2-50);
         desktopPane.add(s);

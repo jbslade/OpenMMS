@@ -29,29 +29,27 @@ import javax.swing.table.DefaultTableModel;
  */
 public class LocationDialog extends javax.swing.JInternalFrame {
     
-    private int row = -1;
+    private final int row;
     private final JTable table;
-    
-    public LocationDialog(JTable t) {
-        initComponents();
-        nameField.addMouseListener(MMS.getMouseListener());
-        descField.addMouseListener(MMS.getMouseListener());
-        getRootPane().setDefaultButton(button);
-        table = t;
-    }
     
     public LocationDialog(JTable t, int r) {
         initComponents();
-        nameField.addMouseListener(MMS.getMouseListener());
-        descField.addMouseListener(MMS.getMouseListener());
-        getRootPane().setDefaultButton(button);
         table = t;
         row = r;
-        button.setText("Save");
-        nameField.setText(t.getModel().getValueAt(row, 1).toString());
-        descField.setText(t.getModel().getValueAt(row, 2).toString());
-        nameField.requestFocus();
-        nameField.selectAll();
+        getRootPane().setDefaultButton(continueButton);
+        
+        //Set right click listeners
+        nameField.addMouseListener(MMS.getMouseListener());
+        descField.addMouseListener(MMS.getMouseListener());
+        
+        //Edit
+        if(row != -1){
+            continueButton.setText("Save");
+            nameField.setText(t.getModel().getValueAt(row, 1).toString());
+            descField.setText(t.getModel().getValueAt(row, 2).toString());
+            nameField.requestFocus();
+            nameField.selectAll();
+        }
     }
     
     /**
@@ -69,7 +67,7 @@ public class LocationDialog extends javax.swing.JInternalFrame {
         descLabel = new javax.swing.JLabel();
         descScroll = new javax.swing.JScrollPane();
         descField = new javax.swing.JTextArea();
-        button = new javax.swing.JButton();
+        continueButton = new javax.swing.JButton();
 
         setClosable(true);
         setIconifiable(true);
@@ -101,10 +99,10 @@ public class LocationDialog extends javax.swing.JInternalFrame {
         descField.setRows(4);
         descScroll.setViewportView(descField);
 
-        button.setText("Add");
-        button.addActionListener(new java.awt.event.ActionListener() {
+        continueButton.setText("Add");
+        continueButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonActionPerformed(evt);
+                continueButtonActionPerformed(evt);
             }
         });
 
@@ -117,7 +115,7 @@ public class LocationDialog extends javax.swing.JInternalFrame {
                 .addGroup(backPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, backPanelLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(button))
+                        .addComponent(continueButton))
                     .addComponent(nameField)
                     .addComponent(nameLabel)
                     .addComponent(descLabel)
@@ -136,7 +134,7 @@ public class LocationDialog extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(descScroll, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(button)
+                .addComponent(continueButton)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -160,7 +158,7 @@ public class LocationDialog extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonActionPerformed
+    private void continueButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_continueButtonActionPerformed
         String name = nameField.getText(), desc = descField.getText();
         if(name.isEmpty()) nameField.requestFocus();
         else{
@@ -199,15 +197,15 @@ public class LocationDialog extends javax.swing.JInternalFrame {
             }
             dispose();
         }
-    }//GEN-LAST:event_buttonActionPerformed
+    }//GEN-LAST:event_continueButtonActionPerformed
 
     private void formInternalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameDeiconified
-        getRootPane().setDefaultButton(button);
+        getRootPane().setDefaultButton(continueButton);
     }//GEN-LAST:event_formInternalFrameDeiconified
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel backPanel;
-    private javax.swing.JButton button;
+    private javax.swing.JButton continueButton;
     private javax.swing.JTextArea descField;
     private javax.swing.JLabel descLabel;
     private javax.swing.JScrollPane descScroll;

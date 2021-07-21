@@ -16,7 +16,6 @@
 package com.mms.dialogs;
 
 import com.mms.MMS;
-import com.mms.utilities.ContextMenuMouseListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -30,38 +29,19 @@ import javax.swing.table.DefaultTableModel;
  */
 public class EmployeeDialog extends javax.swing.JInternalFrame {
     
-    private int row = -1;
+    private final int row;
     private final JTable table;
-    
-    public EmployeeDialog(JTable t) {
-        initComponents();
-        table = t;
-        getRootPane().setDefaultButton(button);
-        nameField.addMouseListener(MMS.getMouseListener());
-        descField.addMouseListener(MMS.getMouseListener());
-        
-        setDepartments();
-    }
     
     public EmployeeDialog(JTable t, int r) {
         initComponents();
         table = t;
         row = r;
-        getRootPane().setDefaultButton(button);
-        button.setText("Save");
+        getRootPane().setDefaultButton(continueButton);
+        
+        //Set right click listeners
         nameField.addMouseListener(MMS.getMouseListener());
         descField.addMouseListener(MMS.getMouseListener());
         
-        setDepartments();
-        deptCombo.setSelectedItem(table.getValueAt(row, 3));
-        
-        nameField.setText(t.getModel().getValueAt(row, 1).toString());
-        descField.setText(t.getModel().getValueAt(row, 2).toString());
-        nameField.requestFocus();
-        nameField.selectAll();
-    }
-    
-    private void setDepartments(){
         //Set departments
         ResultSet rs = MMS.select("SELECT custom_value FROM custom_fields WHERE custom_type = 'employee_dept'");
         try {
@@ -71,6 +51,16 @@ public class EmployeeDialog extends javax.swing.JInternalFrame {
             rs.close();
         } catch (SQLException ex) {
             Logger.getLogger(EmployeeDialog.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        //Edit
+        if(row != -1){
+            continueButton.setText("Save");
+            deptCombo.setSelectedItem(table.getValueAt(row, 3));
+            nameField.setText(t.getModel().getValueAt(row, 1).toString());
+            descField.setText(t.getModel().getValueAt(row, 2).toString());
+            nameField.requestFocus();
+            nameField.selectAll();
         }
     }
     
@@ -87,7 +77,7 @@ public class EmployeeDialog extends javax.swing.JInternalFrame {
         nameLabel = new javax.swing.JLabel();
         nameField = new javax.swing.JTextField();
         descLabel = new javax.swing.JLabel();
-        button = new javax.swing.JButton();
+        continueButton = new javax.swing.JButton();
         descField = new javax.swing.JTextField();
         descLabel1 = new javax.swing.JLabel();
         deptCombo = new javax.swing.JComboBox<>();
@@ -121,14 +111,16 @@ public class EmployeeDialog extends javax.swing.JInternalFrame {
 
         descLabel.setText("Designation:");
 
-        button.setText("Add");
-        button.addActionListener(new java.awt.event.ActionListener() {
+        continueButton.setText("Add");
+        continueButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonActionPerformed(evt);
+                continueButtonActionPerformed(evt);
             }
         });
 
         descLabel1.setText("Department:");
+
+        deptCombo.setPreferredSize(nameField.getPreferredSize());
 
         javax.swing.GroupLayout backPanelLayout = new javax.swing.GroupLayout(backPanel);
         backPanel.setLayout(backPanelLayout);
@@ -139,7 +131,7 @@ public class EmployeeDialog extends javax.swing.JInternalFrame {
                 .addGroup(backPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, backPanelLayout.createSequentialGroup()
                         .addGap(0, 166, Short.MAX_VALUE)
-                        .addComponent(button))
+                        .addComponent(continueButton))
                     .addComponent(nameField)
                     .addComponent(descField, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(backPanelLayout.createSequentialGroup()
@@ -167,7 +159,7 @@ public class EmployeeDialog extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(deptCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(button)
+                .addComponent(continueButton)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -191,7 +183,7 @@ public class EmployeeDialog extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonActionPerformed
+    private void continueButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_continueButtonActionPerformed
         String name = nameField.getText(), desc = descField.getText(), dept = deptCombo.getSelectedItem().toString();
         if(name.isEmpty()) nameField.requestFocus();
         else if(desc.isEmpty()) descField.requestFocus();
@@ -232,15 +224,15 @@ public class EmployeeDialog extends javax.swing.JInternalFrame {
             }
             dispose();
         }
-    }//GEN-LAST:event_buttonActionPerformed
+    }//GEN-LAST:event_continueButtonActionPerformed
 
     private void formInternalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameDeiconified
-        getRootPane().setDefaultButton(button);
+        getRootPane().setDefaultButton(continueButton);
     }//GEN-LAST:event_formInternalFrameDeiconified
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel backPanel;
-    private javax.swing.JButton button;
+    private javax.swing.JButton continueButton;
     private javax.swing.JComboBox<String> deptCombo;
     private javax.swing.JTextField descField;
     private javax.swing.JLabel descLabel;

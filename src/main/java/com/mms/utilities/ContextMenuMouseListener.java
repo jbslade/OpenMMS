@@ -36,36 +36,20 @@ public class ContextMenuMouseListener extends MouseAdapter {
     private final Action cutAction;
     private final Action copyAction;
     private final Action pasteAction;
-    private final Action undoAction;
     private final Action selectAllAction;
 
     private JTextComponent textComponent;
-    private String savedString = "";
-    private Actions lastActionSelected;
+
 
     private enum Actions { UNDO, CUT, COPY, PASTE, SELECT_ALL };
 
     public JPopupMenu getPopupMenu(){return popup;}
     
     public ContextMenuMouseListener(){
-        undoAction = new AbstractAction("Undo"){
-            @Override
-            public void actionPerformed(ActionEvent ae){
-                    textComponent.setText("");
-                    textComponent.replaceSelection(savedString);
-
-                    lastActionSelected = Actions.UNDO;
-            }
-        };
-
-        popup.add(undoAction);
-        popup.addSeparator();
 
         cutAction = new AbstractAction("Cut"){
             @Override
             public void actionPerformed(ActionEvent ae){
-                lastActionSelected = Actions.CUT;
-                savedString = textComponent.getText();
                 textComponent.cut();
             }
         };
@@ -75,7 +59,6 @@ public class ContextMenuMouseListener extends MouseAdapter {
         copyAction = new AbstractAction("Copy"){
             @Override
             public void actionPerformed(ActionEvent ae){
-                lastActionSelected = Actions.COPY;
                 textComponent.copy();
             }
         };
@@ -85,8 +68,6 @@ public class ContextMenuMouseListener extends MouseAdapter {
         pasteAction = new AbstractAction("Paste"){
             @Override
             public void actionPerformed(ActionEvent ae){
-                lastActionSelected = Actions.PASTE;
-                savedString = textComponent.getText();
                 textComponent.paste();
             }
         };
@@ -97,7 +78,6 @@ public class ContextMenuMouseListener extends MouseAdapter {
         selectAllAction = new AbstractAction("Select All"){
             @Override
             public void actionPerformed(ActionEvent ae){
-                lastActionSelected = Actions.SELECT_ALL;
                 textComponent.selectAll();
             }
         };
@@ -122,7 +102,6 @@ public class ContextMenuMouseListener extends MouseAdapter {
 
             boolean pasteAvailable = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null).isDataFlavorSupported(DataFlavor.stringFlavor);
 
-            undoAction.setEnabled(enabled && editable && (lastActionSelected == Actions.CUT || lastActionSelected == Actions.PASTE));
             cutAction.setEnabled(enabled && editable && marked);
             copyAction.setEnabled(enabled && marked);
             pasteAction.setEnabled(enabled && editable && pasteAvailable);

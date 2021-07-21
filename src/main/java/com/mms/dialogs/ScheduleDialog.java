@@ -16,12 +16,21 @@
 package com.mms.dialogs;
 
 import com.mms.MMS;
+import java.awt.Font;
+import java.awt.font.TextAttribute;
+import java.io.IOException;
+import java.io.StringWriter;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.html.HTML;
+import javax.swing.text.html.HTML.Tag;
+import javax.swing.text.html.HTMLDocument;
+import javax.swing.text.html.HTMLEditorKit;
 
 /**
  *
@@ -29,27 +38,68 @@ import javax.swing.table.DefaultTableModel;
  */
 public class ScheduleDialog extends javax.swing.JInternalFrame {
     
-    private int row = -1;
+    private final int row;
     private final JTable table;
-    
-    public ScheduleDialog(JTable t) {
-        initComponents();
-        nameField.addMouseListener(MMS.getMouseListener());
-        getRootPane().setDefaultButton(button);
-        table = t;
-    }
+    private final HTMLEditorKit htmlKit;
+    private final HTMLDocument htmlDoc;
     
     public ScheduleDialog(JTable t, int r) {
         initComponents();
-        nameField.addMouseListener(MMS.getMouseListener());
-        getRootPane().setDefaultButton(button);
         table = t;
         row = r;
-        button.setText("Save");
+        htmlKit = (HTMLEditorKit) descPane.getEditorKit();
+        htmlDoc = (HTMLDocument) descPane.getDocument();
+        getRootPane().setDefaultButton(continueButton);
         
+        //Set right click listeners
+        nameField.addMouseListener(MMS.getMouseListener());
+        descPane.addMouseListener(MMS.getMouseListener());
+        
+        //Set underline button
+        Font font = underlineButton.getFont();
+        Map attributes = font.getAttributes();
+        attributes.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
+        font = font.deriveFont(attributes);
+        underlineButton.setFont(font);
+        
+        //Set locations
+        ResultSet rs = MMS.select("SELECT id, location_name FROM locations WHERE archived = 'N'");
+        try {
+            while(rs.next()){
+                locationCombo.addItem(rs.getString(1)+" - "+rs.getString(2));
+            }
+            rs.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(EmployeeDialog.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        //Set assets
+        rs = MMS.select("SELECT id, asset_name FROM assets WHERE archived = 'N'");
+        try {
+            while(rs.next()){
+                assetCombo.addItem(rs.getString(1)+" - "+rs.getString(2));
+            }
+            rs.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(EmployeeDialog.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        //Set types
+        rs = MMS.select("SELECT custom_value FROM custom_fields WHERE custom_type = 'schedule_type'");
+        try {
+            while(rs.next()){
+                typeCombo.addItem(rs.getString(1));
+            }
+            rs.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(EmployeeDialog.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        //Edit
+        if (r == -1){
+            continueButton.setText("Save");
+        }
     }
-    
-    
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -61,25 +111,28 @@ public class ScheduleDialog extends javax.swing.JInternalFrame {
     private void initComponents() {
 
         backPanel = new javax.swing.JPanel();
+        continueButton = new javax.swing.JButton();
+        markDownTools = new javax.swing.JToolBar();
+        boldButton = new javax.swing.JButton();
+        italicsButton = new javax.swing.JButton();
+        underlineButton = new javax.swing.JButton();
+        bulletButton = new javax.swing.JButton();
+        descScroll = new javax.swing.JScrollPane();
+        descPane = new javax.swing.JTextPane();
+        leftPanel = new javax.swing.JPanel();
         nameLabel = new javax.swing.JLabel();
         nameField = new javax.swing.JTextField();
-        button = new javax.swing.JButton();
-        jComboBox1 = new javax.swing.JComboBox<>();
-        nameLabel1 = new javax.swing.JLabel();
-        nameField1 = new javax.swing.JTextField();
-        nameLabel2 = new javax.swing.JLabel();
-        nameLabel3 = new javax.swing.JLabel();
-        jComboBox2 = new javax.swing.JComboBox<>();
-        jComboBox3 = new javax.swing.JComboBox<>();
-        nameLabel4 = new javax.swing.JLabel();
-        jComboBox4 = new javax.swing.JComboBox<>();
-        nameLabel5 = new javax.swing.JLabel();
-        jToolBar1 = new javax.swing.JToolBar();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTextPane1 = new javax.swing.JTextPane();
+        dateLabel = new javax.swing.JLabel();
+        dateField = new javax.swing.JTextField();
+        assetLabel = new javax.swing.JLabel();
+        assetCombo = new javax.swing.JComboBox<>();
+        rightPanel = new javax.swing.JPanel();
+        typeLabel = new javax.swing.JLabel();
+        typeCombo = new javax.swing.JComboBox<>();
+        freqLabel = new javax.swing.JLabel();
+        freqCombo = new javax.swing.JComboBox<>();
+        locationLabel = new javax.swing.JLabel();
+        locationCombo = new javax.swing.JComboBox<>();
 
         setClosable(true);
         setIconifiable(true);
@@ -105,51 +158,144 @@ public class ScheduleDialog extends javax.swing.JInternalFrame {
             }
         });
 
-        nameLabel.setText("Name:");
-
-        button.setText("Add");
-        button.addActionListener(new java.awt.event.ActionListener() {
+        continueButton.setText("Add");
+        continueButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonActionPerformed(evt);
+                continueButtonActionPerformed(evt);
             }
         });
 
-        nameLabel1.setText("Type:");
+        markDownTools.setFloatable(false);
+        markDownTools.setRollover(true);
 
-        nameLabel2.setText("Start Date:");
+        boldButton.setFont(new java.awt.Font("Tahoma", 1, 17)); // NOI18N
+        boldButton.setText("B");
+        boldButton.setFocusable(false);
+        boldButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        boldButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        boldButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                boldButtonActionPerformed(evt);
+            }
+        });
+        markDownTools.add(boldButton);
 
-        nameLabel3.setText("Frequency:");
+        italicsButton.setFont(new java.awt.Font("Tahoma", 2, 17)); // NOI18N
+        italicsButton.setText("I");
+        italicsButton.setFocusable(false);
+        italicsButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        italicsButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        italicsButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                italicsButtonActionPerformed(evt);
+            }
+        });
+        markDownTools.add(italicsButton);
 
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Daily", "Weekly", "Monthly", "Quarterly", "Bianually", "Anually" }));
+        underlineButton.setFont(new java.awt.Font("Tahoma", 0, 17)); // NOI18N
+        underlineButton.setText("U");
+        underlineButton.setFocusable(false);
+        underlineButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        underlineButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        underlineButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                underlineButtonActionPerformed(evt);
+            }
+        });
+        markDownTools.add(underlineButton);
 
-        nameLabel4.setText("Asset:");
+        bulletButton.setFont(new java.awt.Font("Tahoma", 0, 17)); // NOI18N
+        bulletButton.setText("•");
+        bulletButton.setFocusable(false);
+        bulletButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        bulletButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        markDownTools.add(bulletButton);
 
-        nameLabel5.setText("Location:");
+        descPane.setContentType("text/html"); // NOI18N
+        descScroll.setViewportView(descPane);
 
-        jToolBar1.setFloatable(false);
-        jToolBar1.setRollover(true);
+        nameLabel.setText("Name:");
 
-        jButton1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jButton1.setText("B");
-        jButton1.setFocusable(false);
-        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(jButton1);
+        dateLabel.setText("Start Date:");
 
-        jButton2.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
-        jButton2.setText("I");
-        jButton2.setFocusable(false);
-        jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(jButton2);
+        assetLabel.setText("Asset:");
 
-        jButton3.setText("U");
-        jButton3.setFocusable(false);
-        jButton3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(jButton3);
+        assetCombo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "No Asset" }));
+        assetCombo.setPreferredSize(nameField.getPreferredSize());
 
-        jScrollPane1.setViewportView(jTextPane1);
+        javax.swing.GroupLayout leftPanelLayout = new javax.swing.GroupLayout(leftPanel);
+        leftPanel.setLayout(leftPanelLayout);
+        leftPanelLayout.setHorizontalGroup(
+            leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(nameLabel)
+                .addComponent(nameField, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)
+                .addComponent(dateLabel)
+                .addComponent(dateField))
+            .addComponent(assetLabel)
+            .addComponent(assetCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        leftPanelLayout.setVerticalGroup(
+            leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(leftPanelLayout.createSequentialGroup()
+                .addComponent(nameLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(nameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(dateLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(dateField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(assetLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(assetCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
+        rightPanel.setPreferredSize(leftPanel.getPreferredSize());
+
+        typeLabel.setText("Type:");
+
+        typeCombo.setPreferredSize(nameField.getPreferredSize());
+
+        freqLabel.setText("Frequency:");
+
+        freqCombo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Daily", "Weekly", "Monthly", "Quarterly", "Bianually", "Anually" }));
+        freqCombo.setPreferredSize(nameField.getPreferredSize());
+
+        locationLabel.setText("Location:");
+
+        locationCombo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "No Location" }));
+        locationCombo.setPreferredSize(nameField.getPreferredSize());
+
+        javax.swing.GroupLayout rightPanelLayout = new javax.swing.GroupLayout(rightPanel);
+        rightPanel.setLayout(rightPanelLayout);
+        rightPanelLayout.setHorizontalGroup(
+            rightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(typeCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(freqCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(rightPanelLayout.createSequentialGroup()
+                .addGroup(rightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(typeLabel)
+                    .addComponent(freqLabel)
+                    .addComponent(locationLabel))
+                .addGap(0, 111, Short.MAX_VALUE))
+            .addComponent(locationCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        rightPanelLayout.setVerticalGroup(
+            rightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(rightPanelLayout.createSequentialGroup()
+                .addComponent(typeLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(typeCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(freqLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(freqCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(locationLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(locationCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
 
         javax.swing.GroupLayout backPanelLayout = new javax.swing.GroupLayout(backPanel);
         backPanel.setLayout(backPanelLayout);
@@ -160,74 +306,28 @@ public class ScheduleDialog extends javax.swing.JInternalFrame {
                 .addGroup(backPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(backPanelLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(button))
+                        .addComponent(continueButton))
+                    .addComponent(markDownTools, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(descScroll)
                     .addGroup(backPanelLayout.createSequentialGroup()
-                        .addGroup(backPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(nameField)
-                            .addComponent(nameLabel))
-                        .addGap(10, 10, 10)
-                        .addGroup(backPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(nameLabel1)
-                            .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1)
-                    .addGroup(backPanelLayout.createSequentialGroup()
-                        .addGroup(backPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(backPanelLayout.createSequentialGroup()
-                                .addComponent(nameLabel2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 114, Short.MAX_VALUE))
-                            .addGroup(backPanelLayout.createSequentialGroup()
-                                .addComponent(nameLabel4)
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, backPanelLayout.createSequentialGroup()
-                                .addGroup(backPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jComboBox3, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(nameField1))
-                                .addGap(10, 10, 10)))
-                        .addGroup(backPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jComboBox4, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jComboBox2, javax.swing.GroupLayout.Alignment.TRAILING, 0, 156, Short.MAX_VALUE)
-                            .addGroup(backPanelLayout.createSequentialGroup()
-                                .addGroup(backPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(nameLabel5)
-                                    .addComponent(nameLabel3))
-                                .addGap(0, 0, Short.MAX_VALUE)))))
+                        .addComponent(leftPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(12, 12, 12)
+                        .addComponent(rightPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         backPanelLayout.setVerticalGroup(
             backPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, backPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(backPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(nameLabel)
-                    .addComponent(nameLabel1))
+                .addGroup(backPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(leftPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(rightPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(backPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(nameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(backPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(backPanelLayout.createSequentialGroup()
-                        .addGroup(backPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(nameLabel2)
-                            .addComponent(nameLabel3))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(nameField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(backPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(nameLabel4)
-                    .addComponent(nameLabel5))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(backPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBox4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(markDownTools, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 163, Short.MAX_VALUE)
+                .addComponent(descScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(button)
+                .addComponent(continueButton)
                 .addContainerGap())
         );
 
@@ -251,34 +351,100 @@ public class ScheduleDialog extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonActionPerformed
+    private void continueButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_continueButtonActionPerformed
         
-    }//GEN-LAST:event_buttonActionPerformed
+    }//GEN-LAST:event_continueButtonActionPerformed
 
     private void formInternalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameDeiconified
-        getRootPane().setDefaultButton(button);
+        getRootPane().setDefaultButton(continueButton);
     }//GEN-LAST:event_formInternalFrameDeiconified
 
+    private void boldButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boldButtonActionPerformed
+        //formatSelection("<b>", "</b>");
+        format();
+    }//GEN-LAST:event_boldButtonActionPerformed
+
+    private void italicsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_italicsButtonActionPerformed
+        formatSelection("<i>", "</i>");
+    }//GEN-LAST:event_italicsButtonActionPerformed
+
+    private void underlineButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_underlineButtonActionPerformed
+        formatSelection("<u>", "</u>");
+    }//GEN-LAST:event_underlineButtonActionPerformed
+
+    private void format(){
+        String text = descPane.getSelectedText();
+        int start = descPane.getSelectionStart(), end = descPane.getSelectionEnd();
+        descPane.replaceSelection("");
+            try {
+                htmlKit.insertHTML(htmlDoc, start, "<b>"+text, 0, 0, HTML.Tag.B);
+            } catch (BadLocationException | IOException ex) {
+                Logger.getLogger(ScheduleDialog.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            descPane.setSelectionStart(start);
+            descPane.setSelectionEnd(end);
+    }
+    
+    private void formatSelection(String startTag, String endTag){
+        String text = descPane.getSelectedText(); 
+        if(text != null){
+            int start = descPane.getSelectionStart(), end = descPane.getSelectionEnd();
+
+            //Check if text contains other tags
+            try (StringWriter w = new StringWriter()) {
+                htmlKit.write(w, htmlDoc, start, end-start);
+                String tags = w.toString();
+                if(tags.contains("<b>")){
+                    startTag = startTag + "<b>";
+                    endTag = "</b>" + endTag;
+                }
+                if(tags.contains("<i>")){
+                    startTag = startTag + "<i>";
+                    endTag = "</i>" + endTag;
+                }
+                if(tags.contains("<u>")){
+                    startTag = startTag + "<u>";
+                    endTag = "</u>" + endTag;
+                }
+            } catch (IOException | BadLocationException ex) {
+                Logger.getLogger(ScheduleDialog.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            descPane.replaceSelection("");
+            try {
+                htmlKit.insertHTML(htmlDoc, start, startTag+text+endTag, 0, 0, null);
+            } catch (BadLocationException | IOException ex) {
+                Logger.getLogger(ScheduleDialog.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            descPane.setSelectionStart(start);
+            descPane.setSelectionEnd(end+1);
+        }
+    }
+    
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> assetCombo;
+    private javax.swing.JLabel assetLabel;
     private javax.swing.JPanel backPanel;
-    private javax.swing.JButton button;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JComboBox<String> jComboBox2;
-    private javax.swing.JComboBox<String> jComboBox3;
-    private javax.swing.JComboBox<String> jComboBox4;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextPane jTextPane1;
-    private javax.swing.JToolBar jToolBar1;
+    private javax.swing.JButton boldButton;
+    private javax.swing.JButton bulletButton;
+    private javax.swing.JButton continueButton;
+    private javax.swing.JTextField dateField;
+    private javax.swing.JLabel dateLabel;
+    private javax.swing.JTextPane descPane;
+    private javax.swing.JScrollPane descScroll;
+    private javax.swing.JComboBox<String> freqCombo;
+    private javax.swing.JLabel freqLabel;
+    private javax.swing.JButton italicsButton;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel leftPanel;
+    private javax.swing.JComboBox<String> locationCombo;
+    private javax.swing.JLabel locationLabel;
+    private javax.swing.JToolBar markDownTools;
     private javax.swing.JTextField nameField;
-    private javax.swing.JTextField nameField1;
     private javax.swing.JLabel nameLabel;
-    private javax.swing.JLabel nameLabel1;
-    private javax.swing.JLabel nameLabel2;
-    private javax.swing.JLabel nameLabel3;
-    private javax.swing.JLabel nameLabel4;
-    private javax.swing.JLabel nameLabel5;
+    private javax.swing.JPanel rightPanel;
+    private javax.swing.JComboBox<String> typeCombo;
+    private javax.swing.JLabel typeLabel;
+    private javax.swing.JButton underlineButton;
     // End of variables declaration//GEN-END:variables
 }

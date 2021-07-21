@@ -40,7 +40,6 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
 
 /**
  *
@@ -88,6 +87,8 @@ public class MMS {
         FlatGrayIJTheme.install();
         System.setProperty("flatlaf.menuBarEmbedded", "true");
         UIManager.put("TabbedPane.selectedBackground", Color.white);
+        UIManager.put( "Component.focusWidth", 1 );
+        UIManager.put( "TextComponent.arc", 5 );
         
         //Mouse listener
         mouseListener = new ContextMenuMouseListener();
@@ -301,24 +302,23 @@ public class MMS {
     }
     
     //Resize table
-    public static void resizeTable(JTable table) {
-        final TableColumnModel columnModel = table.getColumnModel();
-        for (int column = 0; column < table.getColumnCount(); column++) {
-            int width = 15; // Min width
-            for (int row = 0; row < table.getRowCount(); row++) {
-                TableCellRenderer renderer = table.getCellRenderer(row, column);
-                Component comp = table.prepareRenderer(renderer, row, column);
-                width = Math.max(comp.getPreferredSize().width +5 , width);
-            }
-            if(width > 400) width=400;  
-            columnModel.getColumn(column).setPreferredWidth(width);
-        }
-    }
+//    public static void resizeTable(JTable table) {
+//        final TableColumnModel columnModel = table.getColumnModel();
+//        for (int column = 0; column < table.getColumnCount(); column++) {
+//            int width = 15; // Min width
+//            for (int row = 0; row < table.getRowCount(); row++) {
+//                TableCellRenderer renderer = table.getCellRenderer(row, column);
+//                Component comp = table.prepareRenderer(renderer, row, column);
+//                width = Math.max(comp.getPreferredSize().width +5 , width);
+//            }
+//            if(width > 400) width=400;  
+//            columnModel.getColumn(column).setPreferredWidth(width);
+//        }
+//    }
     
-    public static void sizeColumnsToFit(JTable table) {
-        sizeColumnsToFit(table, 15);
-    } 
-    public static void sizeColumnsToFit(JTable table, int columnMargin) {
+    //Resize table
+    public static void resizeTable(JTable table) {
+        int columnMargin = 15; //Column margin
         JTableHeader tableHeader = table.getTableHeader();
  
         if(tableHeader == null) {

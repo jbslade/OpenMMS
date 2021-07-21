@@ -61,6 +61,8 @@ public class LoginDialog extends javax.swing.JDialog {
             passwordField.requestFocus();
         }
         
+        passwordField.requestFocus();
+        
         //Show placeholder frame
         MMS.phf.setVisible(true);
     }
@@ -95,6 +97,8 @@ public class LoginDialog extends javax.swing.JDialog {
         });
 
         separator.setOrientation(javax.swing.SwingConstants.VERTICAL);
+
+        userCombo.setPreferredSize(passwordField.getPreferredSize());
 
         button.setText("Continue");
         button.addActionListener(new java.awt.event.ActionListener() {

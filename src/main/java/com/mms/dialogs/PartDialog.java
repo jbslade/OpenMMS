@@ -29,31 +29,29 @@ import javax.swing.table.DefaultTableModel;
  */
 public class PartDialog extends javax.swing.JInternalFrame {
     
-    private int row = -1;
+    private final int row;
     private final JTable table;
-    
-    public PartDialog(JTable t) {
-        initComponents();
-        nameField.addMouseListener(MMS.getMouseListener());
-        priceField.addMouseListener(MMS.getMouseListener());
-        getRootPane().setDefaultButton(button);
-        table = t;
-    }
-    
+
     public PartDialog(JTable t, int r) {
         initComponents();
-        nameField.addMouseListener(MMS.getMouseListener());
-        priceField.addMouseListener(MMS.getMouseListener());
-        getRootPane().setDefaultButton(button);
         table = t;
         row = r;
-        button.setText("Save");
+        getRootPane().setDefaultButton(continueButton);
         
-        nameField.setText(t.getModel().getValueAt(row, 1).toString());
-        qtySpinner.setValue(t.getModel().getValueAt(row, 2).toString());
-        priceField.setValue(t.getModel().getValueAt(row, 3).toString());
-        nameField.requestFocus();
-        nameField.selectAll();
+        //Set right click listeners
+        nameField.addMouseListener(MMS.getMouseListener());
+        costField.addMouseListener(MMS.getMouseListener());
+          
+        //Edit
+        if(row != -1){
+            continueButton.setText("Save");
+            nameField.setText(t.getModel().getValueAt(row, 1).toString());
+            qtySpinner.setValue(t.getModel().getValueAt(row, 2).toString());
+            costField.setValue(t.getModel().getValueAt(row, 3).toString());
+            nameField.requestFocus();
+            nameField.selectAll();
+        }
+        
     }
     
     /**
@@ -70,9 +68,9 @@ public class PartDialog extends javax.swing.JInternalFrame {
         nameField = new javax.swing.JTextField();
         qtyLabel = new javax.swing.JLabel();
         qtySpinner = new javax.swing.JSpinner();
-        button = new javax.swing.JButton();
+        continueButton = new javax.swing.JButton();
         priceLabel = new javax.swing.JLabel();
-        priceField = new javax.swing.JFormattedTextField();
+        costField = new javax.swing.JFormattedTextField();
 
         setClosable(true);
         setIconifiable(true);
@@ -102,18 +100,19 @@ public class PartDialog extends javax.swing.JInternalFrame {
         qtyLabel.setText("Quantity:");
 
         qtySpinner.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
+        qtySpinner.setPreferredSize(costField.getPreferredSize());
 
-        button.setText("Add");
-        button.addActionListener(new java.awt.event.ActionListener() {
+        continueButton.setText("Add");
+        continueButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonActionPerformed(evt);
+                continueButtonActionPerformed(evt);
             }
         });
 
         priceLabel.setText("Cost/Unit:");
 
-        priceField.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("###0.###"))));
-        priceField.setText("0.00");
+        costField.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("###0.###"))));
+        costField.setText("0.00");
 
         javax.swing.GroupLayout backPanelLayout = new javax.swing.GroupLayout(backPanel);
         backPanel.setLayout(backPanelLayout);
@@ -125,7 +124,7 @@ public class PartDialog extends javax.swing.JInternalFrame {
                     .addComponent(nameField)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, backPanelLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(button))
+                        .addComponent(continueButton))
                     .addComponent(nameLabel)
                     .addGroup(backPanelLayout.createSequentialGroup()
                         .addGroup(backPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -134,7 +133,7 @@ public class PartDialog extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(backPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(priceLabel)
-                            .addComponent(priceField, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE))))
+                            .addComponent(costField, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         backPanelLayout.setVerticalGroup(
@@ -151,9 +150,9 @@ public class PartDialog extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(backPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(qtySpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(priceField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(costField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(button)
+                .addComponent(continueButton)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -177,14 +176,14 @@ public class PartDialog extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonActionPerformed
+    private void continueButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_continueButtonActionPerformed
         String name = nameField.getText();
         int qty = Integer.parseInt(qtySpinner.getValue().toString());
         double price;
         if(name.isEmpty()) nameField.requestFocus();
-        else if(priceField.getText().isEmpty()) priceField.requestFocus();
+        else if(costField.getText().isEmpty()) costField.requestFocus();
         else{
-            price = Double.parseDouble(priceField.getText());
+            price = Double.parseDouble(costField.getText());
             if(row == -1){ //New part
                     //Get next no
                     int partNo = 0;
@@ -221,18 +220,18 @@ public class PartDialog extends javax.swing.JInternalFrame {
             }
             dispose();
         }
-    }//GEN-LAST:event_buttonActionPerformed
+    }//GEN-LAST:event_continueButtonActionPerformed
 
     private void formInternalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameDeiconified
-        getRootPane().setDefaultButton(button);
+        getRootPane().setDefaultButton(continueButton);
     }//GEN-LAST:event_formInternalFrameDeiconified
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel backPanel;
-    private javax.swing.JButton button;
+    private javax.swing.JButton continueButton;
+    private javax.swing.JFormattedTextField costField;
     private javax.swing.JTextField nameField;
     private javax.swing.JLabel nameLabel;
-    private javax.swing.JFormattedTextField priceField;
     private javax.swing.JLabel priceLabel;
     private javax.swing.JLabel qtyLabel;
     private javax.swing.JSpinner qtySpinner;

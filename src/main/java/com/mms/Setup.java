@@ -632,7 +632,7 @@ public class Setup extends javax.swing.JDialog {
                 + "schedule_from_date DATE,"
                 + "schedule_last_date DATE,"
                 + "schedule_freq VARCHAR(20),"
-                + "schedule_desc NVARCHAR(2000),"
+                + "schedule_desc VARCHAR(2000),"
                 + "location_id INT,"
                 + "asset_id INT,"
                 + "archived VARCHAR(1)"
