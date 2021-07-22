@@ -36,11 +36,13 @@ import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.Box;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.border.MatteBorder;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -79,31 +81,38 @@ public class MainFrame extends javax.swing.JFrame {
         workOrderTable.getTableHeader().setBackground(Color.white);
         workOrderTable.getTableHeader().setBorder(new MatteBorder(0,0,1,0, workOrderTable.getGridColor()));
         workOrderTable.setShowGrid(true);
+        ((DefaultTableCellRenderer)workOrderTable.getTableHeader().getDefaultRenderer()).setHorizontalAlignment(JLabel.LEFT);
         scheduleTable.setBackground(Color.white);
         scheduleTable.getTableHeader().setBackground(Color.white);
         scheduleTable.getTableHeader().setBorder(new MatteBorder(0,0,1,0, scheduleTable.getGridColor()));
         scheduleTable.setShowGrid(true);
+        ((DefaultTableCellRenderer)scheduleTable.getTableHeader().getDefaultRenderer()).setHorizontalAlignment(JLabel.LEFT);
         assetTable.setBackground(Color.white);
         assetTable.getTableHeader().setBackground(Color.white);
         assetTable.getTableHeader().setBorder(new MatteBorder(0,0,1,0, assetTable.getGridColor()));
         assetTable.setShowGrid(true);
+        ((DefaultTableCellRenderer)assetTable.getTableHeader().getDefaultRenderer()).setHorizontalAlignment(JLabel.LEFT);
         locationTable.setBackground(Color.white);
         locationTable.getTableHeader().setBackground(Color.white);
         locationTable.getTableHeader().setBorder(new MatteBorder(0,0,1,0, locationTable.getGridColor()));
         locationTable.setShowGrid(true);
+        ((DefaultTableCellRenderer)locationTable.getTableHeader().getDefaultRenderer()).setHorizontalAlignment(JLabel.LEFT);
         partTable.setBackground(Color.white);
         partTable.getTableHeader().setBackground(Color.white);
         partTable.getTableHeader().setBorder(new MatteBorder(0,0,1,0, partTable.getGridColor()));
         partTable.setAutoCreateRowSorter(true);
         partTable.setShowGrid(true);
+        ((DefaultTableCellRenderer)partTable.getTableHeader().getDefaultRenderer()).setHorizontalAlignment(JLabel.LEFT);
         employeeTable.setBackground(Color.white);
         employeeTable.getTableHeader().setBackground(Color.white);
         employeeTable.getTableHeader().setBorder(new MatteBorder(0,0,1,0, employeeTable.getGridColor()));
         employeeTable.setShowGrid(true);
+        ((DefaultTableCellRenderer)employeeTable.getTableHeader().getDefaultRenderer()).setHorizontalAlignment(JLabel.LEFT);
         adminUserTable.setBackground(Color.white);
         adminUserTable.getTableHeader().setBackground(Color.white);
         adminUserTable.getTableHeader().setBorder(new MatteBorder(0,0,1,0, adminUserTable.getGridColor()));
         adminUserTable.setShowGrid(true);
+        ((DefaultTableCellRenderer)adminUserTable.getTableHeader().getDefaultRenderer()).setHorizontalAlignment(JLabel.LEFT);
         
         //Set user
         menuUser.setText(MMS.getUser());
@@ -1654,8 +1663,26 @@ public class MainFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_newScheduleButtonActionPerformed
 
+    //Complete task
     private void completeScheduleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_completeScheduleButtonActionPerformed
-        //PUT in schedule_last_date
+        int id = Integer.parseInt(scheduleTable.getValueAt(scheduleTable.getSelectedRow(), 0).toString());
+        String freq = scheduleTable.getValueAt(scheduleTable.getSelectedRow(), 3).toString();
+        //Get last date
+        ResultSet rs = Database.select("SELECT schedule_last_date FROM schedule WHERE id = ?",
+                new Object[]{id});
+        try {
+            if(rs.next()){
+                LocalDate lastDate = rs.getDate(1).toLocalDate();
+                //Update last date (increase by one increment)
+                Database.executeQuery("UPDATE schedule SET schedule_last_date = ? WHERE id = ?",
+                    new Object[]{DateTools.convertToSQLDate(DateTools.getDueDate(lastDate, freq , 1)), id});
+                //Update table
+                scheduleTable.setValueAt("Complete", scheduleTable.getSelectedRow(), 5);
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_completeScheduleButtonActionPerformed
 
     //Load locations
@@ -1822,7 +1849,7 @@ public class MainFrame extends javax.swing.JFrame {
                         else row = dueDate;
                         o[5] = row;
                         
-                        o[6] = rs.getObject(6).toString().trim().equals("-1") ? "No Asset" : rs.getObject(7).toString().trim()+" - "+rs.getObject(8).toString().trim();//asset_id-name
+                        o[6] = rs.getObject(6).toString().trim().equals("-1") ? "No Asset" : rs.getObject(6).toString().trim()+" - "+rs.getObject(7).toString().trim();//asset_id-name
                         o[7] = rs.getObject(8).toString().trim()+" - "+rs.getObject(9).toString().trim();//location_id-name
                         o[8] = rs.getObject(10).toString().trim();//archived
                         if(o[8].equals("N")){

@@ -31,7 +31,7 @@ public class TableTools {
     
     //Resize table
     public static void resize(JTable table) {
-        int columnMargin = 15; //Column margin
+        int columnMargin = 20; //Column margin
         JTableHeader tableHeader = table.getTableHeader();
  
         if(tableHeader == null) {
