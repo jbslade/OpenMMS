@@ -1673,9 +1673,14 @@ public class MainFrame extends javax.swing.JFrame {
         try {
             if(rs.next()){
                 LocalDate lastDate = rs.getDate(1).toLocalDate();
+                //Get next date that isn't passed or today
+                LocalDate doneDate = DateTools.getDueDate(lastDate, freq , 1);
+                while(DateTools.isPassed(doneDate)){
+                    doneDate = DateTools.getDueDate(doneDate, freq , 1);
+                }
                 //Update last date (increase by one increment)
                 Database.executeQuery("UPDATE schedule SET schedule_last_date = ? WHERE id = ?",
-                    new Object[]{DateTools.convertToSQLDate(DateTools.getDueDate(lastDate, freq , 1)), id});
+                    new Object[]{DateTools.convertToSQLDate(doneDate), id});
                 //Update table
                 scheduleTable.setValueAt("Complete", scheduleTable.getSelectedRow(), 5);
             }
