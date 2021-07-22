@@ -146,13 +146,14 @@ public class MMS {
                         //Try connect
                         try {
                             Database.setConnection("jdbc:derby:"+name);
+                            
+                            System.out.println("[DATABASE] Connected to Derby: "+name);
+                            break OUTER;
                         } catch (SQLException ex) {
                             Logger.getLogger(MMS.class.getName()).log(Level.SEVERE, null, ex);
                             MMS.getPrefs().putBoolean("first_run", true);
                         }
-                        System.out.println("[DATABASE] Connected to Derby: "+name);
-                        break OUTER;                  
-                  
+                                          
                     case "mssql":
                         String srvr = p.get("srvr_ip", ""), db = p.get("srvr_db", ""), usr = p.get("srvr_user", ""), pass = p.get("srvr_pass", "");
                         //Register driver
@@ -160,13 +161,13 @@ public class MMS {
                         //Try connect
                         try {  
                             Database.setConnection("jdbc:sqlserver://"+srvr+";databaseName="+db+";user="+usr+";password="+pass+";");
+                            
+                            System.out.println("[DATABASE] Connected to MSSQL: "+db);
+                            break OUTER;
                         } catch (SQLException ex) {
                             Logger.getLogger(MMS.class.getName()).log(Level.SEVERE, null, ex);
                             MMS.getPrefs().putBoolean("first_run", true);
                         }
-                        System.out.println("[DATABASE] Connected to MSSQL: "+db);
-                        break OUTER;
-
                     default:
                         p.putBoolean("first_run", true);
                         break;
