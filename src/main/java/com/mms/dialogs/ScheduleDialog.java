@@ -22,10 +22,12 @@ import com.mms.MMS;
 import com.mms.utilities.DateTools;
 import com.mms.utilities.TableTools;
 import java.awt.Font;
+import java.awt.Insets;
 import java.awt.font.TextAttribute;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Map;
@@ -70,12 +72,14 @@ public class ScheduleDialog extends javax.swing.JInternalFrame {
         
         //Set date picker
         DatePickerSettings settings = new DatePickerSettings();
+        picker = new DatePicker(settings);
         settings.setFormatForDatesCommonEra(DateTimeFormatter.ISO_LOCAL_DATE);
         settings.setBorderCalendarPopup(nameField.getBorder());
         settings.setAllowEmptyDates(false);
-        picker = new DatePicker(settings);
+        //settings.setDateRangeLimits(LocalDate.now(), LocalDate.MAX);
         picker.setDateToToday();
         picker.getComponentDateTextField().setBorder(nameField.getBorder());
+        picker.getComponentDateTextField().setMargin(new Insets(5,5,5,5));
         datePanel.add(picker);
         
         //Set locations
@@ -404,6 +408,7 @@ public class ScheduleDialog extends javax.swing.JInternalFrame {
                 desc = descPane.getText();
         
         Date date = DateTools.convertToSQLDate(picker.getDate());
+        LocalDate lastDate = DateTools.getDueDate(picker.getDate(), freq, -1);
         
         int locNum = Integer.parseInt(locName.substring(0, locName.indexOf("-")-1)),
                 assNum = assName.equals("No Asset") ? -1 : Integer.parseInt(assName.substring(0, assName.indexOf("-")-1));
@@ -421,10 +426,14 @@ public class ScheduleDialog extends javax.swing.JInternalFrame {
                     }
                     scheduleNum++;
                     //Insert into DB
-                    Database.executeQuery("INSERT INTO schedule (id, schedule_name, schedule_type, schedule_from_date, schedule_freq, asset_id, location_id, schedule_desc, archived) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'N')",
-                            new Object[]{scheduleNum, name, type, date, freq, assNum, locNum, desc});
+                    Database.executeQuery("INSERT INTO schedule (id, schedule_name, schedule_type, schedule_from_date, schedule_last_date, schedule_freq, asset_id, location_id, schedule_desc, archived) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'N')",
+                            new Object[]{scheduleNum, name, type, date, DateTools.convertToSQLDate(lastDate), freq , assNum, locNum, desc});
+                    //Get due date
+                    Object dueDate;
+                    if(DateTools.isToday(picker.getDate())) dueDate = "<html><b>Today</b></html>";
+                    else dueDate = picker.getDate();
                     //Insert into table
-                    Object [] o = {scheduleNum, name, type, freq, "Never", "NEXTDATE", assName, locName};
+                    Object [] o = {scheduleNum, name, type, freq, lastDate, dueDate, assName, locName};
                     DefaultTableModel m = (DefaultTableModel)table.getModel();
                     m.insertRow(0, o);
                     //Select new row

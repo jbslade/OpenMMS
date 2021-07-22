@@ -24,11 +24,15 @@ import com.mms.dialogs.LocationDialog;
 import com.mms.dialogs.PartDialog;
 import com.mms.dialogs.PasswordDialog;
 import com.mms.dialogs.ScheduleDialog;
+import com.mms.utilities.DateTools;
 import com.mms.utilities.TableTools;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.Box;
@@ -409,6 +413,11 @@ public class MainFrame extends javax.swing.JFrame {
 
         completeScheduleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/complete.png"))); // NOI18N
         completeScheduleButton.setText("Complete");
+        completeScheduleButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                completeScheduleButtonActionPerformed(evt);
+            }
+        });
         scheduleTools.add(completeScheduleButton);
 
         viewScheduleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/view.png"))); // NOI18N
@@ -1645,6 +1654,10 @@ public class MainFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_newScheduleButtonActionPerformed
 
+    private void completeScheduleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_completeScheduleButtonActionPerformed
+        //PUT in schedule_last_date
+    }//GEN-LAST:event_completeScheduleButtonActionPerformed
+
     //Load locations
     public void loadLocations(int row){
         locationLoadLabel.setVisible(true);
@@ -1790,7 +1803,7 @@ public class MainFrame extends javax.swing.JFrame {
                 DefaultTableModel t = (DefaultTableModel)scheduleTable.getModel();
                 t.setRowCount(0);
                 try {
-                    ResultSet rs = Database.select("SELECT t0.id, t0.schedule_name, t0.schedule_type, t0.schedule_freq, t0.schedule_last_date, 'NEXTDATE', t0.asset_id, t1.asset_name, t0.location_id, t2.location_name, t0.Archived"
+                    ResultSet rs = Database.select("SELECT t0.id, t0.schedule_name, t0.schedule_type, t0.schedule_freq, t0.schedule_last_date, t0.asset_id, t1.asset_name, t0.location_id, t2.location_name, t0.Archived"
                             + " FROM schedule t0 JOIN assets t1 ON t0.asset_id = t1.id JOIN locations t2 ON t0.location_id = t2.id ORDER BY t0.id DESC");
                     int size = MMS.getPrefs().getInt("table_size_schedule", -1), count = 0;
                     while(rs.next() && (size == -1 || count <= size)){
@@ -1799,11 +1812,19 @@ public class MainFrame extends javax.swing.JFrame {
                         o[1] = rs.getObject(2).toString().trim();//name
                         o[2] = rs.getObject(3).toString().trim();//type
                         o[3] = rs.getObject(4).toString().trim();//freq
-                        o[4] = rs.getObject(5) == null ? "Never" : rs.getObject(5).toString().trim();//last
-                        o[5] = rs.getObject(6).toString().trim();//next
-                        o[6] = rs.getObject(7).toString().trim().equals("-1") ? "No Asset" : rs.getObject(7).toString().trim()+" - "+rs.getObject(8).toString().trim();//asset_id-name
-                        o[7] = rs.getObject(9).toString().trim()+" - "+rs.getObject(10).toString().trim();//location_id-name
-                        o[8] = rs.getObject(11).toString().trim();//archived
+                        o[4] = rs.getObject(5).toString().trim();//last
+                        
+                        //Calculate due date
+                        Object row;
+                        LocalDate dueDate = DateTools.getDueDate(rs.getDate(5).toLocalDate(), o[3].toString(), 1);
+                        if(DateTools.isToday(dueDate)) row = "<html><b>Today</b></html>";
+                        else if(DateTools.isPassed(dueDate)) row = "<html><p style=\"color:red\"><b>Overdue</b></p><html>";
+                        else row = dueDate;
+                        o[5] = row;
+                        
+                        o[6] = rs.getObject(6).toString().trim().equals("-1") ? "No Asset" : rs.getObject(7).toString().trim()+" - "+rs.getObject(8).toString().trim();//asset_id-name
+                        o[7] = rs.getObject(8).toString().trim()+" - "+rs.getObject(9).toString().trim();//location_id-name
+                        o[8] = rs.getObject(10).toString().trim();//archived
                         if(o[8].equals("N")){
                             t.addRow(o);
                         }
