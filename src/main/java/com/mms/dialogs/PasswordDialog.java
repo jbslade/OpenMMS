@@ -15,7 +15,7 @@
  */
 package com.mms.dialogs;
 
-import com.mms.MMS;
+import com.mms.Database;
 import com.mms.utilities.Hasher;
 import javax.swing.JOptionPane;
 
@@ -130,7 +130,7 @@ public class PasswordDialog extends javax.swing.JInternalFrame {
         else{
             String salt = Hasher.getSalt();
             pass = Hasher.getHash(pass, salt);
-            MMS.executeQuery("UPDATE users SET salt = ?, password = ? WHERE user_name = ?",
+            Database.executeQuery("UPDATE users SET salt = ?, password = ? WHERE user_name = ?",
                 new Object[]{salt, pass, user});
             InternalDialog.showInternalConfirmDialog(this, "Password changed succesfully.", "Change Password", -1, JOptionPane.INFORMATION_MESSAGE, null);
             dispose();

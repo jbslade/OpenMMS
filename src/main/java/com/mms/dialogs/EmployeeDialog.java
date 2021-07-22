@@ -15,7 +15,9 @@
  */
 package com.mms.dialogs;
 
+import com.mms.Database;
 import com.mms.MMS;
+import com.mms.utilities.TableTools;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -43,7 +45,7 @@ public class EmployeeDialog extends javax.swing.JInternalFrame {
         descField.addMouseListener(MMS.getMouseListener());
         
         //Set departments
-        ResultSet rs = MMS.select("SELECT custom_value FROM custom_fields WHERE custom_type = 'employee_dept'");
+        ResultSet rs = Database.select("SELECT custom_value FROM custom_fields WHERE custom_type = 'employee_dept'");
         try {
             while(rs.next()){
                 deptCombo.addItem(rs.getString(1));
@@ -191,7 +193,7 @@ public class EmployeeDialog extends javax.swing.JInternalFrame {
             if(row == -1){ //New employee
                     //Get next no
                     int empNum = 0;
-                    ResultSet rs = MMS.select("SELECT MAX(id) FROM employees");
+                    ResultSet rs = Database.select("SELECT MAX(id) FROM employees");
                     try {
                         if(rs.next()) empNum = rs.getInt(1);
                         rs.close();
@@ -200,7 +202,7 @@ public class EmployeeDialog extends javax.swing.JInternalFrame {
                     }
                     empNum++;
                     //Insert into DB
-                    MMS.executeQuery("INSERT INTO employees (id, employee_name, employee_desc, employee_dept, archived) VALUES (?, ?, ?, ?, 'N')",
+                    Database.executeQuery("INSERT INTO employees (id, employee_name, employee_desc, employee_dept, archived) VALUES (?, ?, ?, ?, 'N')",
                             new Object[]{empNum, name, desc, dept});
                     //Insert into table
                     Object [] o = {empNum, name, desc, dept};
@@ -213,7 +215,7 @@ public class EmployeeDialog extends javax.swing.JInternalFrame {
                 //Get selected number
                 int empNum = Integer.parseInt(table.getValueAt(row, 0).toString());
                 //Update database
-                MMS.executeQuery("UPDATE employees SET employee_name = ?, employee_desc = ?, employee_dept = ? WHERE id = ?",
+                Database.executeQuery("UPDATE employees SET employee_name = ?, employee_desc = ?, employee_dept = ? WHERE id = ?",
                         new Object[]{name, desc, dept, empNum});
                 //Update table
                 table.setValueAt(name, row, 1);
@@ -222,6 +224,7 @@ public class EmployeeDialog extends javax.swing.JInternalFrame {
                 //Select updated row
                 table.setRowSelectionInterval(row, row);
             }
+            TableTools.resize(table);
             dispose();
         }
     }//GEN-LAST:event_continueButtonActionPerformed

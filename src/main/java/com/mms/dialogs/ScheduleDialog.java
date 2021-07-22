@@ -15,22 +15,28 @@
  */
 package com.mms.dialogs;
 
+import com.github.lgooddatepicker.components.DatePicker;
+import com.github.lgooddatepicker.components.DatePickerSettings;
+import com.mms.Database;
 import com.mms.MMS;
+import com.mms.utilities.DateTools;
+import com.mms.utilities.TableTools;
 import java.awt.Font;
 import java.awt.font.TextAttribute;
-import java.io.IOException;
-import java.io.StringWriter;
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Map;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JTable;
+import javax.swing.JTextPane;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.text.BadLocationException;
-import javax.swing.text.html.HTML;
-import javax.swing.text.html.HTML.Tag;
 import javax.swing.text.html.HTMLDocument;
-import javax.swing.text.html.HTMLEditorKit;
 
 /**
  *
@@ -40,15 +46,15 @@ public class ScheduleDialog extends javax.swing.JInternalFrame {
     
     private final int row;
     private final JTable table;
-    private final HTMLEditorKit htmlKit;
-    private final HTMLDocument htmlDoc;
+    private final DatePicker picker;
+    private ArrayList<Integer> assetLocations;
+
     
     public ScheduleDialog(JTable t, int r) {
         initComponents();
         table = t;
         row = r;
-        htmlKit = (HTMLEditorKit) descPane.getEditorKit();
-        htmlDoc = (HTMLDocument) descPane.getDocument();
+        assetLocations = new ArrayList<>();
         getRootPane().setDefaultButton(continueButton);
         
         //Set right click listeners
@@ -62,8 +68,18 @@ public class ScheduleDialog extends javax.swing.JInternalFrame {
         font = font.deriveFont(attributes);
         underlineButton.setFont(font);
         
+        //Set date picker
+        DatePickerSettings settings = new DatePickerSettings();
+        settings.setFormatForDatesCommonEra(DateTimeFormatter.ISO_LOCAL_DATE);
+        settings.setBorderCalendarPopup(nameField.getBorder());
+        settings.setAllowEmptyDates(false);
+        picker = new DatePicker(settings);
+        picker.setDateToToday();
+        picker.getComponentDateTextField().setBorder(nameField.getBorder());
+        datePanel.add(picker);
+        
         //Set locations
-        ResultSet rs = MMS.select("SELECT id, location_name FROM locations WHERE archived = 'N'");
+        ResultSet rs = Database.select("SELECT id, location_name FROM locations WHERE archived = 'N'");
         try {
             while(rs.next()){
                 locationCombo.addItem(rs.getString(1)+" - "+rs.getString(2));
@@ -74,10 +90,11 @@ public class ScheduleDialog extends javax.swing.JInternalFrame {
         }
         
         //Set assets
-        rs = MMS.select("SELECT id, asset_name FROM assets WHERE archived = 'N'");
+        rs = Database.select("SELECT id, asset_name, location_id FROM assets WHERE archived = 'N'");
         try {
             while(rs.next()){
                 assetCombo.addItem(rs.getString(1)+" - "+rs.getString(2));
+                assetLocations.add(rs.getInt(3));
             }
             rs.close();
         } catch (SQLException ex) {
@@ -85,7 +102,7 @@ public class ScheduleDialog extends javax.swing.JInternalFrame {
         }
         
         //Set types
-        rs = MMS.select("SELECT custom_value FROM custom_fields WHERE custom_type = 'schedule_type'");
+        rs = Database.select("SELECT custom_value FROM custom_fields WHERE custom_type = 'schedule_type'");
         try {
             while(rs.next()){
                 typeCombo.addItem(rs.getString(1));
@@ -123,9 +140,9 @@ public class ScheduleDialog extends javax.swing.JInternalFrame {
         nameLabel = new javax.swing.JLabel();
         nameField = new javax.swing.JTextField();
         dateLabel = new javax.swing.JLabel();
-        dateField = new javax.swing.JTextField();
         assetLabel = new javax.swing.JLabel();
         assetCombo = new javax.swing.JComboBox<>();
+        datePanel = new javax.swing.JPanel();
         rightPanel = new javax.swing.JPanel();
         typeLabel = new javax.swing.JLabel();
         typeCombo = new javax.swing.JComboBox<>();
@@ -157,6 +174,11 @@ public class ScheduleDialog extends javax.swing.JInternalFrame {
             public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
             }
         });
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentResized(java.awt.event.ComponentEvent evt) {
+                formComponentResized(evt);
+            }
+        });
 
         continueButton.setText("Add");
         continueButton.addActionListener(new java.awt.event.ActionListener() {
@@ -168,7 +190,7 @@ public class ScheduleDialog extends javax.swing.JInternalFrame {
         markDownTools.setFloatable(false);
         markDownTools.setRollover(true);
 
-        boldButton.setFont(new java.awt.Font("Tahoma", 1, 17)); // NOI18N
+        boldButton.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         boldButton.setText("B");
         boldButton.setFocusable(false);
         boldButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -180,7 +202,7 @@ public class ScheduleDialog extends javax.swing.JInternalFrame {
         });
         markDownTools.add(boldButton);
 
-        italicsButton.setFont(new java.awt.Font("Tahoma", 2, 17)); // NOI18N
+        italicsButton.setFont(new java.awt.Font("Tahoma", 2, 14)); // NOI18N
         italicsButton.setText("I");
         italicsButton.setFocusable(false);
         italicsButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -192,7 +214,7 @@ public class ScheduleDialog extends javax.swing.JInternalFrame {
         });
         markDownTools.add(italicsButton);
 
-        underlineButton.setFont(new java.awt.Font("Tahoma", 0, 17)); // NOI18N
+        underlineButton.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         underlineButton.setText("U");
         underlineButton.setFocusable(false);
         underlineButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -204,11 +226,16 @@ public class ScheduleDialog extends javax.swing.JInternalFrame {
         });
         markDownTools.add(underlineButton);
 
-        bulletButton.setFont(new java.awt.Font("Tahoma", 0, 17)); // NOI18N
+        bulletButton.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         bulletButton.setText("•");
         bulletButton.setFocusable(false);
         bulletButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         bulletButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        bulletButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bulletButtonActionPerformed(evt);
+            }
+        });
         markDownTools.add(bulletButton);
 
         descPane.setContentType("text/html"); // NOI18N
@@ -222,17 +249,38 @@ public class ScheduleDialog extends javax.swing.JInternalFrame {
 
         assetCombo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "No Asset" }));
         assetCombo.setPreferredSize(nameField.getPreferredSize());
+        assetCombo.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                assetComboItemStateChanged(evt);
+            }
+        });
+
+        datePanel.setPreferredSize(nameField.getPreferredSize());
+
+        javax.swing.GroupLayout datePanelLayout = new javax.swing.GroupLayout(datePanel);
+        datePanel.setLayout(datePanelLayout);
+        datePanelLayout.setHorizontalGroup(
+            datePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        datePanelLayout.setVerticalGroup(
+            datePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 20, Short.MAX_VALUE)
+        );
 
         javax.swing.GroupLayout leftPanelLayout = new javax.swing.GroupLayout(leftPanel);
         leftPanel.setLayout(leftPanelLayout);
         leftPanelLayout.setHorizontalGroup(
             leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(nameLabel)
             .addComponent(nameField, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)
-            .addComponent(dateLabel)
-            .addComponent(dateField)
-            .addComponent(assetLabel)
             .addComponent(assetCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(leftPanelLayout.createSequentialGroup()
+                .addGroup(leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(nameLabel)
+                    .addComponent(dateLabel)
+                    .addComponent(assetLabel))
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(datePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)
         );
         leftPanelLayout.setVerticalGroup(
             leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -243,14 +291,12 @@ public class ScheduleDialog extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(dateLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(dateField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(datePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(assetLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(assetCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
-
-        rightPanel.setPreferredSize(leftPanel.getPreferredSize());
 
         typeLabel.setText("Type:");
 
@@ -263,7 +309,6 @@ public class ScheduleDialog extends javax.swing.JInternalFrame {
 
         locationLabel.setText("Location:");
 
-        locationCombo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "No Location" }));
         locationCombo.setPreferredSize(nameField.getPreferredSize());
 
         javax.swing.GroupLayout rightPanelLayout = new javax.swing.GroupLayout(rightPanel);
@@ -324,7 +369,7 @@ public class ScheduleDialog extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(markDownTools, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(descScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE)
+                .addComponent(descScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(continueButton)
                 .addContainerGap())
@@ -351,7 +396,58 @@ public class ScheduleDialog extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void continueButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_continueButtonActionPerformed
+        String name = nameField.getText(),
+                type = typeCombo.getSelectedItem().toString(),
+                freq = freqCombo.getSelectedItem().toString(),
+                locName = locationCombo.getSelectedItem().toString(),
+                assName = assetCombo.getSelectedItem().toString(),
+                desc = descPane.getText();
         
+        Date date = DateTools.convertToSQLDate(picker.getDate());
+        
+        int locNum = Integer.parseInt(locName.substring(0, locName.indexOf("-")-1)),
+                assNum = assName.equals("No Asset") ? -1 : Integer.parseInt(assName.substring(0, assName.indexOf("-")-1));
+        if(name.isEmpty()) nameField.requestFocus();
+        else{
+            if(row == -1){ //New asset
+                    //Get next no
+                    int scheduleNum = 0;
+                    ResultSet rs = Database.select("SELECT MAX(id) FROM schedule");
+                    try {
+                        if(rs.next()) scheduleNum = rs.getInt(1);
+                        rs.close();
+                    } catch (SQLException ex) {
+                        Logger.getLogger(AssetDialog.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    scheduleNum++;
+                    //Insert into DB
+                    Database.executeQuery("INSERT INTO schedule (id, schedule_name, schedule_type, schedule_from_date, schedule_freq, asset_id, location_id, schedule_desc, archived) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'N')",
+                            new Object[]{scheduleNum, name, type, date, freq, assNum, locNum, desc});
+                    //Insert into table
+                    Object [] o = {scheduleNum, name, type, freq, "Never", "NEXTDATE", assName, locName};
+                    DefaultTableModel m = (DefaultTableModel)table.getModel();
+                    m.insertRow(0, o);
+                    //Select new row
+                    table.setRowSelectionInterval(0, 0);
+                }
+            else{ //Edit asset
+                //Get selected number
+                int scheduleNum = Integer.parseInt(table.getValueAt(row, 0).toString());
+                //Update database
+                Database.executeQuery("UPDATE schedule SET schedule_name = ?, schedule_type = ?, schedule_from_date = ?, schedule_freq = ?, asset_id = ?, location_id = ?, schedule_desc = ? WHERE id = ?",
+                        new Object[]{name, type, date, freq, assNum, locNum, desc, scheduleNum});
+                //Update table
+                table.setValueAt(name, row, 1);
+                table.setValueAt(type, row, 2);
+                table.setValueAt(freq, row, 3);
+                table.setValueAt(assName, row, 6);
+                table.setValueAt(locName, row, 7);
+                //Select updated row
+                table.setRowSelectionInterval(row, row);
+            }
+            TableTools.resize(table);
+            dispose();
+        }
     }//GEN-LAST:event_continueButtonActionPerformed
 
     private void formInternalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameDeiconified
@@ -359,64 +455,70 @@ public class ScheduleDialog extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_formInternalFrameDeiconified
 
     private void boldButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boldButtonActionPerformed
-
+       setSelectionStyle("b");
     }//GEN-LAST:event_boldButtonActionPerformed
 
     private void italicsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_italicsButtonActionPerformed
-       
+       setSelectionStyle("i");
     }//GEN-LAST:event_italicsButtonActionPerformed
 
     private void underlineButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_underlineButtonActionPerformed
-       
+       setSelectionStyle("u");
     }//GEN-LAST:event_underlineButtonActionPerformed
 
-    private void format(){
-        String text = descPane.getSelectedText();
-        int start = descPane.getSelectionStart(), end = descPane.getSelectionEnd();
-        descPane.replaceSelection("");
-            try {
-                htmlKit.insertHTML(htmlDoc, start, "<b>"+text, 0, 0, HTML.Tag.B);
-            } catch (BadLocationException | IOException ex) {
-                Logger.getLogger(ScheduleDialog.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            descPane.setSelectionStart(start);
-            descPane.setSelectionEnd(end);
-    }
-    
-    private void formatSelection(String startTag, String endTag){
-        String text = descPane.getSelectedText(); 
-        if(text != null){
-            int start = descPane.getSelectionStart(), end = descPane.getSelectionEnd();
+    private void bulletButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bulletButtonActionPerformed
+     
+    }//GEN-LAST:event_bulletButtonActionPerformed
 
-            //Check if text contains other tags
-            try (StringWriter w = new StringWriter()) {
-                htmlKit.write(w, htmlDoc, start, end-start);
-                String tags = w.toString();
-                if(tags.contains("<b>")){
-                    startTag = startTag + "<b>";
-                    endTag = "</b>" + endTag;
+    private void assetComboItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_assetComboItemStateChanged
+        if(assetCombo.getSelectedItem().equals("No Asset")) locationCombo.setEnabled(true);
+        else{
+            for(int i = 0; i < locationCombo.getItemCount(); i++){
+                if(locationCombo.getItemAt(i).startsWith(assetLocations.get(assetCombo.getSelectedIndex()-1)+"")){
+                    locationCombo.setSelectedIndex(i);
+                    locationCombo.setEnabled(false);
+                    break;
                 }
-                if(tags.contains("<i>")){
-                    startTag = startTag + "<i>";
-                    endTag = "</i>" + endTag;
-                }
-                if(tags.contains("<u>")){
-                    startTag = startTag + "<u>";
-                    endTag = "</u>" + endTag;
-                }
-            } catch (IOException | BadLocationException ex) {
-                Logger.getLogger(ScheduleDialog.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            descPane.replaceSelection("");
-            try {
-                htmlKit.insertHTML(htmlDoc, start, startTag+text+endTag, 0, 0, null);
-            } catch (BadLocationException | IOException ex) {
-                Logger.getLogger(ScheduleDialog.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            descPane.setSelectionStart(start);
-            descPane.setSelectionEnd(end+1);
+            } 
         }
+    }//GEN-LAST:event_assetComboItemStateChanged
+
+    private void formComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentResized
+        picker.setSize(datePanel.getSize());
+    }//GEN-LAST:event_formComponentResized
+    
+    public void setSelectionStyle(String tag){
+        int start = descPane.getSelectionStart(),
+                end = descPane.getSelectionEnd(),
+                htmlStart = getPositionHTML(descPane, start),
+                htmlEnd = getPositionHTML(descPane, end)+1;
+        String text = descPane.getText();
+        String selection = text.substring(htmlStart, htmlEnd);
+        String newText = text.substring(0, htmlStart)+"<"+tag+">"+selection+"</"+tag+">"+text.substring(htmlEnd, text.length());
+        descPane.setText(newText);
+        //descPane.setSelectionStart(start);
+        //descPane.setSelectionEnd(end+1);
     }
+    private int getPositionHTML(JTextPane pane, int offset) {
+        HTMLDocument document = (HTMLDocument) pane.getDocument();
+        String text = pane.getText();
+        String x;
+        Random RNG = new Random();
+        while (true) {
+            x = RNG.nextLong() + "";
+            if (text.indexOf(x) < 0) break;
+        }
+        try {
+            document.insertString(offset, x, null);
+        } catch (BadLocationException ex) {
+            ex.printStackTrace();
+            return -1;
+        }
+        text = pane.getText();
+        int i = text.indexOf(x);
+        pane.setText(text.replace(x, ""));
+        return i;
+}
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -426,8 +528,8 @@ public class ScheduleDialog extends javax.swing.JInternalFrame {
     private javax.swing.JButton boldButton;
     private javax.swing.JButton bulletButton;
     private javax.swing.JButton continueButton;
-    private javax.swing.JTextField dateField;
     private javax.swing.JLabel dateLabel;
+    private javax.swing.JPanel datePanel;
     private javax.swing.JTextPane descPane;
     private javax.swing.JScrollPane descScroll;
     private javax.swing.JComboBox<String> freqCombo;

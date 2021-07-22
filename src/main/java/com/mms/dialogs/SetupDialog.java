@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mms;
+package com.mms.dialogs;
 
-import com.mms.utilities.Hasher;
+import com.mms.Database;
+import com.mms.MMS;
 import java.awt.Color;
 import java.awt.Component;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -37,7 +36,7 @@ import javax.swing.JPasswordField;
  *
  * @author J.B. Slade
  */
-public class Setup extends javax.swing.JDialog {
+public class SetupDialog extends javax.swing.JDialog {
     
     private final Component thisForm = this;
     private boolean success = false;
@@ -48,7 +47,7 @@ public class Setup extends javax.swing.JDialog {
      * @param parent
      * @param modal
      */
-    public Setup(java.awt.Frame parent, boolean modal) {
+    public SetupDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         derbyNameField.addMouseListener(MMS.getMouseListener());
@@ -60,7 +59,7 @@ public class Setup extends javax.swing.JDialog {
         try {
             derbyDirField.setText(new File(MMS.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile().getPath());
         } catch (URISyntaxException ex) {
-            Logger.getLogger(Setup.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SetupDialog.class.getName()).log(Level.SEVERE, null, ex);
         }
         MMS.phf.setVisible(true);
     }
@@ -391,7 +390,7 @@ public class Setup extends javax.swing.JDialog {
                 public void run(){
                     try {
                         //Register driver
-                        DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
+                        Database.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
                         //Set name & directory
                         String dbName, dbDir;
                         if(derbyNewRadio.isSelected()){
@@ -420,15 +419,14 @@ public class Setup extends javax.swing.JDialog {
                                     this.stop();
                                 }
                             }
-                            Connection conn = DriverManager.getConnection("jdbc:derby:"+dbName+";create=true");
-                            MMS.setConnection(conn);
+                            Database.setConnection("jdbc:derby:"+dbName+";create=true");
                             System.out.println("[DATABASE] Connected to Derby: "+dbName);
                             
                             //Create database tables
                             createTables();
                         }
                         else{ //Open existing
-                            MMS.setConnection(DriverManager.getConnection("jdbc:derby:"+dbName));
+                            Database.setConnection("jdbc:derby:"+dbName);
                             System.out.println("[DATABASE] Connected to Derby: "+dbName);
                         }
 
@@ -470,14 +468,14 @@ public class Setup extends javax.swing.JDialog {
                         try {
                             if(mssqlRadio.isSelected()){ //MSSQL
                                 //Register driver
-                                DriverManager.registerDriver(new com.microsoft.sqlserver.jdbc.SQLServerDriver());
+                                Database.registerDriver(new com.microsoft.sqlserver.jdbc.SQLServerDriver());
 
                                 //Try connect
-                                MMS.setConnection(DriverManager.getConnection("jdbc:sqlserver://"+srvr+";databaseName="+db+";user="+usr+";password="+pass+";loginTimeout=4"));
+                                Database.setConnection("jdbc:sqlserver://"+srvr+";databaseName="+db+";user="+usr+";password="+pass+";loginTimeout=4");
                                 System.out.println("[DATABASE] Connected to MSSQL: "+db);
 
                                 //Create tables
-                                ResultSet rs = MMS.select("SELECT * FROM users");
+                                ResultSet rs = Database.select("SELECT * FROM users");
                                 if(rs == null){
                                     if(JOptionPane.showConfirmDialog(thisForm, "No tables were found in this database.\n"
                                         + "Would you like to create them now?", "Database Exists", JOptionPane.YES_NO_OPTION) == 0){
@@ -574,89 +572,7 @@ public class Setup extends javax.swing.JDialog {
         String pass = new String(pf.getPassword());
         if(pane.getValue() == null || pass.isEmpty()) throw new SQLException ("No admin password.");
 
-        //Users
-        MMS.executeQuery("CREATE TABLE users("
-                + "user_name VARCHAR(50) PRIMARY KEY,"
-                + "password VARCHAR(50),"
-                + "salt VARCHAR(16),"
-                + "user_level int,"
-                + "logged_in VARCHAR(1)"
-                + ")");
-        //Insert Administrator
-        String salt = Hasher.getSalt();
-        pass = Hasher.getHash(pass, salt);
-        MMS.executeQuery("INSERT INTO users (user_name, password, salt, user_level, logged_in) VALUES (?, ?, ?, ?, ?)",
-                new Object[]{"Administrator", pass, salt, 0, "N"});
-        
-        //Locations
-        MMS.executeQuery("CREATE TABLE locations("
-                + "id INT PRIMARY KEY,"
-                + "location_name VARCHAR(50),"
-                + "location_desc VARCHAR(100),"
-                + "archived VARCHAR(1)"
-                + ")");
-        
-        //Assets
-        MMS.executeQuery("CREATE TABLE assets("
-                + "id INT PRIMARY KEY,"
-                + "asset_name VARCHAR(50),"
-                + "asset_desc VARCHAR(100),"
-                + "asset_type VARCHAR(50),"
-                + "location_id INT,"
-                + "archived VARCHAR(1)"
-                + ")");
-        
-        //Parts
-        MMS.executeQuery("CREATE TABLE parts("
-                + "id INT PRIMARY KEY,"
-                + "part_name VARCHAR(50),"
-                + "part_qty INT,"
-                + "part_cost DECIMAL(19, 2),"
-                + "archived VARCHAR(1)"
-                + ")");
-        
-        //Employees
-        MMS.executeQuery("CREATE TABLE employees("
-                + "id INT PRIMARY KEY,"
-                + "employee_name VARCHAR(50),"
-                + "employee_desc VARCHAR(50),"
-                + "employee_dept VARCHAR(50),"
-                + "archived VARCHAR(1)"
-                + ")");
-        
-        //Schedule
-        MMS.executeQuery("CREATE TABLE schedule("
-                + "id INT PRIMARY KEY,"
-                + "schedule_name VARCHAR(50),"
-                + "schedule_type VARCHAR(50),"
-                + "schedule_from_date DATE,"
-                + "schedule_last_date DATE,"
-                + "schedule_freq VARCHAR(20),"
-                + "schedule_desc VARCHAR(2000),"
-                + "location_id INT,"
-                + "asset_id INT,"
-                + "archived VARCHAR(1)"
-                + ")");
-        
-        //CustomFields
-        MMS.executeQuery("CREATE TABLE custom_fields("
-                + "custom_type VARCHAR(50),"
-                + "custom_value VARCHAR(50)"
-                + ")");
-        //Insert default values
-        MMS.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES (?, ?)", new Object[]{"employee_dept", "Maintenance"});
-        MMS.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES (?, ?)", new Object[]{"employee_dept", "Technical"});
-        MMS.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES (?, ?)", new Object[]{"employee_dept", "Production"});
-        MMS.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES (?, ?)", new Object[]{"employee_dept", "IT"});
-        MMS.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES (?, ?)", new Object[]{"employee_dept", "Contractor"});
-        MMS.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES (?, ?)", new Object[]{"asset_type", "Production Machine"});
-        MMS.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES (?, ?)", new Object[]{"schedule_type", "General"});
-        MMS.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES (?, ?)", new Object[]{"schedule_type", "Inspection"});
-        MMS.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES (?, ?)", new Object[]{"schedule_type", "Shutdown Maintenance"});
-        MMS.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES (?, ?)", new Object[]{"schedule_type", "Building Maintenance"});
-        MMS.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES (?, ?)", new Object[]{"schedule_type", "Safety"});
-        
-        System.out.println("[DATABASE] Database tables created");
+        Database.createTables(pass);
     }
     
     private void setPanelEnabled(JPanel panel, Boolean isEnabled) {

@@ -15,7 +15,9 @@
  */
 package com.mms.dialogs;
 
+import com.mms.Database;
 import com.mms.MMS;
+import com.mms.utilities.TableTools;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -96,6 +98,7 @@ public class LocationDialog extends javax.swing.JInternalFrame {
         descLabel.setText("Description:");
 
         descField.setColumns(17);
+        descField.setLineWrap(true);
         descField.setRows(4);
         descScroll.setViewportView(descField);
 
@@ -165,16 +168,16 @@ public class LocationDialog extends javax.swing.JInternalFrame {
             if(row == -1){ //New location
                     //Get next no
                     int locNum = 0;
-                    ResultSet rs = MMS.select("SELECT MAX(id) FROM locations");
+                    ResultSet rs = Database.select("SELECT MAX(id) FROM locations");
                     try {
-                        if(rs.next()) locNum = rs.getInt(1);
+                        if(rs.next()) locNum = rs.getInt(1) == -1 ? 0 : rs.getInt(1);
                         rs.close();
                     } catch (SQLException ex) {
                         Logger.getLogger(LocationDialog.class.getName()).log(Level.SEVERE, null, ex);
                     }
                     locNum++;
                     //Insert into DB
-                    MMS.executeQuery("INSERT INTO locations (id, location_name, location_desc, archived) VALUES (?, ?, ?, 'N')",
+                    Database.executeQuery("INSERT INTO locations (id, location_name, location_desc, archived) VALUES (?, ?, ?, 'N')",
                             new Object[]{locNum, name, desc});
                     //Insert into table
                     Object [] o = {locNum, name, desc};
@@ -187,7 +190,7 @@ public class LocationDialog extends javax.swing.JInternalFrame {
                 //Get selected number
                 int locNum = Integer.parseInt(table.getValueAt(row, 0).toString());
                 //Update database
-                MMS.executeQuery("UPDATE locations SET location_name = ?, location_desc = ? WHERE id = ?",
+                Database.executeQuery("UPDATE locations SET location_name = ?, location_desc = ? WHERE id = ?",
                         new Object[]{name, desc, locNum});
                 //Update table
                 table.setValueAt(name, row, 1);
@@ -195,6 +198,7 @@ public class LocationDialog extends javax.swing.JInternalFrame {
                 //Select updated row
                 table.setRowSelectionInterval(row, row);
             }
+            TableTools.resize(table);
             dispose();
         }
     }//GEN-LAST:event_continueButtonActionPerformed

@@ -24,6 +24,7 @@ import com.mms.dialogs.LocationDialog;
 import com.mms.dialogs.PartDialog;
 import com.mms.dialogs.PasswordDialog;
 import com.mms.dialogs.ScheduleDialog;
+import com.mms.utilities.TableTools;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.sql.ResultSet;
@@ -238,7 +239,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         jButton1.setBackground(new java.awt.Color(255, 255, 255));
         jButton1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/dashboard/workOrders.png"))); // NOI18N
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/tabs/workOrders.png"))); // NOI18N
         jButton1.setText("3 Open Work Orders");
         jButton1.setFocusable(false);
         jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -431,7 +432,7 @@ public class MainFrame extends javax.swing.JFrame {
 
             },
             new String [] {
-                "No.", "Name", "Type", "Frequency", "Last Done", "Next Due", "Location", "Asset"
+                "No.", "Name", "Type", "Frequency", "Last Done", "Next Due", "Asset", "Location"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -1146,7 +1147,7 @@ public class MainFrame extends javax.swing.JFrame {
             //Delete from DB
             for(int row : rows){
                 int id = Integer.parseInt(locationTable.getValueAt(row, 0).toString());
-                MMS.executeQuery("DELETE FROM locations WHERE id = ?",
+                Database.executeQuery("DELETE FROM locations WHERE id = ?",
                         new Object[]{id});
             }
             //Delete from table
@@ -1177,7 +1178,7 @@ public class MainFrame extends javax.swing.JFrame {
             //Set Archived = Y
             for(int row : rows){
                 int id = Integer.parseInt(locationTable.getValueAt(row, 0).toString());
-                MMS.executeQuery("UPDATE locations SET archived = ? WHERE id = ?",
+                Database.executeQuery("UPDATE locations SET archived = ? WHERE id = ?",
                         new Object[]{"Y", id});
             }
             //Delete from table
@@ -1194,7 +1195,7 @@ public class MainFrame extends javax.swing.JFrame {
     //New Asset
     private void newAssetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newAssetButtonActionPerformed
         if(locationTable.getRowCount() == 0){
-            PopupPanel.display("You must add a location before you can add an asset.", newAssetButton.getLocationOnScreen().x+10, newAssetButton.getLocationOnScreen().y+newAssetButton.getHeight()+10);
+            PopupPanel.display("You must add a Location before you can add an Asset.", newAssetButton.getLocationOnScreen().x+10, newAssetButton.getLocationOnScreen().y+newAssetButton.getHeight()+10);
         }
         else{
             AssetDialog a = new AssetDialog(assetTable, -1);
@@ -1233,7 +1234,7 @@ public class MainFrame extends javax.swing.JFrame {
             //Delete from DB
             for(int row : rows){
                 int id = Integer.parseInt(assetTable.getValueAt(row, 0).toString());
-                MMS.executeQuery("DELETE FROM assets WHERE id = ?",
+                Database.executeQuery("DELETE FROM assets WHERE id = ?",
                         new Object[]{id});
             }
             //Delete from table
@@ -1264,7 +1265,7 @@ public class MainFrame extends javax.swing.JFrame {
             //Set Archived = Y
             for(int row : rows){
                 int id = Integer.parseInt(assetTable.getValueAt(row, 0).toString());
-                MMS.executeQuery("UPDATE assets SET archived = ? WHERE id = ?",
+                Database.executeQuery("UPDATE assets SET archived = ? WHERE id = ?",
                         new Object[]{"Y", id});
             }
             //Delete from table
@@ -1285,7 +1286,7 @@ public class MainFrame extends javax.swing.JFrame {
             case 1: //Work orders
                 break;
             case 2: //Schedule
-                break;
+                loadSchedule(scheduleTable.getSelectedRow()); break;
             case 3: //Assets
                 loadAssets(assetTable.getSelectedRow()); break;
             case 4: //Locations
@@ -1335,7 +1336,7 @@ public class MainFrame extends javax.swing.JFrame {
             //Delete from DB
             for(int row : rows){
                 int id = Integer.parseInt(employeeTable.getValueAt(row, 0).toString());
-                MMS.executeQuery("DELETE FROM employees WHERE id = ?",
+                Database.executeQuery("DELETE FROM employees WHERE id = ?",
                         new Object[]{id});
             }
             //Delete from table
@@ -1366,7 +1367,7 @@ public class MainFrame extends javax.swing.JFrame {
             //Set Archived = Y
             for(int row : rows){
                 int id = Integer.parseInt(employeeTable.getValueAt(row, 0).toString());
-                MMS.executeQuery("UPDATE employees SET archived = ? WHERE id = ?",
+                Database.executeQuery("UPDATE employees SET archived = ? WHERE id = ?",
                         new Object[]{"Y", id});
             }
             //Delete from table
@@ -1504,7 +1505,7 @@ public class MainFrame extends javax.swing.JFrame {
             //Delete from DB
             for(int row : rows){
                 int id = Integer.parseInt(partTable.getValueAt(row, 0).toString());
-                MMS.executeQuery("DELETE FROM parts WHERE id = ?",
+                Database.executeQuery("DELETE FROM parts WHERE id = ?",
                         new Object[]{id});
             }
             //Delete from table
@@ -1535,7 +1536,7 @@ public class MainFrame extends javax.swing.JFrame {
             //Set Archived = Y
             for(int row : rows){
                 int id = Integer.parseInt(partTable.getValueAt(row, 0).toString());
-                MMS.executeQuery("UPDATE parts SET archived = ? WHERE id = ?",
+                Database.executeQuery("UPDATE parts SET archived = ? WHERE id = ?",
                         new Object[]{"Y", id});
             }
             //Delete from table
@@ -1624,18 +1625,24 @@ public class MainFrame extends javax.swing.JFrame {
     private void menuFileDisconnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuFileDisconnectActionPerformed
         if(InternalDialog.showInternalConfirmDialog(desktopPane, "Disconnecting will close "+MMS.NAME+" and run the setup window again.\nAre you sure you want to disconnect?", "Disconnect Database", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null) == 0){
             MMS.getPrefs().putBoolean("first_run", true);
+            Database.shutdown();
             MMS.setup();
         }
     }//GEN-LAST:event_menuFileDisconnectActionPerformed
 
     //New Schedule
     private void newScheduleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newScheduleButtonActionPerformed
-        ScheduleDialog s = new ScheduleDialog(scheduleTable, -1);
-        s.setSize(MMS.DIAG_WIDTH*2-10, s.getHeight());
-        s.setLocation(desktopPane.getWidth()/2-s.getWidth()/2, desktopPane.getHeight()/2-s.getHeight()/2-50);
-        desktopPane.add(s);
-        desktopPane.setLayer(s, 1);
-        s.setVisible(true);
+        if(locationTable.getRowCount() == 0){
+            PopupPanel.display("You must add a Location before you can add a Scheduled Task.", newScheduleButton.getLocationOnScreen().x+10, newScheduleButton.getLocationOnScreen().y+newScheduleButton.getHeight()+10);
+        }
+        else{
+            ScheduleDialog s = new ScheduleDialog(scheduleTable, -1);
+            s.setSize(MMS.DIAG_WIDTH*2-10, s.getHeight());
+            s.setLocation(desktopPane.getWidth()/2-s.getWidth()/2, desktopPane.getHeight()/2-s.getHeight()/2-50);
+            desktopPane.add(s);
+            desktopPane.setLayer(s, 1);
+            s.setVisible(true);
+        }
     }//GEN-LAST:event_newScheduleButtonActionPerformed
 
     //Load locations
@@ -1647,7 +1654,7 @@ public class MainFrame extends javax.swing.JFrame {
                 DefaultTableModel t = (DefaultTableModel)locationTable.getModel();
                 t.setRowCount(0);
                 try {
-                    ResultSet rs = MMS.select("SELECT id, location_name, location_desc, archived FROM locations ORDER BY id DESC");
+                    ResultSet rs = Database.select("SELECT id, location_name, location_desc, archived FROM locations ORDER BY id DESC");
                     int size = MMS.getPrefs().getInt("table_size_locations", -1), count = 0;
                     while(rs.next() && (size == -1 || count <= size)){
                         Object [] o = new Object[4];
@@ -1664,7 +1671,7 @@ public class MainFrame extends javax.swing.JFrame {
                 } catch (SQLException ex) {
                     Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                MMS.resizeTable(locationTable);
+                TableTools.resize(locationTable);
                 if(t.getRowCount() != 0) locationTable.setRowSelectionInterval(row, row);
                 locationLoadLabel.setVisible(false);
             }
@@ -1680,7 +1687,7 @@ public class MainFrame extends javax.swing.JFrame {
                 DefaultTableModel t = (DefaultTableModel)assetTable.getModel();
                 t.setRowCount(0);
                 try {
-                    ResultSet rs = MMS.select("SELECT t0.id, t0.asset_name, t0.asset_desc, t0.asset_type, t0.location_id, t1.location_name, t0.Archived FROM assets t0 JOIN locations t1 ON t0.location_id = t1.id ORDER BY t0.id DESC");
+                    ResultSet rs = Database.select("SELECT t0.id, t0.asset_name, t0.asset_desc, t0.asset_type, t0.location_id, t1.location_name, t0.Archived FROM assets t0 JOIN locations t1 ON t0.location_id = t1.id ORDER BY t0.id DESC");
                     int size = MMS.getPrefs().getInt("table_size_assets", -1), count = 0;
                     while(rs.next() && (size == -1 || count <= size)){
                         Object [] o = new Object[6];
@@ -1699,7 +1706,7 @@ public class MainFrame extends javax.swing.JFrame {
                 } catch (SQLException ex) {
                     Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                MMS.resizeTable(assetTable);
+                TableTools.resize(assetTable);
                 if(t.getRowCount() != 0) assetTable.setRowSelectionInterval(row, row);
                 assetLoadLabel.setVisible(false);
             }
@@ -1715,7 +1722,7 @@ public class MainFrame extends javax.swing.JFrame {
                 DefaultTableModel t = (DefaultTableModel)partTable.getModel();
                 t.setRowCount(0);
                 try {
-                    ResultSet rs = MMS.select("SELECT id, part_name, part_qty, part_cost, archived FROM parts ORDER BY id DESC");
+                    ResultSet rs = Database.select("SELECT id, part_name, part_qty, part_cost, archived FROM parts ORDER BY id DESC");
                     int size = MMS.getPrefs().getInt("table_size_parts", -1), count = 0;
                     while(rs.next() && (size == -1 || count <= size)){
                         Object [] o = new Object[5];
@@ -1733,7 +1740,7 @@ public class MainFrame extends javax.swing.JFrame {
                 } catch (SQLException ex) {
                     Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                MMS.resizeTable(partTable);
+                TableTools.resize(partTable);
                 if(t.getRowCount() != 0) partTable.setRowSelectionInterval(row, row);
                 partLoadLabel.setVisible(false);
             }
@@ -1749,7 +1756,7 @@ public class MainFrame extends javax.swing.JFrame {
                 DefaultTableModel t = (DefaultTableModel)employeeTable.getModel();
                 t.setRowCount(0);
                 try {
-                    ResultSet rs = MMS.select("SELECT id, employee_name, employee_desc, employee_dept, archived FROM employees ORDER BY id DESC");
+                    ResultSet rs = Database.select("SELECT id, employee_name, employee_desc, employee_dept, archived FROM employees ORDER BY id DESC");
                     int size = MMS.getPrefs().getInt("table_size_employees", -1), count = 0;
                     while(rs.next() && (size == -1 || count <= size)){
                         Object [] o = new Object[5];
@@ -1767,12 +1774,52 @@ public class MainFrame extends javax.swing.JFrame {
                 } catch (SQLException ex) {
                     Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                MMS.resizeTable(employeeTable);
+                TableTools.resize(employeeTable);
                 if(t.getRowCount() != 0) employeeTable.setRowSelectionInterval(row, row);
                 employeeLoadLabel.setVisible(false);
             }
         }.start();
     }
+    
+    //Load schedule
+    public void loadSchedule(int row){
+        scheduleLoadLabel.setVisible(true);
+        new Thread(){
+            @Override
+            public void run(){
+                DefaultTableModel t = (DefaultTableModel)scheduleTable.getModel();
+                t.setRowCount(0);
+                try {
+                    ResultSet rs = Database.select("SELECT t0.id, t0.schedule_name, t0.schedule_type, t0.schedule_freq, t0.schedule_last_date, 'NEXTDATE', t0.asset_id, t1.asset_name, t0.location_id, t2.location_name, t0.Archived"
+                            + " FROM schedule t0 JOIN assets t1 ON t0.asset_id = t1.id JOIN locations t2 ON t0.location_id = t2.id ORDER BY t0.id DESC");
+                    int size = MMS.getPrefs().getInt("table_size_schedule", -1), count = 0;
+                    while(rs.next() && (size == -1 || count <= size)){
+                        Object [] o = new Object[9];
+                        o[0] = rs.getObject(1).toString().trim();//id
+                        o[1] = rs.getObject(2).toString().trim();//name
+                        o[2] = rs.getObject(3).toString().trim();//type
+                        o[3] = rs.getObject(4).toString().trim();//freq
+                        o[4] = rs.getObject(5) == null ? "Never" : rs.getObject(5).toString().trim();//last
+                        o[5] = rs.getObject(6).toString().trim();//next
+                        o[6] = rs.getObject(7).toString().trim().equals("-1") ? "No Asset" : rs.getObject(7).toString().trim()+" - "+rs.getObject(8).toString().trim();//asset_id-name
+                        o[7] = rs.getObject(9).toString().trim()+" - "+rs.getObject(10).toString().trim();//location_id-name
+                        o[8] = rs.getObject(11).toString().trim();//archived
+                        if(o[8].equals("N")){
+                            t.addRow(o);
+                        }
+                        count++;
+                    }
+                    rs.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                TableTools.resize(scheduleTable);
+                if(t.getRowCount() != 0) scheduleTable.setRowSelectionInterval(row, row);
+                scheduleLoadLabel.setVisible(false);
+            }
+        }.start();
+    }
+    
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel adminArchivePanel;

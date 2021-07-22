@@ -15,7 +15,9 @@
  */
 package com.mms.dialogs;
 
+import com.mms.Database;
 import com.mms.MMS;
+import com.mms.utilities.TableTools;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -187,7 +189,7 @@ public class PartDialog extends javax.swing.JInternalFrame {
             if(row == -1){ //New part
                     //Get next no
                     int partNo = 0;
-                    ResultSet rs = MMS.select("SELECT MAX(id) FROM parts");
+                    ResultSet rs = Database.select("SELECT MAX(id) FROM parts");
                     try {
                         if(rs.next()) partNo = rs.getInt(1);
                         rs.close();
@@ -196,7 +198,7 @@ public class PartDialog extends javax.swing.JInternalFrame {
                     }
                     partNo++;
                     //Insert into DB
-                    MMS.executeQuery("INSERT INTO parts (id, part_name, part_qty, part_cost, archived) VALUES (?, ?, ?, ?, 'N')",
+                    Database.executeQuery("INSERT INTO parts (id, part_name, part_qty, part_cost, archived) VALUES (?, ?, ?, ?, 'N')",
                             new Object[]{partNo, name, qty, price});
                     //Insert into table
                     Object [] o = {partNo, name, qty, price};
@@ -209,7 +211,7 @@ public class PartDialog extends javax.swing.JInternalFrame {
                 //Get selected number
                 int partNo = Integer.parseInt(table.getValueAt(row, 0).toString());
                 //Update database
-                MMS.executeQuery("UPDATE parts SET part_name = ?, part_qty = ?, part_cost = ? WHERE id = ?",
+                Database.executeQuery("UPDATE parts SET part_name = ?, part_qty = ?, part_cost = ? WHERE id = ?",
                         new Object[]{name, qty, partNo, price});
                 //Update table
                 table.setValueAt(name, row, 1);
@@ -218,6 +220,7 @@ public class PartDialog extends javax.swing.JInternalFrame {
                 //Select updated row
                 table.setRowSelectionInterval(row, row);
             }
+            TableTools.resize(table);
             dispose();
         }
     }//GEN-LAST:event_continueButtonActionPerformed

@@ -15,7 +15,9 @@
  */
 package com.mms.dialogs;
 
+import com.mms.Database;
 import com.mms.MMS;
+import com.mms.utilities.TableTools;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -43,7 +45,7 @@ public class AssetDialog extends javax.swing.JInternalFrame {
         descField.addMouseListener(MMS.getMouseListener());
 
         //Set locations
-        ResultSet rs = MMS.select("SELECT id, location_name FROM locations WHERE archived = 'N'");
+        ResultSet rs = Database.select("SELECT id, location_name FROM locations WHERE archived = 'N'");
         try {
             while(rs.next()){
                 locationCombo.addItem(rs.getString(1)+" - "+rs.getString(2));
@@ -54,7 +56,7 @@ public class AssetDialog extends javax.swing.JInternalFrame {
         }
         
         //Set departments
-        rs = MMS.select("SELECT custom_value FROM custom_fields WHERE custom_type = 'asset_type'");
+        rs = Database.select("SELECT custom_value FROM custom_fields WHERE custom_type = 'asset_type'");
         try {
             while(rs.next()){
                 typeCombo.addItem(rs.getString(1));
@@ -125,6 +127,7 @@ public class AssetDialog extends javax.swing.JInternalFrame {
         descLabel.setText("Description:");
 
         descField.setColumns(17);
+        descField.setLineWrap(true);
         descField.setRows(4);
         descScroll.setViewportView(descField);
 
@@ -214,22 +217,22 @@ public class AssetDialog extends javax.swing.JInternalFrame {
         String name = nameField.getText(), desc = descField.getText(),
                 locName = locationCombo.getSelectedItem().toString(),
                 type = typeCombo.getSelectedItem().toString();
-        int locNum = Integer.parseInt(locationCombo.getSelectedItem().toString().substring(0, locationCombo.getSelectedItem().toString().indexOf("-")-1));
+        int locNum = Integer.parseInt(locName.substring(0, locName.indexOf("-")-1));
         if(name.isEmpty()) nameField.requestFocus();
         else{
             if(row == -1){ //New asset
                     //Get next no
                     int assNum = 0;
-                    ResultSet rs = MMS.select("SELECT MAX(id) FROM assets");
+                    ResultSet rs = Database.select("SELECT MAX(id) FROM assets");
                     try {
-                        if(rs.next()) assNum = rs.getInt(1);
+                        if(rs.next()) assNum = rs.getInt(1) == -1 ? 0 : rs.getInt(1);
                         rs.close();
                     } catch (SQLException ex) {
                         Logger.getLogger(AssetDialog.class.getName()).log(Level.SEVERE, null, ex);
                     }
                     assNum++;
                     //Insert into DB
-                    MMS.executeQuery("INSERT INTO assets (id, asset_name, asset_desc, asset_type, location_id, archived) VALUES (?, ?, ?, ?, ?, 'N')",
+                    Database.executeQuery("INSERT INTO assets (id, asset_name, asset_desc, asset_type, location_id, archived) VALUES (?, ?, ?, ?, ?, 'N')",
                             new Object[]{assNum, name, desc, type, locNum});
                     //Insert into table
                     Object [] o = {assNum, name, desc, type, locName};
@@ -242,7 +245,7 @@ public class AssetDialog extends javax.swing.JInternalFrame {
                 //Get selected number
                 int assNum = Integer.parseInt(table.getValueAt(row, 0).toString());
                 //Update database
-                MMS.executeQuery("UPDATE assets SET asset_name = ?, asset_desc = ?, asset_type = ?, location_id = ? WHERE id = ?",
+                Database.executeQuery("UPDATE assets SET asset_name = ?, asset_desc = ?, asset_type = ?, location_id = ? WHERE id = ?",
                         new Object[]{name, desc, type, locNum, assNum});
                 //Update table
                 table.setValueAt(name, row, 1);
@@ -252,6 +255,7 @@ public class AssetDialog extends javax.swing.JInternalFrame {
                 //Select updated row
                 table.setRowSelectionInterval(row, row);
             }
+            TableTools.resize(table);
             dispose();
         }
     }//GEN-LAST:event_continueButtonActionPerformed

@@ -15,6 +15,7 @@
  */
 package com.mms.dialogs;
 
+import com.mms.Database;
 import com.mms.utilities.Hasher;
 import com.mms.utilities.RotatedIcon;
 import com.mms.MMS;
@@ -45,7 +46,7 @@ public class LoginDialog extends javax.swing.JDialog {
         
         //Set users
         try {
-            ResultSet rs = MMS.select("SELECT user_name, logged_in FROM users");
+            ResultSet rs = Database.select("SELECT user_name, logged_in FROM users");
             while(rs.next()){
                 userCombo.addItem(rs.getString(1).trim());
             }
@@ -164,7 +165,7 @@ public class LoginDialog extends javax.swing.JDialog {
         else{
             String password = "", salt = "";
             try {
-                ResultSet rs = MMS.select("SELECT password, salt FROM users WHERE user_name = ?",
+                ResultSet rs = Database.select("SELECT password, salt FROM users WHERE user_name = ?",
                         new Object[]{u});
                 if(rs.next()){
                     password = rs.getObject(1).toString().trim();
@@ -182,7 +183,7 @@ public class LoginDialog extends javax.swing.JDialog {
                 success = true;
                 MMS.setUser(u);
                 //Set user to logged in
-                MMS.executeQuery("UPDATE users SET logged_in = 'Y' WHERE user_name = ?",
+                Database.executeQuery("UPDATE users SET logged_in = 'Y' WHERE user_name = ?",
                         new Object[]{u});
                 
                 //Put user in preferences
