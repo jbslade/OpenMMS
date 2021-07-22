@@ -113,7 +113,7 @@ public class ScheduleDialog extends javax.swing.JInternalFrame {
         }
         
         //Edit
-        if (r == -1){
+        if (r != -1){
             continueButton.setText("Save");
         }
     }
