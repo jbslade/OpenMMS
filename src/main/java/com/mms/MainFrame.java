@@ -1429,27 +1429,27 @@ public class MainFrame extends javax.swing.JFrame {
                 break;
             case 1: //Work Orders
                 menuTable.setVisible(true);
-                setTableSizeRadio("tableSizeWO");
+                setTableSizeRadio("table_size_wo");
                 break;
             case 2: //Schedule
                 menuTable.setVisible(true);
-                setTableSizeRadio("tableSizeSchedule");
+                setTableSizeRadio("table_size_schedule");
                 break;
             case 3: //Assets
                 menuTable.setVisible(true);
-                setTableSizeRadio("tableSizeAssets");
+                setTableSizeRadio("table_size_assets");
                 break;
             case 4: //Locations
                 menuTable.setVisible(true);
-                setTableSizeRadio("tableSizeLocations");
+                setTableSizeRadio("table_size_locations");
                 break;
             case 5: //Parts
                 menuTable.setVisible(true);
-                setTableSizeRadio("tableSizeParts");
+                setTableSizeRadio("table_size_parts");
                 break;
             case 6: //Employees
                 menuTable.setVisible(true);
-                setTableSizeRadio("tableSizeEmployees");
+                setTableSizeRadio("table_size_employees");
                 break;
             case 7: //Reports
                 menuTable.setVisible(false);
