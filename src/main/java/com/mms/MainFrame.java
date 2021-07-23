@@ -18,32 +18,22 @@ package com.mms;
 import com.mms.panels.FindPanel;
 import com.mms.dialogs.InternalDialog;
 import com.mms.panels.PopupPanel;
-import com.mms.dialogs.AssetDialog;
-import com.mms.dialogs.EmployeeDialog;
-import com.mms.dialogs.LocationDialog;
-import com.mms.dialogs.PartDialog;
 import com.mms.dialogs.PasswordDialog;
-import com.mms.dialogs.ScheduleDialog;
-import com.mms.utilities.DateTools;
+import com.mms.modules.Assets;
+import com.mms.modules.Employees;
+import com.mms.modules.Locations;
+import com.mms.modules.Parts;
+import com.mms.modules.Schedule;
+import com.mms.utilities.OtherTools;
 import com.mms.utilities.TableTools;
-import java.awt.Color;
 import java.awt.event.KeyEvent;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.Calendar;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.Box;
-import javax.swing.JLabel;
+import javax.swing.JDesktopPane;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
-import javax.swing.border.MatteBorder;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.event.ListSelectionEvent;
 
 /**
  *
@@ -52,6 +42,13 @@ import javax.swing.table.DefaultTableModel;
 public class MainFrame extends javax.swing.JFrame {
     
     private FindPanel find;
+    private final Schedule schedule;
+    private final Locations locations;
+    private final Assets assets;
+    private final Parts parts;
+    private final Employees employees;
+    
+    public JDesktopPane getDesktopPane(){return desktopPane;}
     
     public MainFrame() {
         initComponents();
@@ -76,44 +73,130 @@ public class MainFrame extends javax.swing.JFrame {
         tabbedPane.setIconAt(8, MMS.systemIcon);
         adminTabbedPane.putClientProperty("JTabbedPane.tabWidthMode", "equal");
         
-        //Tables
-        workOrderTable.setBackground(Color.white);
-        workOrderTable.getTableHeader().setBackground(Color.white);
-        workOrderTable.getTableHeader().setBorder(new MatteBorder(0,0,1,0, workOrderTable.getGridColor()));
-        workOrderTable.setShowGrid(true);
-        ((DefaultTableCellRenderer)workOrderTable.getTableHeader().getDefaultRenderer()).setHorizontalAlignment(JLabel.LEFT);
-        scheduleTable.setBackground(Color.white);
-        scheduleTable.getTableHeader().setBackground(Color.white);
-        scheduleTable.getTableHeader().setBorder(new MatteBorder(0,0,1,0, scheduleTable.getGridColor()));
-        scheduleTable.setShowGrid(true);
-        ((DefaultTableCellRenderer)scheduleTable.getTableHeader().getDefaultRenderer()).setHorizontalAlignment(JLabel.LEFT);
-        assetTable.setBackground(Color.white);
-        assetTable.getTableHeader().setBackground(Color.white);
-        assetTable.getTableHeader().setBorder(new MatteBorder(0,0,1,0, assetTable.getGridColor()));
-        assetTable.setShowGrid(true);
-        ((DefaultTableCellRenderer)assetTable.getTableHeader().getDefaultRenderer()).setHorizontalAlignment(JLabel.LEFT);
-        locationTable.setBackground(Color.white);
-        locationTable.getTableHeader().setBackground(Color.white);
-        locationTable.getTableHeader().setBorder(new MatteBorder(0,0,1,0, locationTable.getGridColor()));
-        locationTable.setShowGrid(true);
-        ((DefaultTableCellRenderer)locationTable.getTableHeader().getDefaultRenderer()).setHorizontalAlignment(JLabel.LEFT);
-        partTable.setBackground(Color.white);
-        partTable.getTableHeader().setBackground(Color.white);
-        partTable.getTableHeader().setBorder(new MatteBorder(0,0,1,0, partTable.getGridColor()));
-        partTable.setAutoCreateRowSorter(true);
-        partTable.setShowGrid(true);
-        ((DefaultTableCellRenderer)partTable.getTableHeader().getDefaultRenderer()).setHorizontalAlignment(JLabel.LEFT);
-        employeeTable.setBackground(Color.white);
-        employeeTable.getTableHeader().setBackground(Color.white);
-        employeeTable.getTableHeader().setBorder(new MatteBorder(0,0,1,0, employeeTable.getGridColor()));
-        employeeTable.setShowGrid(true);
-        ((DefaultTableCellRenderer)employeeTable.getTableHeader().getDefaultRenderer()).setHorizontalAlignment(JLabel.LEFT);
-        adminUserTable.setBackground(Color.white);
-        adminUserTable.getTableHeader().setBackground(Color.white);
-        adminUserTable.getTableHeader().setBorder(new MatteBorder(0,0,1,0, adminUserTable.getGridColor()));
-        adminUserTable.setShowGrid(true);
-        ((DefaultTableCellRenderer)adminUserTable.getTableHeader().getDefaultRenderer()).setHorizontalAlignment(JLabel.LEFT);
+        //Modules
+        schedule = new Schedule(scheduleTable, scheduleLoadLabel);
+        locations = new Locations(locationTable, locationLoadLabel);
+        assets = new Assets(assetTable, assetLoadLabel);
+        parts = new Parts(partTable, partLoadLabel);
+        employees = new Employees(employeeTable, employeeLoadLabel);
         
+        //Tables
+        TableTools.format(workOrderTable);
+        TableTools.format(scheduleTable);
+        TableTools.format(assetTable);
+        TableTools.format(locationTable);
+        TableTools.format(partTable);
+        TableTools.format(employeeTable);
+        TableTools.format(adminUserTable);
+        
+        //Table selection listeners
+        scheduleTable.getSelectionModel().addListSelectionListener((ListSelectionEvent e) -> {
+            switch (scheduleTable.getSelectedRowCount()) {
+                case 0:
+                    editScheduleButton.setEnabled(false);
+                    deleteScheduleButton.setEnabled(false);
+                    archiveScheduleButton.setEnabled(false);
+                    completeScheduleButton.setEnabled(false);
+                    viewScheduleButton.setEnabled(false);
+                    createWOButton.setEnabled(false);
+                    break;
+                case 1:
+                    editScheduleButton.setEnabled(true);
+                    deleteScheduleButton.setEnabled(true);
+                    archiveScheduleButton.setEnabled(true);
+                    viewScheduleButton.setEnabled(true);
+                    createWOButton.setEnabled(true);
+                    String s = OtherTools.escapeHTML(scheduleTable.getValueAt(scheduleTable.getSelectedRow(), 5).toString());
+                    if(s.equals("Today") || s.equals("Overdue")) completeScheduleButton.setEnabled(true);
+                    else completeScheduleButton.setEnabled(false);
+                    break;
+                default:
+                    editScheduleButton.setEnabled(false);
+                    deleteScheduleButton.setEnabled(true);
+                    archiveScheduleButton.setEnabled(true);
+                    completeScheduleButton.setEnabled(false);
+                    viewScheduleButton.setEnabled(false);
+                    createWOButton.setEnabled(false);
+                    break;
+            }
+        });
+        assetTable.getSelectionModel().addListSelectionListener((ListSelectionEvent e) -> {
+            switch (assetTable.getSelectedRowCount()) {
+                case 0:
+                    editAssetButton.setEnabled(false);
+                    deleteAssetButton.setEnabled(false);
+                    archiveAssetButton.setEnabled(false);
+                    break;
+                case 1:
+                    editAssetButton.setEnabled(true);
+                    deleteAssetButton.setEnabled(true);
+                    archiveAssetButton.setEnabled(true);
+                    break;
+                default:
+                    editAssetButton.setEnabled(false);
+                    deleteAssetButton.setEnabled(true);
+                    archiveAssetButton.setEnabled(true);
+                    break;
+            }
+        });
+        locationTable.getSelectionModel().addListSelectionListener((ListSelectionEvent e) -> {
+            switch (locationTable.getSelectedRowCount()) {
+                case 0:
+                    editLocationButton.setEnabled(false);
+                    deleteLocationButton.setEnabled(false);
+                    archiveLocationButton.setEnabled(false);
+                    break;
+                case 1:
+                    editLocationButton.setEnabled(true);
+                    deleteLocationButton.setEnabled(true);
+                    archiveLocationButton.setEnabled(true);
+                    break;
+                default:
+                    editLocationButton.setEnabled(false);
+                    deleteLocationButton.setEnabled(true);
+                    archiveLocationButton.setEnabled(true);
+                    break;
+            }
+        });
+        partTable.getSelectionModel().addListSelectionListener((ListSelectionEvent e) -> {
+            switch (partTable.getSelectedRowCount()) {
+                case 0:
+                    editPartButton.setEnabled(false);
+                    deletePartButton.setEnabled(false);
+                    archivePartButton.setEnabled(false);
+                    break;
+                case 1:
+                    editPartButton.setEnabled(true);
+                    deletePartButton.setEnabled(true);
+                    archivePartButton.setEnabled(true);
+                    break;
+                default:
+                    editPartButton.setEnabled(false);
+                    deletePartButton.setEnabled(true);
+                    archivePartButton.setEnabled(true);
+                    break;
+            }
+        });
+        employeeTable.getSelectionModel().addListSelectionListener((ListSelectionEvent e) -> {
+            switch (employeeTable.getSelectedRowCount()) {
+                case 0:
+                    editEmployeeButton.setEnabled(false);
+                    deleteEmployeeButton.setEnabled(false);
+                    archiveEmployeeButton.setEnabled(false);
+                    break;
+                case 1:
+                    editEmployeeButton.setEnabled(true);
+                    deleteEmployeeButton.setEnabled(true);
+                    archiveEmployeeButton.setEnabled(true);
+                    break;
+                default:
+                    editEmployeeButton.setEnabled(false);
+                    deleteEmployeeButton.setEnabled(true);
+                    archiveEmployeeButton.setEnabled(true);
+                    break;
+            }
+        });
+
         //Set user
         menuUser.setText(MMS.getUser());
     }
@@ -158,7 +241,7 @@ public class MainFrame extends javax.swing.JFrame {
         archiveScheduleButton = new javax.swing.JButton();
         completeScheduleButton = new javax.swing.JButton();
         viewScheduleButton = new javax.swing.JButton();
-        createWOButton1 = new javax.swing.JButton();
+        createWOButton = new javax.swing.JButton();
         filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
         scheduleLoadLabel = new javax.swing.JLabel();
         scheduleScroll = new javax.swing.JScrollPane();
@@ -354,7 +437,7 @@ public class MainFrame extends javax.swing.JFrame {
 
             },
             new String [] {
-                "No.", "Date", "Type", "Priority", "Asset", "Location", "Employee(s)", "Status"
+                " #", " Date", " Type", " Priority", " Asset", " Location", " Employee(s)", " Status"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -405,10 +488,17 @@ public class MainFrame extends javax.swing.JFrame {
 
         editScheduleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/edit.png"))); // NOI18N
         editScheduleButton.setText("Edit");
+        editScheduleButton.setEnabled(false);
+        editScheduleButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editScheduleButtonActionPerformed(evt);
+            }
+        });
         scheduleTools.add(editScheduleButton);
 
         deleteScheduleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/delete.png"))); // NOI18N
         deleteScheduleButton.setText("Delete");
+        deleteScheduleButton.setEnabled(false);
         deleteScheduleButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 deleteScheduleButtonActionPerformed(evt);
@@ -418,10 +508,17 @@ public class MainFrame extends javax.swing.JFrame {
 
         archiveScheduleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/archive.png"))); // NOI18N
         archiveScheduleButton.setText("Archive");
+        archiveScheduleButton.setEnabled(false);
+        archiveScheduleButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                archiveScheduleButtonActionPerformed(evt);
+            }
+        });
         scheduleTools.add(archiveScheduleButton);
 
         completeScheduleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/complete.png"))); // NOI18N
         completeScheduleButton.setText("Complete");
+        completeScheduleButton.setEnabled(false);
         completeScheduleButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 completeScheduleButtonActionPerformed(evt);
@@ -431,11 +528,18 @@ public class MainFrame extends javax.swing.JFrame {
 
         viewScheduleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/view.png"))); // NOI18N
         viewScheduleButton.setText("View");
+        viewScheduleButton.setEnabled(false);
+        viewScheduleButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                viewScheduleButtonActionPerformed(evt);
+            }
+        });
         scheduleTools.add(viewScheduleButton);
 
-        createWOButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/createWO.png"))); // NOI18N
-        createWOButton1.setText("Create W/O");
-        scheduleTools.add(createWOButton1);
+        createWOButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/createWO.png"))); // NOI18N
+        createWOButton.setText("Create W/O");
+        createWOButton.setEnabled(false);
+        scheduleTools.add(createWOButton);
         scheduleTools.add(filler2);
 
         scheduleLoadLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ajax.gif"))); // NOI18N
@@ -450,7 +554,7 @@ public class MainFrame extends javax.swing.JFrame {
 
             },
             new String [] {
-                "No.", "Name", "Type", "Frequency", "Last Done", "Next Due", "Asset", "Location"
+                " #", " Name", " Type", " Frequency", " Last Done", " Next Due", " Asset", " Location"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -501,6 +605,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         editAssetButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/edit.png"))); // NOI18N
         editAssetButton.setText("Edit");
+        editAssetButton.setEnabled(false);
         editAssetButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 editAssetButtonActionPerformed(evt);
@@ -510,6 +615,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         deleteAssetButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/delete.png"))); // NOI18N
         deleteAssetButton.setText("Delete");
+        deleteAssetButton.setEnabled(false);
         deleteAssetButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 deleteAssetButtonActionPerformed(evt);
@@ -519,6 +625,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         archiveAssetButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/archive.png"))); // NOI18N
         archiveAssetButton.setText("Archive");
+        archiveAssetButton.setEnabled(false);
         archiveAssetButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 archiveAssetButtonActionPerformed(evt);
@@ -539,7 +646,7 @@ public class MainFrame extends javax.swing.JFrame {
 
             },
             new String [] {
-                "No.", "Name", "Description", "Type", "Location"
+                " #", " Name", " Description", " Type", " Location"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -590,6 +697,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         editLocationButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/edit.png"))); // NOI18N
         editLocationButton.setText("Edit");
+        editLocationButton.setEnabled(false);
         editLocationButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 editLocationButtonActionPerformed(evt);
@@ -599,6 +707,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         deleteLocationButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/delete.png"))); // NOI18N
         deleteLocationButton.setText("Delete");
+        deleteLocationButton.setEnabled(false);
         deleteLocationButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 deleteLocationButtonActionPerformed(evt);
@@ -608,6 +717,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         archiveLocationButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/archive.png"))); // NOI18N
         archiveLocationButton.setText("Archive");
+        archiveLocationButton.setEnabled(false);
         archiveLocationButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 archiveLocationButtonActionPerformed(evt);
@@ -628,7 +738,7 @@ public class MainFrame extends javax.swing.JFrame {
 
             },
             new String [] {
-                "No.", "Name", "Description"
+                " #", " Name", " Description"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -679,6 +789,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         editPartButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/edit.png"))); // NOI18N
         editPartButton.setText("Edit");
+        editPartButton.setEnabled(false);
         editPartButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 editPartButtonActionPerformed(evt);
@@ -688,6 +799,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         deletePartButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/delete.png"))); // NOI18N
         deletePartButton.setText("Delete");
+        deletePartButton.setEnabled(false);
         deletePartButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 deletePartButtonActionPerformed(evt);
@@ -697,6 +809,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         archivePartButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/archive.png"))); // NOI18N
         archivePartButton.setText("Archive");
+        archivePartButton.setEnabled(false);
         archivePartButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 archivePartButtonActionPerformed(evt);
@@ -717,7 +830,7 @@ public class MainFrame extends javax.swing.JFrame {
 
             },
             new String [] {
-                "No.", "Name", "Quantity", "Price/Unit"
+                " #", " Name", " Quantity", " Price/Unit"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -768,6 +881,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         editEmployeeButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/edit.png"))); // NOI18N
         editEmployeeButton.setText("Edit");
+        editEmployeeButton.setEnabled(false);
         editEmployeeButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 editEmployeeButtonActionPerformed(evt);
@@ -777,6 +891,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         deleteEmployeeButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/delete.png"))); // NOI18N
         deleteEmployeeButton.setText("Delete");
+        deleteEmployeeButton.setEnabled(false);
         deleteEmployeeButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 deleteEmployeeButtonActionPerformed(evt);
@@ -786,6 +901,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         archiveEmployeeButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/archive.png"))); // NOI18N
         archiveEmployeeButton.setText("Archive");
+        archiveEmployeeButton.setEnabled(false);
         archiveEmployeeButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 archiveEmployeeButtonActionPerformed(evt);
@@ -806,7 +922,7 @@ public class MainFrame extends javax.swing.JFrame {
 
             },
             new String [] {
-                "No.", "Name", "Designation", "Department"
+                " #", " Name", " Designation", " Department"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -865,7 +981,7 @@ public class MainFrame extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Username", "User Level", "Logged In"
+                " Username", " User Level", " Logged In"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -1130,171 +1246,46 @@ public class MainFrame extends javax.swing.JFrame {
 
     //New Location
     private void newLocationButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newLocationButtonActionPerformed
-        LocationDialog l = new LocationDialog(locationTable, -1);
-        l.setSize(MMS.DIAG_WIDTH, l.getHeight());
-        l.setLocation(desktopPane.getWidth()/2-l.getWidth()/2, desktopPane.getHeight()/2-l.getHeight()/2-50);
-        desktopPane.add(l);
-        desktopPane.setLayer(l, 1);
-        l.setVisible(true);
+        locations.newLocation();
     }//GEN-LAST:event_newLocationButtonActionPerformed
 
     //Edit Location
     private void editLocationButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editLocationButtonActionPerformed
-        LocationDialog l = new LocationDialog(locationTable, locationTable.getSelectedRow());
-        l.setSize(MMS.DIAG_WIDTH, l.getHeight());
-        l.setTitle("Edit Location");
-        l.setLocation(desktopPane.getWidth()/2-l.getWidth()/2, desktopPane.getHeight()/2-l.getHeight()/2-50);
-        desktopPane.add(l);
-        desktopPane.setLayer(l, 1);
-        l.setVisible(true);
+        locations.editLocation();
     }//GEN-LAST:event_editLocationButtonActionPerformed
 
     //Delete Location
     private void deleteLocationButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteLocationButtonActionPerformed
-        String message, title;
-        if(locationTable.getSelectedRowCount() > 1){
-            message = "Are you sure you want to delete these "+locationTable.getSelectedRowCount()+" locations?";
-            title = "Delete Locations";
-        }
-        else{
-            message = "Are you sure you want to delete "+locationTable.getValueAt(locationTable.getSelectedRow(), 1)+"?";
-            title = "Delete Location";
-        }
-        if(InternalDialog.showInternalConfirmDialog(desktopPane, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null) == 0){
-            int rows [] = locationTable.getSelectedRows();
-            //Delete from DB
-            for(int row : rows){
-                int id = Integer.parseInt(locationTable.getValueAt(row, 0).toString());
-                Database.executeQuery("DELETE FROM locations WHERE id = ?",
-                        new Object[]{id});
-            }
-            //Delete from table
-            for(int i = rows.length-1; i >= 0; i--){
-                DefaultTableModel m = (DefaultTableModel)locationTable.getModel();
-                m.removeRow(rows[i]);
-            }
-            
-            //Select first row
-            if(locationTable.getRowCount() != 0) locationTable.setRowSelectionInterval(0, 0);
-        }
+        locations.deleteLocation();
     }//GEN-LAST:event_deleteLocationButtonActionPerformed
 
     //Archive Location
     private void archiveLocationButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_archiveLocationButtonActionPerformed
-        String message, title;
-        if(locationTable.getSelectedRowCount() > 1){
-            message = "Are you sure you want to archive these "+locationTable.getSelectedRowCount()+" locations?";
-            title = "Archive Locations";
-        }
-        else{
-            message = "Are you sure you want to archive "+locationTable.getValueAt(locationTable.getSelectedRow(), 1)+"?";
-            title = "Archive Location";
-        }
-        
-        if(InternalDialog.showInternalConfirmDialog(desktopPane, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null) == 0){
-            int rows [] = locationTable.getSelectedRows();
-            //Set Archived = Y
-            for(int row : rows){
-                int id = Integer.parseInt(locationTable.getValueAt(row, 0).toString());
-                Database.executeQuery("UPDATE locations SET archived = ? WHERE id = ?",
-                        new Object[]{"Y", id});
-            }
-            //Delete from table
-            for(int i = rows.length-1; i >= 0; i--){
-                DefaultTableModel m = (DefaultTableModel)locationTable.getModel();
-                m.removeRow(rows[i]);
-            }
-            
-            //Select first row
-            if(locationTable.getRowCount() != 0) locationTable.setRowSelectionInterval(0, 0);
-        }
+        locations.archiveLocation();
     }//GEN-LAST:event_archiveLocationButtonActionPerformed
 
     //New Asset
     private void newAssetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newAssetButtonActionPerformed
+        System.out.println("CORRECT");
         if(locationTable.getRowCount() == 0){
             PopupPanel.display("You must add a Location before you can add an Asset.", newAssetButton.getLocationOnScreen().x+10, newAssetButton.getLocationOnScreen().y+newAssetButton.getHeight()+10);
         }
-        else{
-            AssetDialog a = new AssetDialog(assetTable, -1);
-            a.setSize(MMS.DIAG_WIDTH, a.getHeight());
-            a.setLocation(desktopPane.getWidth()/2-a.getWidth()/2, desktopPane.getHeight()/2-a.getHeight()/2-50);
-            desktopPane.add(a);
-            desktopPane.setLayer(a, 1);
-            a.setVisible(true);
-        }
+        else assets.newAsset();
     }//GEN-LAST:event_newAssetButtonActionPerformed
 
     //Edit Asset
     private void editAssetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editAssetButtonActionPerformed
-        AssetDialog a = new AssetDialog(assetTable, assetTable.getSelectedRow());
-        a.setSize(MMS.DIAG_WIDTH, a.getHeight());
-        a.setTitle("Edit Asset");
-        a.setLocation(desktopPane.getWidth()/2-a.getWidth()/2, desktopPane.getHeight()/2-a.getHeight()/2-50);
-        desktopPane.add(a);
-        desktopPane.setLayer(a, 1);
-        a.setVisible(true);
+        assets.editAsset();
     }//GEN-LAST:event_editAssetButtonActionPerformed
 
     //Delete Asset
     private void deleteAssetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteAssetButtonActionPerformed
-        String message, title;
-        if(assetTable.getSelectedRowCount() > 1){
-            message = "Are you sure you want to delete these "+assetTable.getSelectedRowCount()+" assets?";
-            title = "Delete Assets";
-        }
-        else{
-            message = "Are you sure you want to delete "+assetTable.getValueAt(assetTable.getSelectedRow(), 1)+"?";
-            title = "Delete Assets";
-        }
-        if(InternalDialog.showInternalConfirmDialog(desktopPane, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null) == 0){
-            int rows [] = assetTable.getSelectedRows();
-            //Delete from DB
-            for(int row : rows){
-                int id = Integer.parseInt(assetTable.getValueAt(row, 0).toString());
-                Database.executeQuery("DELETE FROM assets WHERE id = ?",
-                        new Object[]{id});
-            }
-            //Delete from table
-            for(int i = rows.length-1; i >= 0; i--){
-                DefaultTableModel m = (DefaultTableModel)assetTable.getModel();
-                m.removeRow(rows[i]);
-            }
-            
-            //Select first row
-            if(assetTable.getRowCount() != 0) assetTable.setRowSelectionInterval(0, 0);
-        }
+        assets.deleteAsset();
     }//GEN-LAST:event_deleteAssetButtonActionPerformed
 
     //Archive Asset
     private void archiveAssetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_archiveAssetButtonActionPerformed
-        String message, title;
-        if(assetTable.getSelectedRowCount() > 1){
-            message = "Are you sure you want to archive these "+assetTable.getSelectedRowCount()+" assets?";
-            title = "Archive Assets";
-        }
-        else{
-            message = "Are you sure you want to archive "+assetTable.getValueAt(assetTable.getSelectedRow(), 1)+"?";
-            title = "Archive Assets";
-        }
-        
-        if(InternalDialog.showInternalConfirmDialog(desktopPane, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null) == 0){
-            int rows [] = assetTable.getSelectedRows();
-            //Set Archived = Y
-            for(int row : rows){
-                int id = Integer.parseInt(assetTable.getValueAt(row, 0).toString());
-                Database.executeQuery("UPDATE assets SET archived = ? WHERE id = ?",
-                        new Object[]{"Y", id});
-            }
-            //Delete from table
-            for(int i = rows.length-1; i >= 0; i--){
-                DefaultTableModel m = (DefaultTableModel)assetTable.getModel();
-                m.removeRow(rows[i]);
-            }
-            
-            //Select first row
-            if(assetTable.getRowCount() != 0) assetTable.setRowSelectionInterval(0, 0);
-        }
+        assets.archiveAsset();
     }//GEN-LAST:event_archiveAssetButtonActionPerformed
 
     //Refresh table
@@ -1304,99 +1295,37 @@ public class MainFrame extends javax.swing.JFrame {
             case 1: //Work orders
                 break;
             case 2: //Schedule
-                loadSchedule(scheduleTable.getSelectedRow()); break;
+                schedule.load(); break;
             case 3: //Assets
-                loadAssets(assetTable.getSelectedRow()); break;
+                assets.load(); break;
             case 4: //Locations
-                loadLocations(locationTable.getSelectedRow()); break;
+                locations.load(); break;
             case 5: //Parts
-                loadParts(partTable.getSelectedRow()); break;
+                parts.load(); break;
             case 6: //Employees
-                loadEmployees(employeeTable.getSelectedRow()); break;
+                employees.load(); break;
             default: break;
         }
     }//GEN-LAST:event_menuTableRefreshActionPerformed
 
     //New Employee
     private void newEmployeeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newEmployeeButtonActionPerformed
-        EmployeeDialog e = new EmployeeDialog(employeeTable, -1);
-        e.setSize(MMS.DIAG_WIDTH, e.getHeight());
-        e.setLocation(desktopPane.getWidth()/2-e.getWidth()/2, desktopPane.getHeight()/2-e.getHeight()/2-50);
-        desktopPane.add(e);
-        desktopPane.setLayer(e, 1);
-        e.setVisible(true);
+        employees.newEmployee();
     }//GEN-LAST:event_newEmployeeButtonActionPerformed
 
     //Edit Employee
     private void editEmployeeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editEmployeeButtonActionPerformed
-        EmployeeDialog e = new EmployeeDialog(employeeTable, employeeTable.getSelectedRow());
-        e.setSize(MMS.DIAG_WIDTH, e.getHeight());
-        e.setTitle("Edit Employee");
-        e.setLocation(desktopPane.getWidth()/2-e.getWidth()/2, desktopPane.getHeight()/2-e.getHeight()/2-50);
-        desktopPane.add(e);
-        desktopPane.setLayer(e, 1);
-        e.setVisible(true);
+        employees.editEmployee();
     }//GEN-LAST:event_editEmployeeButtonActionPerformed
 
     //Delete Employee
     private void deleteEmployeeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteEmployeeButtonActionPerformed
-        String message, title;
-        if(employeeTable.getSelectedRowCount() > 1){
-            message = "Are you sure you want to delete these "+employeeTable.getSelectedRowCount()+" employees?";
-            title = "Delete Employees";
-        }
-        else{
-            message = "Are you sure you want to delete "+employeeTable.getValueAt(employeeTable.getSelectedRow(), 1)+"?";
-            title = "Delete Employee";
-        }
-        if(InternalDialog.showInternalConfirmDialog(desktopPane, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null) == 0){
-            int rows [] = employeeTable.getSelectedRows();
-            //Delete from DB
-            for(int row : rows){
-                int id = Integer.parseInt(employeeTable.getValueAt(row, 0).toString());
-                Database.executeQuery("DELETE FROM employees WHERE id = ?",
-                        new Object[]{id});
-            }
-            //Delete from table
-            for(int i = rows.length-1; i >= 0; i--){
-                DefaultTableModel m = (DefaultTableModel)employeeTable.getModel();
-                m.removeRow(rows[i]);
-            }
-            
-            //Select first row
-            if(employeeTable.getRowCount() != 0) employeeTable.setRowSelectionInterval(0, 0);
-        }
+        employees.deleteEmployee();
     }//GEN-LAST:event_deleteEmployeeButtonActionPerformed
 
     //Archive Employee
     private void archiveEmployeeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_archiveEmployeeButtonActionPerformed
-        String message, title;
-        if(employeeTable.getSelectedRowCount() > 1){
-            message = "Are you sure you want to archive these "+employeeTable.getSelectedRowCount()+" employees?";
-            title = "Archive Employees";
-        }
-        else{
-            message = "Are you sure you want to archive "+employeeTable.getValueAt(employeeTable.getSelectedRow(), 1)+"?";
-            title = "Archive Employee";
-        }
-        
-        if(InternalDialog.showInternalConfirmDialog(desktopPane, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null) == 0){
-            int rows [] = employeeTable.getSelectedRows();
-            //Set Archived = Y
-            for(int row : rows){
-                int id = Integer.parseInt(employeeTable.getValueAt(row, 0).toString());
-                Database.executeQuery("UPDATE employees SET archived = ? WHERE id = ?",
-                        new Object[]{"Y", id});
-            }
-            //Delete from table
-            for(int i = rows.length-1; i >= 0; i--){
-                DefaultTableModel m = (DefaultTableModel)employeeTable.getModel();
-                m.removeRow(rows[i]);
-            }
-            
-            //Select first row
-            if(employeeTable.getRowCount() != 0) employeeTable.setRowSelectionInterval(0, 0);
-        }
+        employees.archiveEmployee();
     }//GEN-LAST:event_archiveEmployeeButtonActionPerformed
 
     //Find
@@ -1488,84 +1417,22 @@ public class MainFrame extends javax.swing.JFrame {
 
     //New Part
     private void newPartButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newPartButtonActionPerformed
-        PartDialog p = new PartDialog(partTable, -1);
-        p.setSize(MMS.DIAG_WIDTH, p.getHeight());
-        p.setLocation(desktopPane.getWidth()/2-p.getWidth()/2, desktopPane.getHeight()/2-p.getHeight()/2-50);
-        desktopPane.add(p);
-        desktopPane.setLayer(p, 1);
-        p.setVisible(true);
+        parts.newPart();
     }//GEN-LAST:event_newPartButtonActionPerformed
 
     //Edit Part
     private void editPartButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editPartButtonActionPerformed
-        PartDialog p = new PartDialog(partTable, partTable.getSelectedRow());
-        p.setSize(MMS.DIAG_WIDTH, p.getHeight());
-        p.setTitle("Edit Part");
-        p.setLocation(desktopPane.getWidth()/2-p.getWidth()/2, desktopPane.getHeight()/2-p.getHeight()/2-50);
-        desktopPane.add(p);
-        desktopPane.setLayer(p, 1);
-        p.setVisible(true);
+        parts.editPart();
     }//GEN-LAST:event_editPartButtonActionPerformed
 
     //Delete Part
     private void deletePartButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deletePartButtonActionPerformed
-        String message, title;
-        if(partTable.getSelectedRowCount() > 1){
-            message = "Are you sure you want to delete these "+partTable.getSelectedRowCount()+" parts?";
-            title = "Delete Parts";
-        }
-        else{
-            message = "Are you sure you want to delete "+partTable.getValueAt(partTable.getSelectedRow(), 1)+"?";
-            title = "Delete Part";
-        }
-        if(InternalDialog.showInternalConfirmDialog(desktopPane, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null) == 0){
-            int rows [] = partTable.getSelectedRows();
-            //Delete from DB
-            for(int row : rows){
-                int id = Integer.parseInt(partTable.getValueAt(row, 0).toString());
-                Database.executeQuery("DELETE FROM parts WHERE id = ?",
-                        new Object[]{id});
-            }
-            //Delete from table
-            for(int i = rows.length-1; i >= 0; i--){
-                DefaultTableModel m = (DefaultTableModel)partTable.getModel();
-                m.removeRow(rows[i]);
-            }
-            
-            //Select first row
-            if(partTable.getRowCount() != 0) partTable.setRowSelectionInterval(0, 0);
-        }
+        parts.deletePart();
     }//GEN-LAST:event_deletePartButtonActionPerformed
 
     //Archive Part
     private void archivePartButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_archivePartButtonActionPerformed
-        String message, title;
-        if(partTable.getSelectedRowCount() > 1){
-            message = "Are you sure you want to archive these "+employeeTable.getSelectedRowCount()+" parts?";
-            title = "Archive Parts";
-        }
-        else{
-            message = "Are you sure you want to archive "+partTable.getValueAt(partTable.getSelectedRow(), 1)+"?";
-            title = "Archive Part";
-        }
-        
-        if(InternalDialog.showInternalConfirmDialog(desktopPane, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null) == 0){
-            int rows [] = partTable.getSelectedRows();
-            //Set Archived = Y
-            for(int row : rows){
-                int id = Integer.parseInt(partTable.getValueAt(row, 0).toString());
-                Database.executeQuery("UPDATE parts SET archived = ? WHERE id = ?",
-                        new Object[]{"Y", id});
-            }
-            //Delete from table
-            for(int i = rows.length-1; i >= 0; i--){
-                DefaultTableModel m = (DefaultTableModel)partTable.getModel();
-                m.removeRow(rows[i]);
-            }
-            
-            //Select first row
-            if(partTable.getRowCount() != 0) partTable.setRowSelectionInterval(0, 0);
-        }
+        parts.archivePart();
     }//GEN-LAST:event_archivePartButtonActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -1588,7 +1455,7 @@ public class MainFrame extends javax.swing.JFrame {
 
     //Delete Schedule
     private void deleteScheduleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteScheduleButtonActionPerformed
-        
+        schedule.deleteSchedule();
     }//GEN-LAST:event_deleteScheduleButtonActionPerformed
 
     private void scheduleTableKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_scheduleTableKeyPressed
@@ -1654,225 +1521,39 @@ public class MainFrame extends javax.swing.JFrame {
             PopupPanel.display("You must add a Location before you can add a Scheduled Task.", newScheduleButton.getLocationOnScreen().x+10, newScheduleButton.getLocationOnScreen().y+newScheduleButton.getHeight()+10);
         }
         else{
-            ScheduleDialog s = new ScheduleDialog(scheduleTable, -1);
-            s.setSize(MMS.DIAG_WIDTH*2-10, s.getHeight());
-            s.setLocation(desktopPane.getWidth()/2-s.getWidth()/2, desktopPane.getHeight()/2-s.getHeight()/2-50);
-            desktopPane.add(s);
-            desktopPane.setLayer(s, 1);
-            s.setVisible(true);
+            schedule.newSchedule();
         }
     }//GEN-LAST:event_newScheduleButtonActionPerformed
 
     //Complete task
     private void completeScheduleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_completeScheduleButtonActionPerformed
-        int id = Integer.parseInt(scheduleTable.getValueAt(scheduleTable.getSelectedRow(), 0).toString());
-        String freq = scheduleTable.getValueAt(scheduleTable.getSelectedRow(), 3).toString();
-        //Get last date
-        ResultSet rs = Database.select("SELECT schedule_last_date FROM schedule WHERE id = ?",
-                new Object[]{id});
-        try {
-            if(rs.next()){
-                LocalDate lastDate = rs.getDate(1).toLocalDate();
-                //Get next date that isn't passed or today
-                LocalDate doneDate = DateTools.getDueDate(lastDate, freq , 1);
-                while(DateTools.isPassed(doneDate)){
-                    doneDate = DateTools.getDueDate(doneDate, freq , 1);
-                }
-                //Update last date (increase by one increment)
-                Database.executeQuery("UPDATE schedule SET schedule_last_date = ? WHERE id = ?",
-                    new Object[]{DateTools.convertToSQLDate(doneDate), id});
-                //Update table
-                scheduleTable.setValueAt("Complete", scheduleTable.getSelectedRow(), 5);
-            }
-            
-        } catch (SQLException ex) {
-            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        schedule.completeTask();
+        completeScheduleButton.setEnabled(false);
     }//GEN-LAST:event_completeScheduleButtonActionPerformed
 
-    //Load locations
-    public void loadLocations(int row){
-        locationLoadLabel.setVisible(true);
-        new Thread(){
-            @Override
-            public void run(){
-                DefaultTableModel t = (DefaultTableModel)locationTable.getModel();
-                t.setRowCount(0);
-                try {
-                    ResultSet rs = Database.select("SELECT id, location_name, location_desc, archived FROM locations ORDER BY id DESC");
-                    int size = MMS.getPrefs().getInt("table_size_locations", -1), count = 0;
-                    while(rs.next() && (size == -1 || count <= size)){
-                        Object [] o = new Object[4];
-                        o[0] = rs.getObject(1).toString().trim();
-                        o[1] = rs.getObject(2).toString().trim();
-                        o[2] = rs.getObject(3).toString().trim();
-                        o[3] = rs.getObject(4).toString().trim();
-                        if(o[3].equals("N")){
-                            t.addRow(o);
-                        }
-                        count++;
-                    }
-                    rs.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                TableTools.resize(locationTable);
-                if(t.getRowCount() != 0) locationTable.setRowSelectionInterval(row, row);
-                locationLoadLabel.setVisible(false);
-            }
-        }.start();
-    }
-    
-    //Load assets
-    public void loadAssets(int row){
-        assetLoadLabel.setVisible(true);
-        new Thread(){
-            @Override
-            public void run(){
-                DefaultTableModel t = (DefaultTableModel)assetTable.getModel();
-                t.setRowCount(0);
-                try {
-                    ResultSet rs = Database.select("SELECT t0.id, t0.asset_name, t0.asset_desc, t0.asset_type, t0.location_id, t1.location_name, t0.Archived FROM assets t0 JOIN locations t1 ON t0.location_id = t1.id ORDER BY t0.id DESC");
-                    int size = MMS.getPrefs().getInt("table_size_assets", -1), count = 0;
-                    while(rs.next() && (size == -1 || count <= size)){
-                        Object [] o = new Object[6];
-                        o[0] = rs.getObject(1).toString().trim();
-                        o[1] = rs.getObject(2).toString().trim();
-                        o[2] = rs.getObject(3).toString().trim();
-                        o[3] = rs.getObject(4).toString().trim();
-                        o[4] = rs.getObject(5).toString().trim()+" - "+rs.getObject(6).toString().trim();
-                        o[5] = rs.getObject(7).toString().trim();
-                        if(o[5].equals("N")){
-                            t.addRow(o);
-                        }
-                        count++;
-                    }
-                    rs.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                TableTools.resize(assetTable);
-                if(t.getRowCount() != 0) assetTable.setRowSelectionInterval(row, row);
-                assetLoadLabel.setVisible(false);
-            }
-        }.start();
-    }
-    
-    //Load parts
-    public void loadParts(int row){
-        partLoadLabel.setVisible(true);
-        new Thread(){
-            @Override
-            public void run(){
-                DefaultTableModel t = (DefaultTableModel)partTable.getModel();
-                t.setRowCount(0);
-                try {
-                    ResultSet rs = Database.select("SELECT id, part_name, part_qty, part_cost, archived FROM parts ORDER BY id DESC");
-                    int size = MMS.getPrefs().getInt("table_size_parts", -1), count = 0;
-                    while(rs.next() && (size == -1 || count <= size)){
-                        Object [] o = new Object[5];
-                        o[0] = rs.getObject(1).toString().trim();
-                        o[1] = rs.getObject(2).toString().trim();
-                        o[2] = rs.getObject(3).toString().trim();
-                        o[3] = rs.getObject(4).toString().trim();
-                        o[4] = rs.getObject(5).toString().trim();
-                        if(o[4].equals("N")){
-                            t.addRow(o);
-                        }
-                        count++;
-                    }
-                    rs.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                TableTools.resize(partTable);
-                if(t.getRowCount() != 0) partTable.setRowSelectionInterval(row, row);
-                partLoadLabel.setVisible(false);
-            }
-        }.start();
-    }
-    
-    //Load employees
-    public void loadEmployees(int row){
-        employeeLoadLabel.setVisible(true);
-        new Thread(){
-            @Override
-            public void run(){
-                DefaultTableModel t = (DefaultTableModel)employeeTable.getModel();
-                t.setRowCount(0);
-                try {
-                    ResultSet rs = Database.select("SELECT id, employee_name, employee_desc, employee_dept, archived FROM employees ORDER BY id DESC");
-                    int size = MMS.getPrefs().getInt("table_size_employees", -1), count = 0;
-                    while(rs.next() && (size == -1 || count <= size)){
-                        Object [] o = new Object[5];
-                        o[0] = rs.getObject(1).toString().trim();
-                        o[1] = rs.getObject(2).toString().trim();
-                        o[2] = rs.getObject(3).toString().trim();
-                        o[3] = rs.getObject(4).toString().trim();
-                        o[4] = rs.getObject(5).toString().trim();
-                        if(o[4].equals("N")){
-                            t.addRow(o);
-                        }
-                        count++;
-                    }
-                    rs.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                TableTools.resize(employeeTable);
-                if(t.getRowCount() != 0) employeeTable.setRowSelectionInterval(row, row);
-                employeeLoadLabel.setVisible(false);
-            }
-        }.start();
-    }
-    
-    //Load schedule
-    public void loadSchedule(int row){
-        scheduleLoadLabel.setVisible(true);
-        new Thread(){
-            @Override
-            public void run(){
-                DefaultTableModel t = (DefaultTableModel)scheduleTable.getModel();
-                t.setRowCount(0);
-                try {
-                    ResultSet rs = Database.select("SELECT t0.id, t0.schedule_name, t0.schedule_type, t0.schedule_freq, t0.schedule_last_date, t0.asset_id, t1.asset_name, t0.location_id, t2.location_name, t0.Archived"
-                            + " FROM schedule t0 JOIN assets t1 ON t0.asset_id = t1.id JOIN locations t2 ON t0.location_id = t2.id ORDER BY t0.id DESC");
-                    int size = MMS.getPrefs().getInt("table_size_schedule", -1), count = 0;
-                    while(rs.next() && (size == -1 || count <= size)){
-                        Object [] o = new Object[9];
-                        o[0] = rs.getObject(1).toString().trim();//id
-                        o[1] = rs.getObject(2).toString().trim();//name
-                        o[2] = rs.getObject(3).toString().trim();//type
-                        o[3] = rs.getObject(4).toString().trim();//freq
-                        o[4] = rs.getObject(5).toString().trim();//last
-                        
-                        //Calculate due date
-                        Object row;
-                        LocalDate dueDate = DateTools.getDueDate(rs.getDate(5).toLocalDate(), o[3].toString(), 1);
-                        if(DateTools.isToday(dueDate)) row = "<html><b>Today</b></html>";
-                        else if(DateTools.isPassed(dueDate)) row = "<html><p style=\"color:red\"><b>Overdue</b></p><html>";
-                        else row = dueDate;
-                        o[5] = row;
-                        
-                        o[6] = rs.getObject(6).toString().trim().equals("-1") ? "No Asset" : rs.getObject(6).toString().trim()+" - "+rs.getObject(7).toString().trim();//asset_id-name
-                        o[7] = rs.getObject(8).toString().trim()+" - "+rs.getObject(9).toString().trim();//location_id-name
-                        o[8] = rs.getObject(10).toString().trim();//archived
-                        if(o[8].equals("N")){
-                            t.addRow(o);
-                        }
-                        count++;
-                    }
-                    rs.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                TableTools.resize(scheduleTable);
-                if(t.getRowCount() != 0) scheduleTable.setRowSelectionInterval(row, row);
-                scheduleLoadLabel.setVisible(false);
-            }
-        }.start();
-    }
-    
+    //Archive Schedule
+    private void archiveScheduleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_archiveScheduleButtonActionPerformed
+        schedule.archiveSchedule();
+    }//GEN-LAST:event_archiveScheduleButtonActionPerformed
+
+    //Edit Schedule
+    private void editScheduleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editScheduleButtonActionPerformed
+        schedule.editSchedule();
+    }//GEN-LAST:event_editScheduleButtonActionPerformed
+
+    //View Schedule
+    private void viewScheduleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewScheduleButtonActionPerformed
+        schedule.viewSchedule();
+    }//GEN-LAST:event_viewScheduleButtonActionPerformed
+
+    //Load tables
+    public void loadTables(){
+        schedule.load();
+        assets.load();
+        locations.load();
+        parts.load();
+        employees.load();
+    } 
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel adminArchivePanel;
@@ -1897,7 +1578,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JToolBar assetTools;
     private javax.swing.JPanel backPanel;
     private javax.swing.JButton completeScheduleButton;
-    private javax.swing.JButton createWOButton1;
+    private javax.swing.JButton createWOButton;
     private javax.swing.JPanel dashButtonPanel;
     private javax.swing.JPanel dashPanel;
     private javax.swing.JButton deleteAssetButton;

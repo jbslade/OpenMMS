@@ -461,14 +461,14 @@
                             <Property name="autoCreateRowSorter" type="boolean" value="true"/>
                             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
                               <Table columnCount="8" rowCount="0">
-                                <Column editable="false" title="No." type="java.lang.Object"/>
-                                <Column editable="false" title="Date" type="java.lang.Object"/>
-                                <Column editable="false" title="Type" type="java.lang.Object"/>
-                                <Column editable="false" title="Priority" type="java.lang.Object"/>
-                                <Column editable="false" title="Asset" type="java.lang.Object"/>
-                                <Column editable="false" title="Location" type="java.lang.Object"/>
-                                <Column editable="false" title="Employee(s)" type="java.lang.Object"/>
-                                <Column editable="false" title="Status" type="java.lang.Object"/>
+                                <Column editable="false" title=" #" type="java.lang.Object"/>
+                                <Column editable="false" title=" Date" type="java.lang.Object"/>
+                                <Column editable="false" title=" Type" type="java.lang.Object"/>
+                                <Column editable="false" title=" Priority" type="java.lang.Object"/>
+                                <Column editable="false" title=" Asset" type="java.lang.Object"/>
+                                <Column editable="false" title=" Location" type="java.lang.Object"/>
+                                <Column editable="false" title=" Employee(s)" type="java.lang.Object"/>
+                                <Column editable="false" title=" Status" type="java.lang.Object"/>
                               </Table>
                             </Property>
                             <Property name="dragEnabled" type="boolean" value="true"/>
@@ -538,7 +538,11 @@
                               <Image iconType="3" name="/buttons/edit.png"/>
                             </Property>
                             <Property name="text" type="java.lang.String" value="Edit"/>
+                            <Property name="enabled" type="boolean" value="false"/>
                           </Properties>
+                          <Events>
+                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="editScheduleButtonActionPerformed"/>
+                          </Events>
                         </Component>
                         <Component class="javax.swing.JButton" name="deleteScheduleButton">
                           <Properties>
@@ -546,6 +550,7 @@
                               <Image iconType="3" name="/buttons/delete.png"/>
                             </Property>
                             <Property name="text" type="java.lang.String" value="Delete"/>
+                            <Property name="enabled" type="boolean" value="false"/>
                           </Properties>
                           <Events>
                             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="deleteScheduleButtonActionPerformed"/>
@@ -557,7 +562,11 @@
                               <Image iconType="3" name="/buttons/archive.png"/>
                             </Property>
                             <Property name="text" type="java.lang.String" value="Archive"/>
+                            <Property name="enabled" type="boolean" value="false"/>
                           </Properties>
+                          <Events>
+                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="archiveScheduleButtonActionPerformed"/>
+                          </Events>
                         </Component>
                         <Component class="javax.swing.JButton" name="completeScheduleButton">
                           <Properties>
@@ -565,6 +574,7 @@
                               <Image iconType="3" name="/buttons/complete.png"/>
                             </Property>
                             <Property name="text" type="java.lang.String" value="Complete"/>
+                            <Property name="enabled" type="boolean" value="false"/>
                           </Properties>
                           <Events>
                             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="completeScheduleButtonActionPerformed"/>
@@ -576,14 +586,19 @@
                               <Image iconType="3" name="/buttons/view.png"/>
                             </Property>
                             <Property name="text" type="java.lang.String" value="View"/>
+                            <Property name="enabled" type="boolean" value="false"/>
                           </Properties>
+                          <Events>
+                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="viewScheduleButtonActionPerformed"/>
+                          </Events>
                         </Component>
-                        <Component class="javax.swing.JButton" name="createWOButton1">
+                        <Component class="javax.swing.JButton" name="createWOButton">
                           <Properties>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/buttons/createWO.png"/>
                             </Property>
                             <Property name="text" type="java.lang.String" value="Create W/O"/>
+                            <Property name="enabled" type="boolean" value="false"/>
                           </Properties>
                         </Component>
                         <Component class="javax.swing.Box$Filler" name="filler2">
@@ -627,14 +642,14 @@
                             <Property name="autoCreateRowSorter" type="boolean" value="true"/>
                             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
                               <Table columnCount="8" rowCount="0">
-                                <Column editable="false" title="No." type="java.lang.Object"/>
-                                <Column editable="false" title="Name" type="java.lang.Object"/>
-                                <Column editable="false" title="Type" type="java.lang.Object"/>
-                                <Column editable="false" title="Frequency" type="java.lang.Object"/>
-                                <Column editable="false" title="Last Done" type="java.lang.Object"/>
-                                <Column editable="false" title="Next Due" type="java.lang.Object"/>
-                                <Column editable="false" title="Asset" type="java.lang.Object"/>
-                                <Column editable="false" title="Location" type="java.lang.Object"/>
+                                <Column editable="false" title=" #" type="java.lang.Object"/>
+                                <Column editable="false" title=" Name" type="java.lang.Object"/>
+                                <Column editable="false" title=" Type" type="java.lang.Object"/>
+                                <Column editable="false" title=" Frequency" type="java.lang.Object"/>
+                                <Column editable="false" title=" Last Done" type="java.lang.Object"/>
+                                <Column editable="false" title=" Next Due" type="java.lang.Object"/>
+                                <Column editable="false" title=" Asset" type="java.lang.Object"/>
+                                <Column editable="false" title=" Location" type="java.lang.Object"/>
                               </Table>
                             </Property>
                             <Property name="dragEnabled" type="boolean" value="true"/>
@@ -704,6 +719,7 @@
                               <Image iconType="3" name="/buttons/edit.png"/>
                             </Property>
                             <Property name="text" type="java.lang.String" value="Edit"/>
+                            <Property name="enabled" type="boolean" value="false"/>
                           </Properties>
                           <Events>
                             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="editAssetButtonActionPerformed"/>
@@ -715,6 +731,7 @@
                               <Image iconType="3" name="/buttons/delete.png"/>
                             </Property>
                             <Property name="text" type="java.lang.String" value="Delete"/>
+                            <Property name="enabled" type="boolean" value="false"/>
                           </Properties>
                           <Events>
                             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="deleteAssetButtonActionPerformed"/>
@@ -726,6 +743,7 @@
                               <Image iconType="3" name="/buttons/archive.png"/>
                             </Property>
                             <Property name="text" type="java.lang.String" value="Archive"/>
+                            <Property name="enabled" type="boolean" value="false"/>
                           </Properties>
                           <Events>
                             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="archiveAssetButtonActionPerformed"/>
@@ -772,11 +790,11 @@
                             <Property name="autoCreateRowSorter" type="boolean" value="true"/>
                             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
                               <Table columnCount="5" rowCount="0">
-                                <Column editable="false" title="No." type="java.lang.Object"/>
-                                <Column editable="false" title="Name" type="java.lang.Object"/>
-                                <Column editable="false" title="Description" type="java.lang.Object"/>
-                                <Column editable="false" title="Type" type="java.lang.Object"/>
-                                <Column editable="false" title="Location" type="java.lang.Object"/>
+                                <Column editable="false" title=" #" type="java.lang.Object"/>
+                                <Column editable="false" title=" Name" type="java.lang.Object"/>
+                                <Column editable="false" title=" Description" type="java.lang.Object"/>
+                                <Column editable="false" title=" Type" type="java.lang.Object"/>
+                                <Column editable="false" title=" Location" type="java.lang.Object"/>
                               </Table>
                             </Property>
                             <Property name="dragEnabled" type="boolean" value="true"/>
@@ -846,6 +864,7 @@
                               <Image iconType="3" name="/buttons/edit.png"/>
                             </Property>
                             <Property name="text" type="java.lang.String" value="Edit"/>
+                            <Property name="enabled" type="boolean" value="false"/>
                           </Properties>
                           <Events>
                             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="editLocationButtonActionPerformed"/>
@@ -857,6 +876,7 @@
                               <Image iconType="3" name="/buttons/delete.png"/>
                             </Property>
                             <Property name="text" type="java.lang.String" value="Delete"/>
+                            <Property name="enabled" type="boolean" value="false"/>
                           </Properties>
                           <Events>
                             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="deleteLocationButtonActionPerformed"/>
@@ -868,6 +888,7 @@
                               <Image iconType="3" name="/buttons/archive.png"/>
                             </Property>
                             <Property name="text" type="java.lang.String" value="Archive"/>
+                            <Property name="enabled" type="boolean" value="false"/>
                           </Properties>
                           <Events>
                             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="archiveLocationButtonActionPerformed"/>
@@ -914,9 +935,9 @@
                             <Property name="autoCreateRowSorter" type="boolean" value="true"/>
                             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
                               <Table columnCount="3" rowCount="0">
-                                <Column editable="false" title="No." type="java.lang.Object"/>
-                                <Column editable="false" title="Name" type="java.lang.Object"/>
-                                <Column editable="false" title="Description" type="java.lang.Object"/>
+                                <Column editable="false" title=" #" type="java.lang.Object"/>
+                                <Column editable="false" title=" Name" type="java.lang.Object"/>
+                                <Column editable="false" title=" Description" type="java.lang.Object"/>
                               </Table>
                             </Property>
                             <Property name="dragEnabled" type="boolean" value="true"/>
@@ -986,6 +1007,7 @@
                               <Image iconType="3" name="/buttons/edit.png"/>
                             </Property>
                             <Property name="text" type="java.lang.String" value="Edit"/>
+                            <Property name="enabled" type="boolean" value="false"/>
                           </Properties>
                           <Events>
                             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="editPartButtonActionPerformed"/>
@@ -997,6 +1019,7 @@
                               <Image iconType="3" name="/buttons/delete.png"/>
                             </Property>
                             <Property name="text" type="java.lang.String" value="Delete"/>
+                            <Property name="enabled" type="boolean" value="false"/>
                           </Properties>
                           <Events>
                             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="deletePartButtonActionPerformed"/>
@@ -1008,6 +1031,7 @@
                               <Image iconType="3" name="/buttons/archive.png"/>
                             </Property>
                             <Property name="text" type="java.lang.String" value="Archive"/>
+                            <Property name="enabled" type="boolean" value="false"/>
                           </Properties>
                           <Events>
                             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="archivePartButtonActionPerformed"/>
@@ -1054,10 +1078,10 @@
                             <Property name="autoCreateRowSorter" type="boolean" value="true"/>
                             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
                               <Table columnCount="4" rowCount="0">
-                                <Column editable="false" title="No." type="java.lang.Object"/>
-                                <Column editable="false" title="Name" type="java.lang.Object"/>
-                                <Column editable="false" title="Quantity" type="java.lang.Object"/>
-                                <Column editable="false" title="Price/Unit" type="java.lang.Object"/>
+                                <Column editable="false" title=" #" type="java.lang.Object"/>
+                                <Column editable="false" title=" Name" type="java.lang.Object"/>
+                                <Column editable="false" title=" Quantity" type="java.lang.Object"/>
+                                <Column editable="false" title=" Price/Unit" type="java.lang.Object"/>
                               </Table>
                             </Property>
                             <Property name="dragEnabled" type="boolean" value="true"/>
@@ -1127,6 +1151,7 @@
                               <Image iconType="3" name="/buttons/edit.png"/>
                             </Property>
                             <Property name="text" type="java.lang.String" value="Edit"/>
+                            <Property name="enabled" type="boolean" value="false"/>
                           </Properties>
                           <Events>
                             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="editEmployeeButtonActionPerformed"/>
@@ -1138,6 +1163,7 @@
                               <Image iconType="3" name="/buttons/delete.png"/>
                             </Property>
                             <Property name="text" type="java.lang.String" value="Delete"/>
+                            <Property name="enabled" type="boolean" value="false"/>
                           </Properties>
                           <Events>
                             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="deleteEmployeeButtonActionPerformed"/>
@@ -1149,6 +1175,7 @@
                               <Image iconType="3" name="/buttons/archive.png"/>
                             </Property>
                             <Property name="text" type="java.lang.String" value="Archive"/>
+                            <Property name="enabled" type="boolean" value="false"/>
                           </Properties>
                           <Events>
                             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="archiveEmployeeButtonActionPerformed"/>
@@ -1195,10 +1222,10 @@
                             <Property name="autoCreateRowSorter" type="boolean" value="true"/>
                             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
                               <Table columnCount="4" rowCount="0">
-                                <Column editable="false" title="No." type="java.lang.Object"/>
-                                <Column editable="false" title="Name" type="java.lang.Object"/>
-                                <Column editable="false" title="Designation" type="java.lang.Object"/>
-                                <Column editable="false" title="Department" type="java.lang.Object"/>
+                                <Column editable="false" title=" #" type="java.lang.Object"/>
+                                <Column editable="false" title=" Name" type="java.lang.Object"/>
+                                <Column editable="false" title=" Designation" type="java.lang.Object"/>
+                                <Column editable="false" title=" Department" type="java.lang.Object"/>
                               </Table>
                             </Property>
                             <Property name="dragEnabled" type="boolean" value="true"/>
@@ -1310,9 +1337,9 @@
                                     <Property name="autoCreateRowSorter" type="boolean" value="true"/>
                                     <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
                                       <Table columnCount="3" rowCount="0">
-                                        <Column editable="false" title="Username" type="java.lang.Object"/>
-                                        <Column editable="false" title="User Level" type="java.lang.Object"/>
-                                        <Column editable="false" title="Logged In" type="java.lang.Object"/>
+                                        <Column editable="false" title=" Username" type="java.lang.Object"/>
+                                        <Column editable="false" title=" User Level" type="java.lang.Object"/>
+                                        <Column editable="false" title=" Logged In" type="java.lang.Object"/>
                                       </Table>
                                     </Property>
                                     <Property name="dragEnabled" type="boolean" value="true"/>

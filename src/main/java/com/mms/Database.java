@@ -15,7 +15,7 @@
  */
 package com.mms;
 
-import com.mms.dialogs.LocationDialog;
+import com.mms.modules.iframes.LocationFrame;
 import com.mms.utilities.Hasher;
 import java.sql.Connection;
 import java.sql.Driver;
@@ -164,7 +164,7 @@ public class Database {
             stat.execute();
             stat.close();
         } catch (SQLException ex) {
-            Logger.getLogger(LocationDialog.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LocationFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     //Query (no return, no params)
@@ -175,7 +175,7 @@ public class Database {
             stat.execute();
             stat.close();
         } catch (SQLException ex) {
-            Logger.getLogger(LocationDialog.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LocationFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     //Select with params
@@ -189,7 +189,7 @@ public class Database {
             }
             rs = stat.executeQuery();
         } catch (SQLException ex) {
-            Logger.getLogger(LocationDialog.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LocationFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
         return rs;
     }
@@ -201,7 +201,7 @@ public class Database {
             stat = conn.prepareStatement(sql);
             rs = stat.executeQuery();
         } catch (SQLException ex) {
-            Logger.getLogger(LocationDialog.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LocationFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
         return rs;
     }

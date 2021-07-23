@@ -153,7 +153,7 @@ public class MMS {
                             Logger.getLogger(MMS.class.getName()).log(Level.SEVERE, null, ex);
                             MMS.getPrefs().putBoolean("first_run", true);
                         }
-                                          
+                        break;                  
                     case "mssql":
                         String srvr = p.get("srvr_ip", ""), db = p.get("srvr_db", ""), usr = p.get("srvr_user", ""), pass = p.get("srvr_pass", "");
                         //Register driver
@@ -196,14 +196,7 @@ public class MMS {
             m.setIconImage(systemIcon.getImage());
             m.setLocationRelativeTo(null);
             m.setExtendedState(JFrame.MAXIMIZED_BOTH);
-            
-            //Load tables
-            m.loadLocations(0);
-            m.loadAssets(0);
-            m.loadParts(0);
-            m.loadEmployees(0);
-            m.loadSchedule(0);
-
+            m.loadTables();
             m.setVisible(true);
         }
         else shutdown(); //FAIL       

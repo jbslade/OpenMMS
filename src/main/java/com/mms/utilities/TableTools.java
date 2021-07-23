@@ -15,9 +15,12 @@
  */
 package com.mms.utilities;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.FontMetrics;
+import javax.swing.JLabel;
 import javax.swing.JTable;
+import javax.swing.border.MatteBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
@@ -28,6 +31,15 @@ import javax.swing.table.TableColumn;
  * @author J.B. Slade
  */
 public class TableTools {
+    
+    //Format table
+    public static void format(JTable table){
+        table.setBackground(Color.white);
+        table.getTableHeader().setBackground(Color.white);
+        table.getTableHeader().setBorder(new MatteBorder(0,0,1,0, table.getGridColor()));
+        table.setShowGrid(true);
+        ((DefaultTableCellRenderer)table.getTableHeader().getDefaultRenderer()).setHorizontalAlignment(JLabel.LEFT);
+    }
     
     //Resize table
     public static void resize(JTable table) {
