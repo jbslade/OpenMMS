@@ -19,7 +19,7 @@ import com.mms.Database;
 import com.mms.MMS;
 import com.mms.MainFrame;
 import com.mms.dialogs.InternalDialog;
-import com.mms.modules.iframes.ScheduleFrame;
+import com.mms.iframes.ScheduleFrame;
 import com.mms.utilities.DateTools;
 import com.mms.utilities.TableTools;
 import java.sql.ResultSet;
@@ -117,6 +117,16 @@ public class Schedule {
         s.setVisible(true);
     }
     
+    public void viewSchedule(){
+        ScheduleFrame s = new ScheduleFrame(table, table.getSelectedRow(), true);
+        s.setSize(MMS.DIAG_WIDTH*2-10, s.getHeight());
+        s.setTitle("View Scheduled Task #"+table.getValueAt(table.getSelectedRow(), 0));
+        s.setLocation(MMS.getMainFrame().getDesktopPane().getWidth()/2-s.getWidth()/2, MMS.getMainFrame().getDesktopPane().getHeight()/2-s.getHeight()/2-50);
+        MMS.getMainFrame().getDesktopPane().add(s);
+        MMS.getMainFrame().getDesktopPane().setLayer(s, 1);
+        s.setVisible(true);
+    }
+    
     public void deleteSchedule(){
         String message, title;
         if(table.getSelectedRowCount() > 1){
@@ -200,15 +210,5 @@ public class Schedule {
         } catch (SQLException ex) {
             Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-    
-    public void viewSchedule(){
-        ScheduleFrame s = new ScheduleFrame(table, table.getSelectedRow(), true);
-        s.setSize(MMS.DIAG_WIDTH*2-10, s.getHeight());
-        s.setTitle("View Scheduled Task #"+table.getValueAt(table.getSelectedRow(), 0));
-        s.setLocation(MMS.getMainFrame().getDesktopPane().getWidth()/2-s.getWidth()/2, MMS.getMainFrame().getDesktopPane().getHeight()/2-s.getHeight()/2-50);
-        MMS.getMainFrame().getDesktopPane().add(s);
-        MMS.getMainFrame().getDesktopPane().setLayer(s, 1);
-        s.setVisible(true);
     }
 }

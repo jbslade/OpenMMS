@@ -46,7 +46,7 @@ public class LoginDialog extends javax.swing.JDialog {
         
         //Set users
         try {
-            ResultSet rs = Database.select("SELECT user_name, logged_in FROM users");
+            ResultSet rs = Database.select("SELECT user_name FROM users");
             while(rs.next()){
                 userCombo.addItem(rs.getString(1).trim());
             }
@@ -63,9 +63,6 @@ public class LoginDialog extends javax.swing.JDialog {
         }
         
         passwordField.requestFocus();
-        
-        //Show placeholder frame
-        MMS.phf.setVisible(true);
     }
 
     /**
@@ -182,9 +179,6 @@ public class LoginDialog extends javax.swing.JDialog {
             if(p.contentEquals(password)){
                 success = true;
                 MMS.setUser(u);
-                //Set user to logged in
-                Database.executeQuery("UPDATE users SET logged_in = 'Y' WHERE user_name = ?",
-                        new Object[]{u});
                 
                 //Put user in preferences
                 MMS.getPrefs().put("default_user", u);

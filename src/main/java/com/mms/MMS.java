@@ -20,6 +20,7 @@ import com.mms.utilities.ContextMenuMouseListener;
 import com.formdev.flatlaf.intellijthemes.FlatGrayIJTheme;
 import com.mms.dialogs.LoginDialog;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.MouseListener;
 import java.sql.SQLException;
@@ -39,10 +40,10 @@ public class MMS {
     //Variables
     public static final String NAME = "OpenMMS", VERSION = "1.0";
     public static final boolean DEBUG = false;
-    public static final JFrame phf = new JFrame();
-    public static final int DIAG_WIDTH = Toolkit.getDefaultToolkit(). getScreenSize().width/5 > 310 ? 310 : Toolkit.getDefaultToolkit(). getScreenSize().width/5;
+    public static final int DIAG_WIDTH = Toolkit.getDefaultToolkit().getScreenSize().width/5 > 310 ? 310 : Toolkit.getDefaultToolkit().getScreenSize().width/5;
     private static MouseListener mouseListener;
-    private static Thread shutdown;
+    private static Thread shutdownThread;
+    private static final JFrame splash = new JFrame();
     private static MainFrame m;
     private static String user;
     private static Preferences p;
@@ -74,21 +75,22 @@ public class MMS {
         FlatGrayIJTheme.install();
         System.setProperty("flatlaf.menuBarEmbedded", "true");
         UIManager.put("TabbedPane.selectedBackground", Color.white);
-        UIManager.put( "Component.focusWidth", 1 );
-        UIManager.put( "TextComponent.arc", 5 );
+        UIManager.put("Component.focusWidth", 1 );
+        UIManager.put("TextComponent.arc", 5 );
+        UIManager.put("ScrollBar.showButtons", true);
+        
+        //Splash
+        splash.setIconImage(systemIcon.getImage());
+        splash.setUndecorated(true);
+        splash.setLocationRelativeTo(null);
         
         //Mouse listener
         mouseListener = new ContextMenuMouseListener();
         
         //Shutdown thread
-        shutdown = new Thread(){
+        shutdownThread = new Thread(){
             @Override
             public void run(){
-                //Set user to logged out
-                if(user != null){
-                    Database.executeQuery("UPDATE users SET logged_in = 'N' WHERE user_name = ?",
-                            new Object[]{user});
-                }
                 Database.shutdown();
                 System.exit(0);
             }
@@ -96,12 +98,7 @@ public class MMS {
         
         //Preferences
         p = Preferences.userNodeForPackage(MMS.class);
-        
-        //Placeholder frame
-        phf.setIconImage(systemIcon.getImage());
-        phf.setUndecorated(true);
-        phf.setLocationRelativeTo(null);
-        
+       
         //Setup & login
         setup();
         
@@ -120,16 +117,17 @@ public class MMS {
         OUTER:
         while (true) {
             if (p.getBoolean("first_run", true)) {
-                SetupDialog setup = new SetupDialog(phf, true);
+                SetupDialog setup = new SetupDialog(splash, true);
                 setup.setSize(DIAG_WIDTH, setup.getHeight());
                 setup.setIconImage(systemIcon.getImage());
-                setup.setLocationRelativeTo(phf);
+                setup.setLocationRelativeTo(splash);
+                splash.setVisible(true);
                 setup.setVisible(true);
                 if(setup.success()) break; //SUCCESS
                 else{ //FAIL
                     shutdown();
                     try {
-                        shutdown.join();
+                        shutdownThread.join();
                     } catch (InterruptedException ex) {
                         Logger.getLogger(MMS.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -178,17 +176,18 @@ public class MMS {
     }
    
     //Login
-    private static void login(){
-        phf.setVisible(true);
-        LoginDialog lg = new LoginDialog(phf, true);
+    static void login(){
+        splash.setVisible(true);
+        LoginDialog lg = new LoginDialog(splash, true);
         lg.setSize(DIAG_WIDTH, lg.getHeight());
         lg.setIconImage(systemIcon.getImage());
-        lg.setLocationRelativeTo(phf);
+        lg.setLocationRelativeTo(splash);
+        splash.setVisible(true);
         lg.setVisible(true);
         
         if(lg.success()){ //SUCCESS
-            //Dispose placeholder frame
-            phf.dispose();
+            //Dispose splash
+            splash.dispose();
 
             //MainFrame
             m = new MainFrame();
@@ -207,11 +206,6 @@ public class MMS {
         new Thread(){
             @Override
             public void run(){  
-                //Set user to logged out
-                if(user != null){
-                    Database.executeQuery("UPDATE users SET logged_in = 'N' WHERE user_name = ?",
-                            new Object[]{user});
-                }
                 m.dispose();
                 login();
             }
@@ -220,6 +214,6 @@ public class MMS {
     
     //Shutdown
     public static void shutdown(){
-        shutdown.start();
+        shutdownThread.start();
     }
 }

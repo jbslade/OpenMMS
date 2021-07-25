@@ -18,7 +18,8 @@ package com.mms;
 import com.mms.panels.FindPanel;
 import com.mms.dialogs.InternalDialog;
 import com.mms.panels.PopupPanel;
-import com.mms.dialogs.PasswordDialog;
+import com.mms.iframes.PasswordFrame;
+import com.mms.modules.Admin;
 import com.mms.modules.Assets;
 import com.mms.modules.Employees;
 import com.mms.modules.Locations;
@@ -27,6 +28,7 @@ import com.mms.modules.Schedule;
 import com.mms.utilities.OtherTools;
 import com.mms.utilities.TableTools;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 import javax.swing.Box;
 import javax.swing.JDesktopPane;
 import javax.swing.JOptionPane;
@@ -47,6 +49,7 @@ public class MainFrame extends javax.swing.JFrame {
     private final Assets assets;
     private final Parts parts;
     private final Employees employees;
+    private final Admin admin;
     
     public JDesktopPane getDesktopPane(){return desktopPane;}
     
@@ -71,7 +74,6 @@ public class MainFrame extends javax.swing.JFrame {
         tabbedPane.setIconAt(6, MMS.employeesIcon);
         tabbedPane.setIconAt(7, MMS.reportsIcon);
         tabbedPane.setIconAt(8, MMS.systemIcon);
-        adminTabbedPane.putClientProperty("JTabbedPane.tabWidthMode", "equal");
         
         //Modules
         schedule = new Schedule(scheduleTable, scheduleLoadLabel);
@@ -79,6 +81,7 @@ public class MainFrame extends javax.swing.JFrame {
         assets = new Assets(assetTable, assetLoadLabel);
         parts = new Parts(partTable, partLoadLabel);
         employees = new Employees(employeeTable, employeeLoadLabel);
+        admin = new Admin(adminUserTable);
         
         //Tables
         TableTools.format(workOrderTable);
@@ -87,6 +90,7 @@ public class MainFrame extends javax.swing.JFrame {
         TableTools.format(locationTable);
         TableTools.format(partTable);
         TableTools.format(employeeTable);
+        TableTools.format(reportTable);
         TableTools.format(adminUserTable);
         
         //Table selection listeners
@@ -287,19 +291,31 @@ public class MainFrame extends javax.swing.JFrame {
         employeeScroll = new javax.swing.JScrollPane();
         employeeTable = new javax.swing.JTable();
         reportPanel = new javax.swing.JPanel();
+        reportTools = new javax.swing.JToolBar();
+        jComboBox1 = new javax.swing.JComboBox<>();
+        jButton5 = new javax.swing.JButton();
+        filler7 = new javax.swing.Box.Filler(new java.awt.Dimension(300, 0), new java.awt.Dimension(300, 0), new java.awt.Dimension(300, 32767));
+        reportScroll = new javax.swing.JScrollPane();
+        reportTable = new javax.swing.JTable();
         adminPanel = new javax.swing.JPanel();
-        adminTabbedPane = new javax.swing.JTabbedPane();
         adminUserPanel = new javax.swing.JPanel();
         adminUserScroll = new javax.swing.JScrollPane();
         adminUserTable = new javax.swing.JTable();
-        adminUserTools = new javax.swing.JToolBar();
-        newUser = new javax.swing.JButton();
-        editUser = new javax.swing.JButton();
-        deleteUser = new javax.swing.JButton();
-        resetUserPass = new javax.swing.JButton();
-        adminArchivePanel = new javax.swing.JPanel();
-        adminCustomPanel = new javax.swing.JPanel();
-        adminUpdatePanel = new javax.swing.JPanel();
+        adminUserAdd = new javax.swing.JButton();
+        adminUserDelete = new javax.swing.JButton();
+        adminUserReset = new javax.swing.JButton();
+        jPanel2 = new javax.swing.JPanel();
+        jPanel3 = new javax.swing.JPanel();
+        jTabbedPane1 = new javax.swing.JTabbedPane();
+        jPanel5 = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jList1 = new javax.swing.JList<>();
+        jButton9 = new javax.swing.JButton();
+        jButton10 = new javax.swing.JButton();
+        jPanel6 = new javax.swing.JPanel();
+        jPanel7 = new javax.swing.JPanel();
+        jPanel8 = new javax.swing.JPanel();
+        jPanel4 = new javax.swing.JPanel();
         menuBar = new javax.swing.JMenuBar();
         menuFile = new javax.swing.JMenu();
         menuFileDisconnect = new javax.swing.JMenuItem();
@@ -374,7 +390,7 @@ public class MainFrame extends javax.swing.JFrame {
             dashPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(dashPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(dashButtonPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 927, Short.MAX_VALUE)
+                .addComponent(dashButtonPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 1109, Short.MAX_VALUE)
                 .addContainerGap())
         );
         dashPanelLayout.setVerticalGroup(
@@ -382,7 +398,7 @@ public class MainFrame extends javax.swing.JFrame {
             .addGroup(dashPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(dashButtonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(424, Short.MAX_VALUE))
+                .addContainerGap(561, Short.MAX_VALUE))
         );
 
         tabbedPane.addTab("Dashboard", dashPanel);
@@ -460,7 +476,7 @@ public class MainFrame extends javax.swing.JFrame {
         workOrderPanel.setLayout(workOrderPanelLayout);
         workOrderPanelLayout.setHorizontalGroup(
             workOrderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(workOrderScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 951, Short.MAX_VALUE)
+            .addComponent(workOrderScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 1133, Short.MAX_VALUE)
             .addComponent(workOrderTools, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         workOrderPanelLayout.setVerticalGroup(
@@ -468,7 +484,7 @@ public class MainFrame extends javax.swing.JFrame {
             .addGroup(workOrderPanelLayout.createSequentialGroup()
                 .addComponent(workOrderTools, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(workOrderScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 544, Short.MAX_VALUE))
+                .addComponent(workOrderScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 683, Short.MAX_VALUE))
         );
 
         tabbedPane.addTab("Work Orders", workOrderPanel);
@@ -566,6 +582,11 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
         scheduleTable.setDragEnabled(true);
+        scheduleTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                scheduleTableMouseClicked(evt);
+            }
+        });
         scheduleTable.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 scheduleTableKeyPressed(evt);
@@ -577,15 +598,15 @@ public class MainFrame extends javax.swing.JFrame {
         schedulePanel.setLayout(schedulePanelLayout);
         schedulePanelLayout.setHorizontalGroup(
             schedulePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(scheduleTools, javax.swing.GroupLayout.DEFAULT_SIZE, 951, Short.MAX_VALUE)
-            .addComponent(scheduleScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 951, Short.MAX_VALUE)
+            .addComponent(scheduleTools, javax.swing.GroupLayout.DEFAULT_SIZE, 1133, Short.MAX_VALUE)
+            .addComponent(scheduleScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 1133, Short.MAX_VALUE)
         );
         schedulePanelLayout.setVerticalGroup(
             schedulePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(schedulePanelLayout.createSequentialGroup()
                 .addComponent(scheduleTools, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(scheduleScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 544, Short.MAX_VALUE))
+                .addComponent(scheduleScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 683, Short.MAX_VALUE))
         );
 
         tabbedPane.addTab("Schedule", schedulePanel);
@@ -669,15 +690,15 @@ public class MainFrame extends javax.swing.JFrame {
         assetPanel.setLayout(assetPanelLayout);
         assetPanelLayout.setHorizontalGroup(
             assetPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(assetTools, javax.swing.GroupLayout.DEFAULT_SIZE, 951, Short.MAX_VALUE)
-            .addComponent(assetScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 951, Short.MAX_VALUE)
+            .addComponent(assetTools, javax.swing.GroupLayout.DEFAULT_SIZE, 1133, Short.MAX_VALUE)
+            .addComponent(assetScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 1133, Short.MAX_VALUE)
         );
         assetPanelLayout.setVerticalGroup(
             assetPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(assetPanelLayout.createSequentialGroup()
                 .addComponent(assetTools, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(assetScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 544, Short.MAX_VALUE))
+                .addComponent(assetScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 683, Short.MAX_VALUE))
         );
 
         tabbedPane.addTab("Assets", assetPanel);
@@ -761,15 +782,15 @@ public class MainFrame extends javax.swing.JFrame {
         locationPanel.setLayout(locationPanelLayout);
         locationPanelLayout.setHorizontalGroup(
             locationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(locationTools, javax.swing.GroupLayout.DEFAULT_SIZE, 951, Short.MAX_VALUE)
-            .addComponent(locationScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 951, Short.MAX_VALUE)
+            .addComponent(locationTools, javax.swing.GroupLayout.DEFAULT_SIZE, 1133, Short.MAX_VALUE)
+            .addComponent(locationScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 1133, Short.MAX_VALUE)
         );
         locationPanelLayout.setVerticalGroup(
             locationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(locationPanelLayout.createSequentialGroup()
                 .addComponent(locationTools, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(locationScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 544, Short.MAX_VALUE))
+                .addComponent(locationScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 683, Short.MAX_VALUE))
         );
 
         tabbedPane.addTab("Locations", locationPanel);
@@ -853,15 +874,15 @@ public class MainFrame extends javax.swing.JFrame {
         partPanel.setLayout(partPanelLayout);
         partPanelLayout.setHorizontalGroup(
             partPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(partTools, javax.swing.GroupLayout.DEFAULT_SIZE, 951, Short.MAX_VALUE)
-            .addComponent(partScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 951, Short.MAX_VALUE)
+            .addComponent(partTools, javax.swing.GroupLayout.DEFAULT_SIZE, 1133, Short.MAX_VALUE)
+            .addComponent(partScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 1133, Short.MAX_VALUE)
         );
         partPanelLayout.setVerticalGroup(
             partPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(partPanelLayout.createSequentialGroup()
                 .addComponent(partTools, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(partScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 544, Short.MAX_VALUE))
+                .addComponent(partScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 683, Short.MAX_VALUE))
         );
 
         tabbedPane.addTab("Parts", partPanel);
@@ -945,152 +966,262 @@ public class MainFrame extends javax.swing.JFrame {
         employeePanel.setLayout(employeePanelLayout);
         employeePanelLayout.setHorizontalGroup(
             employeePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(employeeTools, javax.swing.GroupLayout.DEFAULT_SIZE, 951, Short.MAX_VALUE)
-            .addComponent(employeeScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 951, Short.MAX_VALUE)
+            .addComponent(employeeTools, javax.swing.GroupLayout.DEFAULT_SIZE, 1133, Short.MAX_VALUE)
+            .addComponent(employeeScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 1133, Short.MAX_VALUE)
         );
         employeePanelLayout.setVerticalGroup(
             employeePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(employeePanelLayout.createSequentialGroup()
                 .addComponent(employeeTools, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(employeeScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 544, Short.MAX_VALUE))
+                .addComponent(employeeScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 683, Short.MAX_VALUE))
         );
 
         tabbedPane.addTab("Employees", employeePanel);
+
+        reportTools.setFloatable(false);
+        reportTools.setRollover(true);
+
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        reportTools.add(jComboBox1);
+
+        jButton5.setText("jButton5");
+        jButton5.setFocusable(false);
+        jButton5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton5.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        reportTools.add(jButton5);
+        reportTools.add(filler7);
+
+        reportScroll.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 0, 0, 0, new java.awt.Color(204, 204, 204)));
+
+        reportTable.setAutoCreateRowSorter(true);
+        reportTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+
+            }
+        ));
+        reportTable.setDragEnabled(true);
+        reportTable.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                reportTableKeyPressed(evt);
+            }
+        });
+        reportScroll.setViewportView(reportTable);
 
         javax.swing.GroupLayout reportPanelLayout = new javax.swing.GroupLayout(reportPanel);
         reportPanel.setLayout(reportPanelLayout);
         reportPanelLayout.setHorizontalGroup(
             reportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 951, Short.MAX_VALUE)
+            .addComponent(reportTools, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(reportScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 1133, Short.MAX_VALUE)
         );
         reportPanelLayout.setVerticalGroup(
             reportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 569, Short.MAX_VALUE)
+            .addGroup(reportPanelLayout.createSequentialGroup()
+                .addComponent(reportTools, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(reportScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 683, Short.MAX_VALUE))
         );
 
         tabbedPane.addTab("Reports", reportPanel);
 
-        adminTabbedPane.setFocusable(false);
+        adminPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        adminPanel.setLayout(new java.awt.GridLayout(2, 3, 10, 10));
 
-        adminUserScroll.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 0, 0, 0, new java.awt.Color(204, 204, 204)));
+        adminUserPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Users"));
+        adminUserPanel.setToolTipText("");
 
-        adminUserTable.setAutoCreateRowSorter(true);
+        adminUserScroll.setBorder(null);
+
         adminUserTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                " Username", " User Level", " Logged In"
+                " Username", " User Level"
             }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        adminUserTable.setDragEnabled(true);
+        ));
         adminUserScroll.setViewportView(adminUserTable);
 
-        adminUserTools.setFloatable(false);
-        adminUserTools.setRollover(true);
+        adminUserAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/new.png"))); // NOI18N
+        adminUserAdd.setText("Add");
+        adminUserAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                adminUserAddActionPerformed(evt);
+            }
+        });
 
-        newUser.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/new.png"))); // NOI18N
-        newUser.setText("New");
-        newUser.setFocusable(false);
-        newUser.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        newUser.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        adminUserTools.add(newUser);
+        adminUserDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/delete.png"))); // NOI18N
+        adminUserDelete.setText("Delete");
 
-        editUser.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/edit.png"))); // NOI18N
-        editUser.setText("Edit");
-        editUser.setFocusable(false);
-        editUser.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        editUser.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        adminUserTools.add(editUser);
-
-        deleteUser.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/delete.png"))); // NOI18N
-        deleteUser.setText("Delete");
-        deleteUser.setFocusable(false);
-        deleteUser.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        deleteUser.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        adminUserTools.add(deleteUser);
-
-        resetUserPass.setText("Reset Password");
-        resetUserPass.setFocusable(false);
-        resetUserPass.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        resetUserPass.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        adminUserTools.add(resetUserPass);
+        adminUserReset.setText("Reset Password");
+        adminUserReset.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                adminUserResetActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout adminUserPanelLayout = new javax.swing.GroupLayout(adminUserPanel);
         adminUserPanel.setLayout(adminUserPanelLayout);
         adminUserPanelLayout.setHorizontalGroup(
             adminUserPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(adminUserScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 946, Short.MAX_VALUE)
-            .addComponent(adminUserTools, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(adminUserPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(adminUserPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(adminUserScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 515, Short.MAX_VALUE)
+                    .addGroup(adminUserPanelLayout.createSequentialGroup()
+                        .addComponent(adminUserAdd)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(adminUserDelete)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(adminUserReset)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         adminUserPanelLayout.setVerticalGroup(
             adminUserPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, adminUserPanelLayout.createSequentialGroup()
-                .addComponent(adminUserTools, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(adminUserScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 516, Short.MAX_VALUE))
+            .addGroup(adminUserPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(adminUserScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 256, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(adminUserPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(adminUserAdd)
+                    .addComponent(adminUserDelete)
+                    .addComponent(adminUserReset))
+                .addContainerGap())
         );
 
-        adminTabbedPane.addTab("Users", adminUserPanel);
+        adminPanel.add(adminUserPanel);
 
-        javax.swing.GroupLayout adminArchivePanelLayout = new javax.swing.GroupLayout(adminArchivePanel);
-        adminArchivePanel.setLayout(adminArchivePanelLayout);
-        adminArchivePanelLayout.setHorizontalGroup(
-            adminArchivePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 946, Short.MAX_VALUE)
-        );
-        adminArchivePanelLayout.setVerticalGroup(
-            adminArchivePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Archive"));
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 539, Short.MAX_VALUE)
         );
-
-        adminTabbedPane.addTab("Archive", adminArchivePanel);
-
-        javax.swing.GroupLayout adminCustomPanelLayout = new javax.swing.GroupLayout(adminCustomPanel);
-        adminCustomPanel.setLayout(adminCustomPanelLayout);
-        adminCustomPanelLayout.setHorizontalGroup(
-            adminCustomPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 946, Short.MAX_VALUE)
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 314, Short.MAX_VALUE)
         );
-        adminCustomPanelLayout.setVerticalGroup(
-            adminCustomPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+
+        adminPanel.add(jPanel2);
+
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Custom Fields"));
+
+        jList1.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
+        jScrollPane2.setViewportView(jList1);
+
+        jButton9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/new.png"))); // NOI18N
+        jButton9.setText("Add");
+
+        jButton10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/delete.png"))); // NOI18N
+        jButton10.setText("Delete");
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addComponent(jButton9)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton10)
+                .addContainerGap(339, Short.MAX_VALUE))
+            .addComponent(jScrollPane2)
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 213, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton9)
+                    .addComponent(jButton10)))
+        );
+
+        jTabbedPane1.addTab("Work Order Types", jPanel5);
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 510, Short.MAX_VALUE)
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 258, Short.MAX_VALUE)
+        );
+
+        jTabbedPane1.addTab("Schedule Types", jPanel6);
+
+        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
+        jPanel7.setLayout(jPanel7Layout);
+        jPanel7Layout.setHorizontalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 510, Short.MAX_VALUE)
+        );
+        jPanel7Layout.setVerticalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 258, Short.MAX_VALUE)
+        );
+
+        jTabbedPane1.addTab("Asset Types", jPanel7);
+
+        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
+        jPanel8.setLayout(jPanel8Layout);
+        jPanel8Layout.setHorizontalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 510, Short.MAX_VALUE)
+        );
+        jPanel8Layout.setVerticalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 258, Short.MAX_VALUE)
+        );
+
+        jTabbedPane1.addTab("Employee Departments", jPanel8);
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jTabbedPane1)
+                .addContainerGap())
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jTabbedPane1)
+                .addContainerGap())
+        );
+
+        adminPanel.add(jPanel3);
+
+        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Updates"));
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 539, Short.MAX_VALUE)
         );
-
-        adminTabbedPane.addTab("Custom Fields", adminCustomPanel);
-
-        javax.swing.GroupLayout adminUpdatePanelLayout = new javax.swing.GroupLayout(adminUpdatePanel);
-        adminUpdatePanel.setLayout(adminUpdatePanelLayout);
-        adminUpdatePanelLayout.setHorizontalGroup(
-            adminUpdatePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 946, Short.MAX_VALUE)
-        );
-        adminUpdatePanelLayout.setVerticalGroup(
-            adminUpdatePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 541, Short.MAX_VALUE)
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 314, Short.MAX_VALUE)
         );
 
-        adminTabbedPane.addTab("Updates", adminUpdatePanel);
-
-        javax.swing.GroupLayout adminPanelLayout = new javax.swing.GroupLayout(adminPanel);
-        adminPanel.setLayout(adminPanelLayout);
-        adminPanelLayout.setHorizontalGroup(
-            adminPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(adminTabbedPane)
-        );
-        adminPanelLayout.setVerticalGroup(
-            adminPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(adminTabbedPane)
-        );
+        adminPanel.add(jPanel4);
 
         tabbedPane.addTab("Admin", adminPanel);
 
@@ -1402,7 +1533,7 @@ public class MainFrame extends javax.swing.JFrame {
     
     //Change password
     private void menuChangePasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuChangePasswordActionPerformed
-        PasswordDialog pd = new PasswordDialog(MMS.getUser());
+        PasswordFrame pd = new PasswordFrame(MMS.getUser());
         pd.setSize(MMS.DIAG_WIDTH, pd.getHeight());
         pd.setLocation(desktopPane.getWidth()/2-pd.getWidth()/2, desktopPane.getHeight()/2-pd.getHeight()/2-50);
         desktopPane.add(pd);
@@ -1546,6 +1677,26 @@ public class MainFrame extends javax.swing.JFrame {
         schedule.viewSchedule();
     }//GEN-LAST:event_viewScheduleButtonActionPerformed
 
+    //Double click schedule
+    private void scheduleTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_scheduleTableMouseClicked
+        if (evt.getClickCount() == 2 && evt.getButton() == MouseEvent.BUTTON1) {
+            schedule.viewSchedule();
+        }
+    }//GEN-LAST:event_scheduleTableMouseClicked
+
+    private void reportTableKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_reportTableKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_reportTableKeyPressed
+
+    //Reset user password
+    private void adminUserResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adminUserResetActionPerformed
+        admin.resetUserPass();
+    }//GEN-LAST:event_adminUserResetActionPerformed
+
+    private void adminUserAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adminUserAddActionPerformed
+        admin.addUser();
+    }//GEN-LAST:event_adminUserAddActionPerformed
+
     //Load tables
     public void loadTables(){
         schedule.load();
@@ -1553,18 +1704,17 @@ public class MainFrame extends javax.swing.JFrame {
         locations.load();
         parts.load();
         employees.load();
+        admin.loadUsers();
     } 
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel adminArchivePanel;
-    private javax.swing.JPanel adminCustomPanel;
     private javax.swing.JPanel adminPanel;
-    private javax.swing.JTabbedPane adminTabbedPane;
-    private javax.swing.JPanel adminUpdatePanel;
+    private javax.swing.JButton adminUserAdd;
+    private javax.swing.JButton adminUserDelete;
     private javax.swing.JPanel adminUserPanel;
+    private javax.swing.JButton adminUserReset;
     private javax.swing.JScrollPane adminUserScroll;
     private javax.swing.JTable adminUserTable;
-    private javax.swing.JToolBar adminUserTools;
     private javax.swing.JButton archiveAssetButton;
     private javax.swing.JButton archiveEmployeeButton;
     private javax.swing.JButton archiveLocationButton;
@@ -1586,7 +1736,6 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JButton deleteLocationButton;
     private javax.swing.JButton deletePartButton;
     private javax.swing.JButton deleteScheduleButton;
-    private javax.swing.JButton deleteUser;
     private javax.swing.JButton deleteWOButton;
     private javax.swing.JDesktopPane desktopPane;
     private javax.swing.JButton editAssetButton;
@@ -1594,7 +1743,6 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JButton editLocationButton;
     private javax.swing.JButton editPartButton;
     private javax.swing.JButton editScheduleButton;
-    private javax.swing.JButton editUser;
     private javax.swing.JButton editWOButton;
     private javax.swing.JLabel employeeLoadLabel;
     private javax.swing.JPanel employeePanel;
@@ -1607,10 +1755,25 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.Box.Filler filler4;
     private javax.swing.Box.Filler filler5;
     private javax.swing.Box.Filler filler6;
+    private javax.swing.Box.Filler filler7;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton9;
+    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JList<String> jList1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JLabel locationLoadLabel;
     private javax.swing.JPanel locationPanel;
     private javax.swing.JScrollPane locationScroll;
@@ -1636,7 +1799,6 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JButton newLocationButton;
     private javax.swing.JButton newPartButton;
     private javax.swing.JButton newScheduleButton;
-    private javax.swing.JButton newUser;
     private javax.swing.JButton newWOButton;
     private javax.swing.JLabel partLoadLabel;
     private javax.swing.JPanel partPanel;
@@ -1645,7 +1807,9 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JToolBar partTools;
     private javax.swing.JButton printWOButton;
     private javax.swing.JPanel reportPanel;
-    private javax.swing.JButton resetUserPass;
+    private javax.swing.JScrollPane reportScroll;
+    private javax.swing.JTable reportTable;
+    private javax.swing.JToolBar reportTools;
     private javax.swing.JLabel scheduleLoadLabel;
     private javax.swing.JPanel schedulePanel;
     private javax.swing.JScrollPane scheduleScroll;

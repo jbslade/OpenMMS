@@ -19,7 +19,7 @@ import com.mms.Database;
 import com.mms.MMS;
 import com.mms.MainFrame;
 import com.mms.dialogs.InternalDialog;
-import com.mms.modules.iframes.PartFrame;
+import com.mms.iframes.PartFrame;
 import com.mms.utilities.TableTools;
 import java.sql.ResultSet;
 import java.sql.SQLException;

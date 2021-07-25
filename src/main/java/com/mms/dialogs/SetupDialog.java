@@ -61,7 +61,6 @@ public class SetupDialog extends javax.swing.JDialog {
         } catch (URISyntaxException ex) {
             Logger.getLogger(SetupDialog.class.getName()).log(Level.SEVERE, null, ex);
         }
-        MMS.phf.setVisible(true);
     }
 
     /**

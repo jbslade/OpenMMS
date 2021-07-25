@@ -18,7 +18,7 @@ package com.mms.modules;
 import com.mms.Database;
 import com.mms.MMS;
 import com.mms.MainFrame;
-import com.mms.modules.iframes.EmployeeFrame;
+import com.mms.iframes.EmployeeFrame;
 import com.mms.dialogs.InternalDialog;
 import com.mms.utilities.TableTools;
 import java.sql.ResultSet;

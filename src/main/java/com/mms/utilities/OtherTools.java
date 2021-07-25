@@ -16,8 +16,12 @@
 package com.mms.utilities;
 
 import java.awt.Component;
+import java.awt.event.MouseListener;
+import javax.swing.AbstractButton;
+import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.text.JTextComponent;
 
 /**
@@ -45,5 +49,28 @@ public class OtherTools {
             }
             else component.setEnabled(false);
         }
+    }
+    
+    public static void setComboBoxReadOnly(JComboBox jcb){
+       jcb.setFocusable(false);
+       ((JTextField)jcb.getEditor().getEditorComponent()).setEditable(false);
+
+       MouseListener[] mls = jcb.getMouseListeners();
+       for (MouseListener listener : mls)
+          jcb.removeMouseListener(listener);
+
+       Component[] comps = jcb.getComponents();
+       for (Component c : comps)
+       {
+          if (c instanceof AbstractButton)
+          {
+             AbstractButton ab = (AbstractButton)c;
+             ab.setEnabled(false);
+
+             MouseListener[] mls2 = ab.getMouseListeners();
+             for (MouseListener listener : mls2)
+                ab.removeMouseListener(listener);
+          }
+       }
     }
 }

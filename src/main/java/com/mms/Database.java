@@ -15,7 +15,7 @@
  */
 package com.mms;
 
-import com.mms.modules.iframes.LocationFrame;
+import com.mms.iframes.LocationFrame;
 import com.mms.utilities.Hasher;
 import java.sql.Connection;
 import java.sql.Driver;
@@ -68,14 +68,13 @@ public class Database {
                 + "user_name VARCHAR(50) PRIMARY KEY,"
                 + "password VARCHAR(50),"
                 + "salt VARCHAR(16),"
-                + "user_level int,"
-                + "logged_in VARCHAR(1)"
+                + "user_level int"
                 + ")");
         //Insert Administrator
         String salt = Hasher.getSalt();
         adminPass = Hasher.getHash(adminPass, salt);
-        Database.executeQuery("INSERT INTO users (user_name, password, salt, user_level, logged_in) VALUES (?, ?, ?, ?, ?)",
-                new Object[]{"Administrator", adminPass, salt, 0, "N"});
+        Database.executeQuery("INSERT INTO users (user_name, password, salt, user_level, logged_in) VALUES (?, ?, ?, ?)",
+                new Object[]{"Administrator", adminPass, salt, 0});
         
         //Locations
         Database.executeQuery("CREATE TABLE locations("
