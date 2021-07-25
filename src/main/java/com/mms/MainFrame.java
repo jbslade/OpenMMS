@@ -27,9 +27,11 @@ import com.mms.modules.Parts;
 import com.mms.modules.Schedule;
 import com.mms.utilities.OtherTools;
 import com.mms.utilities.TableTools;
+import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import javax.swing.Box;
+import javax.swing.DefaultListModel;
 import javax.swing.JDesktopPane;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -81,7 +83,7 @@ public class MainFrame extends javax.swing.JFrame {
         assets = new Assets(assetTable, assetLoadLabel);
         parts = new Parts(partTable, partLoadLabel);
         employees = new Employees(employeeTable, employeeLoadLabel);
-        admin = new Admin(adminUserTable);
+        admin = new Admin(adminUserTable, WOCusList, SchCusList, AssetCusList, EmpCusList);
         
         //Tables
         TableTools.format(workOrderTable);
@@ -91,7 +93,6 @@ public class MainFrame extends javax.swing.JFrame {
         TableTools.format(partTable);
         TableTools.format(employeeTable);
         TableTools.format(reportTable);
-        TableTools.format(adminUserTable);
         
         //Table selection listeners
         scheduleTable.getSelectionModel().addListSelectionListener((ListSelectionEvent e) -> {
@@ -304,20 +305,36 @@ public class MainFrame extends javax.swing.JFrame {
         adminUserAdd = new javax.swing.JButton();
         adminUserDelete = new javax.swing.JButton();
         adminUserReset = new javax.swing.JButton();
-        jPanel2 = new javax.swing.JPanel();
-        jPanel3 = new javax.swing.JPanel();
-        jTabbedPane1 = new javax.swing.JTabbedPane();
-        jPanel5 = new javax.swing.JPanel();
+        adminArchivePanel = new javax.swing.JPanel();
+        adminCusPanel = new javax.swing.JPanel();
+        adminCusTab = new javax.swing.JTabbedPane();
+        adminWOCusPanel = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList<>();
+        WOCusList = new javax.swing.JList<>();
         jButton9 = new javax.swing.JButton();
         jButton10 = new javax.swing.JButton();
-        jPanel6 = new javax.swing.JPanel();
-        jPanel7 = new javax.swing.JPanel();
-        jPanel8 = new javax.swing.JPanel();
-        jPanel4 = new javax.swing.JPanel();
+        adminSchCusPanel = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        SchCusList = new javax.swing.JList<>();
+        jButton11 = new javax.swing.JButton();
+        jButton12 = new javax.swing.JButton();
+        adminAssetCusPanel = new javax.swing.JPanel();
+        jButton13 = new javax.swing.JButton();
+        jButton14 = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        AssetCusList = new javax.swing.JList<>();
+        adminDeptCusPanel = new javax.swing.JPanel();
+        jButton15 = new javax.swing.JButton();
+        jButton16 = new javax.swing.JButton();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        EmpCusList = new javax.swing.JList<>();
+        adminUpdatePanel = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jButton6 = new javax.swing.JButton();
         menuBar = new javax.swing.JMenuBar();
         menuFile = new javax.swing.JMenu();
+        menuFileArchive = new javax.swing.JMenuItem();
+        separator1 = new javax.swing.JPopupMenu.Separator();
         menuFileDisconnect = new javax.swing.JMenuItem();
         menuTable = new javax.swing.JMenu();
         menuTableFilter = new javax.swing.JMenuItem();
@@ -1056,6 +1073,11 @@ public class MainFrame extends javax.swing.JFrame {
 
         adminUserDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/delete.png"))); // NOI18N
         adminUserDelete.setText("Delete");
+        adminUserDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                adminUserDeleteActionPerformed(evt);
+            }
+        });
 
         adminUserReset.setText("Reset Password");
         adminUserReset.addActionListener(new java.awt.event.ActionListener() {
@@ -1096,29 +1118,25 @@ public class MainFrame extends javax.swing.JFrame {
 
         adminPanel.add(adminUserPanel);
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Archive"));
+        adminArchivePanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Archive"));
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout adminArchivePanelLayout = new javax.swing.GroupLayout(adminArchivePanel);
+        adminArchivePanel.setLayout(adminArchivePanelLayout);
+        adminArchivePanelLayout.setHorizontalGroup(
+            adminArchivePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 539, Short.MAX_VALUE)
         );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        adminArchivePanelLayout.setVerticalGroup(
+            adminArchivePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 314, Short.MAX_VALUE)
         );
 
-        adminPanel.add(jPanel2);
+        adminPanel.add(adminArchivePanel);
 
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Custom Fields"));
+        adminCusPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Custom Fields"));
 
-        jList1.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
-        jScrollPane2.setViewportView(jList1);
+        WOCusList.setModel(new DefaultListModel());
+        jScrollPane2.setViewportView(WOCusList);
 
         jButton9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/new.png"))); // NOI18N
         jButton9.setText("Add");
@@ -1126,102 +1144,176 @@ public class MainFrame extends javax.swing.JFrame {
         jButton10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/delete.png"))); // NOI18N
         jButton10.setText("Delete");
 
-        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
-        jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
+        javax.swing.GroupLayout adminWOCusPanelLayout = new javax.swing.GroupLayout(adminWOCusPanel);
+        adminWOCusPanel.setLayout(adminWOCusPanelLayout);
+        adminWOCusPanelLayout.setHorizontalGroup(
+            adminWOCusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(adminWOCusPanelLayout.createSequentialGroup()
                 .addComponent(jButton9)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton10)
                 .addContainerGap(339, Short.MAX_VALUE))
             .addComponent(jScrollPane2)
         );
-        jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
+        adminWOCusPanelLayout.setVerticalGroup(
+            adminWOCusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(adminWOCusPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 213, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(adminWOCusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton9)
                     .addComponent(jButton10)))
         );
 
-        jTabbedPane1.addTab("Work Order Types", jPanel5);
+        adminCusTab.addTab("Work Order Types", adminWOCusPanel);
 
-        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
-        jPanel6.setLayout(jPanel6Layout);
-        jPanel6Layout.setHorizontalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 510, Short.MAX_VALUE)
+        SchCusList.setModel(new DefaultListModel());
+        jScrollPane1.setViewportView(SchCusList);
+
+        jButton11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/new.png"))); // NOI18N
+        jButton11.setText("Add");
+
+        jButton12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/delete.png"))); // NOI18N
+        jButton12.setText("Delete");
+
+        javax.swing.GroupLayout adminSchCusPanelLayout = new javax.swing.GroupLayout(adminSchCusPanel);
+        adminSchCusPanel.setLayout(adminSchCusPanelLayout);
+        adminSchCusPanelLayout.setHorizontalGroup(
+            adminSchCusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(adminSchCusPanelLayout.createSequentialGroup()
+                .addComponent(jButton11)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton12)
+                .addContainerGap(339, Short.MAX_VALUE))
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
         );
-        jPanel6Layout.setVerticalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 258, Short.MAX_VALUE)
-        );
-
-        jTabbedPane1.addTab("Schedule Types", jPanel6);
-
-        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
-        jPanel7.setLayout(jPanel7Layout);
-        jPanel7Layout.setHorizontalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 510, Short.MAX_VALUE)
-        );
-        jPanel7Layout.setVerticalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 258, Short.MAX_VALUE)
-        );
-
-        jTabbedPane1.addTab("Asset Types", jPanel7);
-
-        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
-        jPanel8.setLayout(jPanel8Layout);
-        jPanel8Layout.setHorizontalGroup(
-            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 510, Short.MAX_VALUE)
-        );
-        jPanel8Layout.setVerticalGroup(
-            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 258, Short.MAX_VALUE)
-        );
-
-        jTabbedPane1.addTab("Employee Departments", jPanel8);
-
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
+        adminSchCusPanelLayout.setVerticalGroup(
+            adminSchCusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(adminSchCusPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane1)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 213, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(adminSchCusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton11)
+                    .addComponent(jButton12)))
+        );
+
+        adminCusTab.addTab("Schedule Types", adminSchCusPanel);
+
+        jButton13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/new.png"))); // NOI18N
+        jButton13.setText("Add");
+
+        jButton14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/delete.png"))); // NOI18N
+        jButton14.setText("Delete");
+
+        AssetCusList.setModel(new DefaultListModel());
+        jScrollPane3.setViewportView(AssetCusList);
+
+        javax.swing.GroupLayout adminAssetCusPanelLayout = new javax.swing.GroupLayout(adminAssetCusPanel);
+        adminAssetCusPanel.setLayout(adminAssetCusPanelLayout);
+        adminAssetCusPanelLayout.setHorizontalGroup(
+            adminAssetCusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(adminAssetCusPanelLayout.createSequentialGroup()
+                .addComponent(jButton13)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton14)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 510, Short.MAX_VALUE)
+        );
+        adminAssetCusPanelLayout.setVerticalGroup(
+            adminAssetCusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, adminAssetCusPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 213, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(adminAssetCusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton13)
+                    .addComponent(jButton14)))
+        );
+
+        adminCusTab.addTab("Asset Types", adminAssetCusPanel);
+
+        jButton15.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/new.png"))); // NOI18N
+        jButton15.setText("Add");
+
+        jButton16.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/delete.png"))); // NOI18N
+        jButton16.setText("Delete");
+
+        EmpCusList.setModel(new DefaultListModel());
+        jScrollPane4.setViewportView(EmpCusList);
+
+        javax.swing.GroupLayout adminDeptCusPanelLayout = new javax.swing.GroupLayout(adminDeptCusPanel);
+        adminDeptCusPanel.setLayout(adminDeptCusPanelLayout);
+        adminDeptCusPanelLayout.setHorizontalGroup(
+            adminDeptCusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(adminDeptCusPanelLayout.createSequentialGroup()
+                .addComponent(jButton15)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton16)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 510, Short.MAX_VALUE)
+        );
+        adminDeptCusPanelLayout.setVerticalGroup(
+            adminDeptCusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, adminDeptCusPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 213, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(adminDeptCusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton15)
+                    .addComponent(jButton16)))
+        );
+
+        adminCusTab.addTab("Employee Departments", adminDeptCusPanel);
+
+        javax.swing.GroupLayout adminCusPanelLayout = new javax.swing.GroupLayout(adminCusPanel);
+        adminCusPanel.setLayout(adminCusPanelLayout);
+        adminCusPanelLayout.setHorizontalGroup(
+            adminCusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(adminCusPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(adminCusTab)
                 .addContainerGap())
         );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
+        adminCusPanelLayout.setVerticalGroup(
+            adminCusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(adminCusPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane1)
+                .addComponent(adminCusTab)
                 .addContainerGap())
         );
 
-        adminPanel.add(jPanel3);
+        adminPanel.add(adminCusPanel);
 
-        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Updates"));
+        adminUpdatePanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Updates"));
 
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 539, Short.MAX_VALUE)
+        jLabel1.setText("No updates available.");
+
+        jButton6.setText("Check for Updates");
+
+        javax.swing.GroupLayout adminUpdatePanelLayout = new javax.swing.GroupLayout(adminUpdatePanel);
+        adminUpdatePanel.setLayout(adminUpdatePanelLayout);
+        adminUpdatePanelLayout.setHorizontalGroup(
+            adminUpdatePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(adminUpdatePanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(adminUpdatePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1)
+                    .addComponent(jButton6))
+                .addContainerGap(390, Short.MAX_VALUE))
         );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 314, Short.MAX_VALUE)
+        adminUpdatePanelLayout.setVerticalGroup(
+            adminUpdatePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(adminUpdatePanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton6)
+                .addContainerGap(253, Short.MAX_VALUE))
         );
 
-        adminPanel.add(jPanel4);
+        adminPanel.add(adminUpdatePanel);
 
         tabbedPane.addTab("Admin", adminPanel);
 
@@ -1250,6 +1342,11 @@ public class MainFrame extends javax.swing.JFrame {
         );
 
         menuFile.setText("File");
+
+        menuFileArchive.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/archive.png"))); // NOI18N
+        menuFileArchive.setText("Open Archive");
+        menuFile.add(menuFileArchive);
+        menuFile.add(separator1);
 
         menuFileDisconnect.setText("Disconnect Database");
         menuFileDisconnect.addActionListener(new java.awt.event.ActionListener() {
@@ -1697,6 +1794,10 @@ public class MainFrame extends javax.swing.JFrame {
         admin.addUser();
     }//GEN-LAST:event_adminUserAddActionPerformed
 
+    private void adminUserDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adminUserDeleteActionPerformed
+        admin.deleteUser();
+    }//GEN-LAST:event_adminUserDeleteActionPerformed
+
     //Load tables
     public void loadTables(){
         schedule.load();
@@ -1704,17 +1805,29 @@ public class MainFrame extends javax.swing.JFrame {
         locations.load();
         parts.load();
         employees.load();
-        admin.loadUsers();
+        admin.load();
     } 
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JList<String> AssetCusList;
+    private javax.swing.JList<String> EmpCusList;
+    private javax.swing.JList<String> SchCusList;
+    private javax.swing.JList<String> WOCusList;
+    private javax.swing.JPanel adminArchivePanel;
+    private javax.swing.JPanel adminAssetCusPanel;
+    private javax.swing.JPanel adminCusPanel;
+    private javax.swing.JTabbedPane adminCusTab;
+    private javax.swing.JPanel adminDeptCusPanel;
     private javax.swing.JPanel adminPanel;
+    private javax.swing.JPanel adminSchCusPanel;
+    private javax.swing.JPanel adminUpdatePanel;
     private javax.swing.JButton adminUserAdd;
     private javax.swing.JButton adminUserDelete;
     private javax.swing.JPanel adminUserPanel;
     private javax.swing.JButton adminUserReset;
     private javax.swing.JScrollPane adminUserScroll;
     private javax.swing.JTable adminUserTable;
+    private javax.swing.JPanel adminWOCusPanel;
     private javax.swing.JButton archiveAssetButton;
     private javax.swing.JButton archiveEmployeeButton;
     private javax.swing.JButton archiveLocationButton;
@@ -1758,22 +1871,24 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.Box.Filler filler7;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton10;
+    private javax.swing.JButton jButton11;
+    private javax.swing.JButton jButton12;
+    private javax.swing.JButton jButton13;
+    private javax.swing.JButton jButton14;
+    private javax.swing.JButton jButton15;
+    private javax.swing.JButton jButton16;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton9;
     private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JList<String> jList1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
-    private javax.swing.JPanel jPanel6;
-    private javax.swing.JPanel jPanel7;
-    private javax.swing.JPanel jPanel8;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JLabel locationLoadLabel;
     private javax.swing.JPanel locationPanel;
     private javax.swing.JScrollPane locationScroll;
@@ -1782,6 +1897,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem menuChangePassword;
     private javax.swing.JMenu menuFile;
+    private javax.swing.JMenuItem menuFileArchive;
     private javax.swing.JMenuItem menuFileDisconnect;
     private javax.swing.JMenu menuHelp;
     private javax.swing.JMenuItem menuLogout;
@@ -1815,6 +1931,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JScrollPane scheduleScroll;
     private javax.swing.JTable scheduleTable;
     private javax.swing.JToolBar scheduleTools;
+    private javax.swing.JPopupMenu.Separator separator1;
     private javax.swing.JButton statusWOButton;
     private javax.swing.JTabbedPane tabbedPane;
     private javax.swing.ButtonGroup tableSizeGroup;

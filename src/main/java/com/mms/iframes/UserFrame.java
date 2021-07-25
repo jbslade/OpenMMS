@@ -157,7 +157,14 @@ public class UserFrame extends javax.swing.JInternalFrame {
     private void continueButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_continueButtonActionPerformed
         String name = nameField.getText(), password = new String(passwordField.getPassword());
         int level = levelCombo.getSelectedIndex();
-        if(name.isEmpty()) nameField.requestFocus();
+        boolean exists = false;
+        for(int i = 0; i < table.getRowCount(); i++){
+            if(table.getValueAt(i, 0).equals(name)){
+                exists = true;
+                break;
+            }
+        }
+        if(exists || name.isEmpty() || name.equalsIgnoreCase("administrator")) nameField.requestFocus();
         else if(password.isEmpty()) passwordField.requestFocus();
         else{  
             //Get password hash

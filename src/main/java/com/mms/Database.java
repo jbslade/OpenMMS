@@ -73,7 +73,7 @@ public class Database {
         //Insert Administrator
         String salt = Hasher.getSalt();
         adminPass = Hasher.getHash(adminPass, salt);
-        Database.executeQuery("INSERT INTO users (user_name, password, salt, user_level, logged_in) VALUES (?, ?, ?, ?)",
+        Database.executeQuery("INSERT INTO users (user_name, password, salt, user_level) VALUES (?, ?, ?, ?)",
                 new Object[]{"Administrator", adminPass, salt, 0});
         
         //Locations
