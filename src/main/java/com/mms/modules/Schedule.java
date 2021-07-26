@@ -44,6 +44,7 @@ public class Schedule {
     public Schedule(JTable t, JLabel l){
         table = t;
         loadLabel = l;
+        TableTools.format(table);
     }
     
     public void load(){

@@ -20,7 +20,6 @@ import com.mms.utilities.ContextMenuMouseListener;
 import com.formdev.flatlaf.intellijthemes.FlatGrayIJTheme;
 import com.mms.dialogs.LoginDialog;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.MouseListener;
 import java.sql.SQLException;
@@ -46,6 +45,7 @@ public class MMS {
     private static final JFrame splash = new JFrame();
     private static MainFrame m;
     private static String user;
+    private static int userLevel;
     private static Preferences p;
     
     //Image icons
@@ -63,11 +63,13 @@ public class MMS {
     //Getters
     public static MainFrame getMainFrame(){return m;}
     public static String getUser(){return user;}
+    public static int getUserLevel(){return userLevel;}
     public static Preferences getPrefs(){return p;}
     public static MouseListener getMouseListener(){return mouseListener;}
     
     //Setters
     public static void setUser(String u){user = u;}
+    public static void setUserLevel(int ul){userLevel = ul;}
     
     //Main
     public static void main (String [] args){

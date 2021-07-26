@@ -42,6 +42,7 @@ public class Employees {
     public Employees(JTable t, JLabel l){
         table = t;
         loadLabel = l;
+        TableTools.format(table);
     }
     
     public void load(){

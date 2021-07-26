@@ -158,15 +158,17 @@ public class LoginDialog extends javax.swing.JDialog {
 
     private void buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonActionPerformed
         String u = userCombo.getSelectedItem().toString(), p = new String(passwordField.getPassword());
+        int ul = -1;
         if(p.isEmpty()) passwordField.requestFocus();
         else{
             String password = "", salt = "";
             try {
-                ResultSet rs = Database.select("SELECT password, salt FROM users WHERE user_name = ?",
+                ResultSet rs = Database.select("SELECT password, salt, user_level FROM users WHERE user_name = ?",
                         new Object[]{u});
                 if(rs.next()){
                     password = rs.getObject(1).toString().trim();
                     salt = rs.getObject(2).toString().trim();
+                    ul = rs.getInt(3);
                 }
                 else fail();             
             } catch (SQLException ex) {
@@ -179,6 +181,7 @@ public class LoginDialog extends javax.swing.JDialog {
             if(p.contentEquals(password)){
                 success = true;
                 MMS.setUser(u);
+                MMS.setUserLevel(ul);
                 
                 //Put user in preferences
                 MMS.getPrefs().put("default_user", u);

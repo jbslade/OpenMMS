@@ -42,6 +42,7 @@ public class Assets {
     public Assets(JTable t, JLabel l){
         table = t;
         loadLabel = l;
+        TableTools.format(table);
     }
     
     public void load(){

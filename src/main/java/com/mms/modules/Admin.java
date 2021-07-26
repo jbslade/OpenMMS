@@ -63,6 +63,7 @@ public class Admin {
         loadCustomEmployees();
     }
     
+    //Users
     private void loadUsers(){
         int row = userTable.getSelectedRow() == -1 ? 0 : userTable.getSelectedRow();
         new Thread(){
@@ -71,16 +72,25 @@ public class Admin {
                 DefaultTableModel t = (DefaultTableModel)userTable.getModel();
                 t.setRowCount(0);
                 try {
-                    ResultSet rs = Database.select("SELECT user_name, user_level FROM users");
-                    while(rs.next()){
-                        Object [] o = new Object[2];
-                        o[0] = rs.getObject(1).toString().trim();
-                        o[1] = rs.getObject(2).toString().trim();
-                        if(!o[0].equals("Administrator")){
-                            t.addRow(o);
+                    try (ResultSet rs = Database.select("SELECT user_name, user_level FROM users")) {
+                        while(rs.next()){
+                            Object [] o = new Object[2];
+                            o[0] = rs.getObject(1).toString().trim();
+                            switch(rs.getInt(2)){
+                                case 0:
+                                    o[1] = "Worker"; break;
+                                case 1:
+                                    o[1] = "Supervisor"; break;
+                                case 2:
+                                    o[1] = "Manager"; break;
+                                case 3:
+                                    o[1] = "Administrator"; break;
+                            }
+                            if(!o[0].equals("Administrator")){
+                                t.addRow(o);
+                            }
                         }
                     }
-                    rs.close();
                 } catch (SQLException ex) {
                     Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -88,7 +98,6 @@ public class Admin {
             }
         }.start();
     }
-    
     public void addUser(){
         UserFrame u = new UserFrame(userTable);
         u.setSize(MMS.DIAG_WIDTH, u.getHeight());
@@ -98,33 +107,38 @@ public class Admin {
         u.setVisible(true);
     }
     public void deleteUser(){
-        String username = userTable.getValueAt(userTable.getSelectedRow(), 0).toString();
-        if(InternalDialog.showInternalConfirmDialog(MMS.getMainFrame().getDesktopPane(), "Are you sure you want to delete '"+username+"'?", "Delete User", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null) == 0){
-            Database.executeQuery("DELETE FROM users WHERE user_name = ?",
-                    new Object[]{username});
-            DefaultTableModel m = (DefaultTableModel)userTable.getModel();
-            m.removeRow(userTable.getSelectedRow());
+        if(userTable.getRowCount() != 0){
+            String username = userTable.getValueAt(userTable.getSelectedRow(), 0).toString();
+            if(InternalDialog.showInternalConfirmDialog(MMS.getMainFrame().getDesktopPane(), "Are you sure you want to delete '"+username+"'?", "Delete User", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null) == 0){
+                Database.executeQuery("DELETE FROM users WHERE user_name = ?",
+                        new Object[]{username});
+                DefaultTableModel m = (DefaultTableModel)userTable.getModel();
+                m.removeRow(userTable.getSelectedRow());
+            }
         }
     }
     public void resetUserPass(){
-        PasswordFrame pd = new PasswordFrame(userTable.getValueAt(userTable.getSelectedRow(), 0).toString());
-        pd.setSize(MMS.DIAG_WIDTH, pd.getHeight());
-        pd.setLocation(MMS.getMainFrame().getDesktopPane().getWidth()/2-pd.getWidth()/2, MMS.getMainFrame().getDesktopPane().getHeight()/2-pd.getHeight()/2-50);
-        MMS.getMainFrame().getDesktopPane().add(pd);
-        MMS.getMainFrame().getDesktopPane().setLayer(pd, 1);
-        pd.setVisible(true);
+        if(userTable.getRowCount() != 0){
+            PasswordFrame pd = new PasswordFrame(userTable.getValueAt(userTable.getSelectedRow(), 0).toString());
+            pd.setSize(MMS.DIAG_WIDTH, pd.getHeight());
+            pd.setLocation(MMS.getMainFrame().getDesktopPane().getWidth()/2-pd.getWidth()/2, MMS.getMainFrame().getDesktopPane().getHeight()/2-pd.getHeight()/2-50);
+            MMS.getMainFrame().getDesktopPane().add(pd);
+            MMS.getMainFrame().getDesktopPane().setLayer(pd, 1);
+            pd.setVisible(true);
+        } 
     }
     
+    //Custom WO types
     private void loadCustomWO(){
         new Thread(){
             @Override
             public void run(){
                 try {
-                    ResultSet rs = Database.select("SELECT custom_value FROM custom_fields WHERE custom_type = 'wo_type'");
-                    while(rs.next()){
-                        ((DefaultListModel)woList.getModel()).addElement(rs.getObject(1));
+                    try (ResultSet rs = Database.select("SELECT custom_value FROM custom_fields WHERE custom_type = 'wo_type'")) {
+                        while(rs.next()){
+                            ((DefaultListModel)woList.getModel()).addElement(rs.getObject(1).toString().trim());
+                        }
                     }
-                    rs.close();
                 } catch (SQLException ex) {
                     Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -132,16 +146,45 @@ public class Admin {
             }
         }.start();
     }
+    public void addCustomWO(){
+        new Thread(){
+            @Override
+            public void run(){
+                String value = JOptionPane.showInputDialog("Field name:");
+                if(value != null && !value.isEmpty()){
+                    Database.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES ('wo_type', ?)",
+                        new Object[]{value});
+                    ((DefaultListModel)woList.getModel()).addElement(value);
+                    woList.setSelectedIndex(woList.getLastVisibleIndex());
+                }
+            }
+        }.start();
+    }
+    public void deleteCustomWO(){
+        if(woList.getVisibleRowCount() != 0){
+            new Thread(){
+                @Override
+                public void run(){
+                    Database.executeQuery("DELETE FROM custom_fields WHERE custom_type = 'wo_type' AND custom_value = ?",
+                            new Object[]{woList.getSelectedValue()});
+                    ((DefaultListModel)woList.getModel()).removeElement(woList.getSelectedValue());
+                    woList.setSelectedIndex(0);
+                }
+            }.start();
+        }  
+    }
+    
+    //Custom Schedule types
     private void loadCustomSchedule(){
         new Thread(){
             @Override
             public void run(){
                 try {
-                    ResultSet rs = Database.select("SELECT custom_value FROM custom_fields WHERE custom_type = 'schedule_type'");
-                    while(rs.next()){
-                        ((DefaultListModel)scheduleList.getModel()).addElement(rs.getObject(1));
+                    try (ResultSet rs = Database.select("SELECT custom_value FROM custom_fields WHERE custom_type = 'schedule_type'")) {
+                        while(rs.next()){
+                            ((DefaultListModel)scheduleList.getModel()).addElement(rs.getObject(1).toString().trim());
+                        }
                     }
-                    rs.close();
                 } catch (SQLException ex) {
                     Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -149,16 +192,45 @@ public class Admin {
             }
         }.start();
     }
+    public void addCustomSchedule(){
+        new Thread(){
+            @Override
+            public void run(){
+                String value = JOptionPane.showInputDialog("Field name:");
+                if(value != null && !value.isEmpty()){
+                    Database.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES ('schedule_type', ?)",
+                            new Object[]{value});
+                    ((DefaultListModel)scheduleList.getModel()).addElement(value);
+                    scheduleList.setSelectedIndex(scheduleList.getLastVisibleIndex());
+                }
+            }
+        }.start();
+    }
+    public void deleteCustomSchedule(){
+        if(scheduleList.getVisibleRowCount() != 0){
+            new Thread(){
+                @Override
+                public void run(){
+                    Database.executeQuery("DELETE FROM custom_fields WHERE custom_type = 'schedule_type' AND custom_value = ?",
+                            new Object[]{scheduleList.getSelectedValue()});
+                    ((DefaultListModel)scheduleList.getModel()).removeElement(scheduleList.getSelectedValue());
+                    scheduleList.setSelectedIndex(0);
+                }
+            }.start();
+        }
+    }
+    
+    //Custom Asset types
     private void loadCustomAssets(){
         new Thread(){
             @Override
             public void run(){
                 try {
-                    ResultSet rs = Database.select("SELECT custom_value FROM custom_fields WHERE custom_type = 'asset_type'");
-                    while(rs.next()){
-                        ((DefaultListModel)assetList.getModel()).addElement(rs.getObject(1));
+                    try (ResultSet rs = Database.select("SELECT custom_value FROM custom_fields WHERE custom_type = 'asset_type'")) {
+                        while(rs.next()){
+                            ((DefaultListModel)assetList.getModel()).addElement(rs.getObject(1).toString().trim());
+                        }
                     }
-                    rs.close();
                 } catch (SQLException ex) {
                     Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -166,21 +238,77 @@ public class Admin {
             }
         }.start();
     }
+    public void addCustomAsset(){
+        new Thread(){
+            @Override
+            public void run(){
+                String value = JOptionPane.showInputDialog("Field name:");
+                if(value != null && !value.isEmpty()){
+                    Database.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES ('aset_type', ?)",
+                            new Object[]{value});
+                    ((DefaultListModel)assetList.getModel()).addElement(value);
+                    assetList.setSelectedIndex(assetList.getLastVisibleIndex());
+                }
+            }
+        }.start();
+    }
+    public void deleteCustomAsset(){
+        if(assetList.getVisibleRowCount() != 0){
+            new Thread(){
+                @Override
+                public void run(){
+                    Database.executeQuery("DELETE FROM custom_fields WHERE custom_type = 'asset_type' AND custom_value = ?",
+                            new Object[]{assetList.getSelectedValue()});
+                    ((DefaultListModel)assetList.getModel()).removeElement(assetList.getSelectedValue());
+                    assetList.setSelectedIndex(0);
+                }
+            }.start();
+        }  
+    }
+    
+    //Custom employee departments
     private void loadCustomEmployees(){
         new Thread(){
             @Override
             public void run(){
                 try {
-                    ResultSet rs = Database.select("SELECT custom_value FROM custom_fields WHERE custom_type = 'employee_dept'");
-                    while(rs.next()){
-                        ((DefaultListModel)employeeList.getModel()).addElement(rs.getObject(1));
+                    try (ResultSet rs = Database.select("SELECT custom_value FROM custom_fields WHERE custom_type = 'employee_dept'")) {
+                        while(rs.next()){
+                            ((DefaultListModel)employeeList.getModel()).addElement(rs.getObject(1).toString().trim());
+                        }
                     }
-                    rs.close();
                 } catch (SQLException ex) {
                     Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 employeeList.setSelectedIndex(0);
             }
         }.start();
+    }
+    public void addCustomEmployee(){
+        new Thread(){
+            @Override
+            public void run(){
+                String value = JOptionPane.showInputDialog("Field name:");
+                if(value != null && !value.isEmpty()){
+                    Database.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES ('employee_dept', ?)",
+                            new Object[]{value});
+                    ((DefaultListModel)employeeList.getModel()).addElement(value);
+                    employeeList.setSelectedIndex(employeeList.getLastVisibleIndex());
+                }
+            }
+        }.start();
+    }
+    public void deleteCustomEmployee(){
+        if(employeeList.getVisibleRowCount() != 0){
+            new Thread(){
+                @Override
+                public void run(){
+                    Database.executeQuery("DELETE FROM custom_fields WHERE custom_type = 'employee_dept' AND custom_value = ?",
+                            new Object[]{employeeList.getSelectedValue()});
+                    ((DefaultListModel)employeeList.getModel()).removeElement(employeeList.getSelectedValue());
+                    employeeList.setSelectedIndex(0);
+                }
+            }.start();
+        }
     }
 }

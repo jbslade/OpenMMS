@@ -1,19 +1,18 @@
 ----------------------------------------------------------------
-Sat Jul 24 14:29:48 CAT 2021:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.14.2.0 - (1828579): instance a816c00e-017a-d87e-36a9-000006899b80 
-on database directory C:\Users\joshs\Desktop\OpenMMS_DB with class loader sun.misc.Launcher$AppClassLoader@73d16e93 
-Loaded from file:/C:/Users/joshs/.m2/repository/org/apache/derby/derby/10.14.2.0/derby-10.14.2.0.jar
+Mon Jul 26 11:04:47 CAT 2021:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.14.2.0 - (1828579): instance a816c00e-017a-e20f-38a7-00002970a178 
+on database directory C:\Users\josh.slade\Desktop\OpenMMS_DB with class loader sun.misc.Launcher$AppClassLoader@73d16e93 
+Loaded from file:/C:/Users/josh.slade/.m2/repository/org/apache/derby/derby/10.14.2.0/derby-10.14.2.0.jar
 java.vendor=Oracle Corporation
 java.runtime.version=1.8.0_291-b10
-user.dir=C:\Users\joshs\Desktop\
-os.name=Windows 10
+user.dir=C:\Users\josh.slade\Desktop\
+os.name=Windows Server 2012 R2
 os.arch=amd64
-os.version=10.0
-derby.system.home=C:\Users\joshs\Desktop\
+os.version=6.3
+derby.system.home=C:\Users\josh.slade\Desktop\
 Database Class Loader started - derby.database.classpath=''
 ----------------------------------------------------------------
-Sat Jul 24 14:30:10 CAT 2021: Shutting down Derby engine
+Mon Jul 26 11:05:09 CAT 2021: Shutting down Derby engine
 ----------------------------------------------------------------
-Sat Jul 24 14:30:10 CAT 2021:
-Shutting down instance a816c00e-017a-d87e-36a9-000006899b80 on database directory C:\Users\joshs\Desktop\OpenMMS_DB with class loader sun.misc.Launcher$AppClassLoader@73d16e93 
-----------------------------------------------------------------
+Mon Jul 26 11:05:09 CAT 2021:
+Shutting down instance a816c00e-017a-e20f-38a7-00002970a178 on database directory C:\Users\josh.slade\Desktop\OpenMMS_DB with class loader sun.misc.Launcher$AppClassLoader@73d16e93 

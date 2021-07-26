@@ -27,7 +27,6 @@ import com.mms.modules.Parts;
 import com.mms.modules.Schedule;
 import com.mms.utilities.OtherTools;
 import com.mms.utilities.TableTools;
-import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import javax.swing.Box;
@@ -52,6 +51,7 @@ public class MainFrame extends javax.swing.JFrame {
     private final Parts parts;
     private final Employees employees;
     private final Admin admin;
+    private final boolean isAdmin;
     
     public JDesktopPane getDesktopPane(){return desktopPane;}
     
@@ -77,22 +77,39 @@ public class MainFrame extends javax.swing.JFrame {
         tabbedPane.setIconAt(7, MMS.reportsIcon);
         tabbedPane.setIconAt(8, MMS.systemIcon);
         
+        //User levels
+        switch(MMS.getUserLevel()){
+            case 0: //Worker
+                isAdmin = false;
+                tabbedPane.remove(8);
+                break;
+            case 1: //Supervisor
+                isAdmin = false;
+                tabbedPane.remove(8);
+                break;
+            case 2: //Manager
+                isAdmin = false;
+                tabbedPane.remove(8);
+                break;
+            case 3: //Administrator
+                isAdmin = true;
+                break;
+            default:
+                isAdmin = false;
+                break;
+        }
+        
         //Modules
         schedule = new Schedule(scheduleTable, scheduleLoadLabel);
         locations = new Locations(locationTable, locationLoadLabel);
         assets = new Assets(assetTable, assetLoadLabel);
         parts = new Parts(partTable, partLoadLabel);
         employees = new Employees(employeeTable, employeeLoadLabel);
-        admin = new Admin(adminUserTable, WOCusList, SchCusList, AssetCusList, EmpCusList);
+        if(isAdmin) admin = new Admin(adminUserTable, WOCusList, SchCusList, AssetCusList, EmpCusList);
+        else admin = null;
         
-        //Tables
+        //Tables (move to WorkOrders class)
         TableTools.format(workOrderTable);
-        TableTools.format(scheduleTable);
-        TableTools.format(assetTable);
-        TableTools.format(locationTable);
-        TableTools.format(partTable);
-        TableTools.format(employeeTable);
-        TableTools.format(reportTable);
         
         //Table selection listeners
         scheduleTable.getSelectionModel().addListSelectionListener((ListSelectionEvent e) -> {
@@ -311,21 +328,21 @@ public class MainFrame extends javax.swing.JFrame {
         adminWOCusPanel = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         WOCusList = new javax.swing.JList<>();
-        jButton9 = new javax.swing.JButton();
-        jButton10 = new javax.swing.JButton();
+        adminAddCusWO = new javax.swing.JButton();
+        adminDelCusWO = new javax.swing.JButton();
         adminSchCusPanel = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         SchCusList = new javax.swing.JList<>();
-        jButton11 = new javax.swing.JButton();
-        jButton12 = new javax.swing.JButton();
+        adminAddCusSchedule = new javax.swing.JButton();
+        adminDelCusSchedule = new javax.swing.JButton();
         adminAssetCusPanel = new javax.swing.JPanel();
-        jButton13 = new javax.swing.JButton();
-        jButton14 = new javax.swing.JButton();
+        adminAddCusAsset = new javax.swing.JButton();
+        adminDelCusAsset = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
         AssetCusList = new javax.swing.JList<>();
         adminDeptCusPanel = new javax.swing.JPanel();
-        jButton15 = new javax.swing.JButton();
-        jButton16 = new javax.swing.JButton();
+        adminAddCusEmployee = new javax.swing.JButton();
+        adminDelCusEmployee = new javax.swing.JButton();
         jScrollPane4 = new javax.swing.JScrollPane();
         EmpCusList = new javax.swing.JList<>();
         adminUpdatePanel = new javax.swing.JPanel();
@@ -345,6 +362,7 @@ public class MainFrame extends javax.swing.JFrame {
         menuTableSize500 = new javax.swing.JRadioButtonMenuItem();
         menuTableSize250 = new javax.swing.JRadioButtonMenuItem();
         menuHelp = new javax.swing.JMenu();
+        menuHelpBug = new javax.swing.JMenuItem();
         menuUser = new javax.swing.JMenu();
         menuChangePassword = new javax.swing.JMenuItem();
         menuLogout = new javax.swing.JMenuItem();
@@ -1058,7 +1076,7 @@ public class MainFrame extends javax.swing.JFrame {
 
             },
             new String [] {
-                " Username", " User Level"
+                " Name", " Access Level"
             }
         ));
         adminUserScroll.setViewportView(adminUserTable);
@@ -1138,20 +1156,30 @@ public class MainFrame extends javax.swing.JFrame {
         WOCusList.setModel(new DefaultListModel());
         jScrollPane2.setViewportView(WOCusList);
 
-        jButton9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/new.png"))); // NOI18N
-        jButton9.setText("Add");
+        adminAddCusWO.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/new.png"))); // NOI18N
+        adminAddCusWO.setText("Add");
+        adminAddCusWO.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                adminAddCusWOActionPerformed(evt);
+            }
+        });
 
-        jButton10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/delete.png"))); // NOI18N
-        jButton10.setText("Delete");
+        adminDelCusWO.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/delete.png"))); // NOI18N
+        adminDelCusWO.setText("Delete");
+        adminDelCusWO.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                adminDelCusWOActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout adminWOCusPanelLayout = new javax.swing.GroupLayout(adminWOCusPanel);
         adminWOCusPanel.setLayout(adminWOCusPanelLayout);
         adminWOCusPanelLayout.setHorizontalGroup(
             adminWOCusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(adminWOCusPanelLayout.createSequentialGroup()
-                .addComponent(jButton9)
+                .addComponent(adminAddCusWO)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton10)
+                .addComponent(adminDelCusWO)
                 .addContainerGap(339, Short.MAX_VALUE))
             .addComponent(jScrollPane2)
         );
@@ -1162,8 +1190,8 @@ public class MainFrame extends javax.swing.JFrame {
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 213, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(adminWOCusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton9)
-                    .addComponent(jButton10)))
+                    .addComponent(adminAddCusWO)
+                    .addComponent(adminDelCusWO)))
         );
 
         adminCusTab.addTab("Work Order Types", adminWOCusPanel);
@@ -1171,20 +1199,30 @@ public class MainFrame extends javax.swing.JFrame {
         SchCusList.setModel(new DefaultListModel());
         jScrollPane1.setViewportView(SchCusList);
 
-        jButton11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/new.png"))); // NOI18N
-        jButton11.setText("Add");
+        adminAddCusSchedule.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/new.png"))); // NOI18N
+        adminAddCusSchedule.setText("Add");
+        adminAddCusSchedule.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                adminAddCusScheduleActionPerformed(evt);
+            }
+        });
 
-        jButton12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/delete.png"))); // NOI18N
-        jButton12.setText("Delete");
+        adminDelCusSchedule.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/delete.png"))); // NOI18N
+        adminDelCusSchedule.setText("Delete");
+        adminDelCusSchedule.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                adminDelCusScheduleActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout adminSchCusPanelLayout = new javax.swing.GroupLayout(adminSchCusPanel);
         adminSchCusPanel.setLayout(adminSchCusPanelLayout);
         adminSchCusPanelLayout.setHorizontalGroup(
             adminSchCusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(adminSchCusPanelLayout.createSequentialGroup()
-                .addComponent(jButton11)
+                .addComponent(adminAddCusSchedule)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton12)
+                .addComponent(adminDelCusSchedule)
                 .addContainerGap(339, Short.MAX_VALUE))
             .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
         );
@@ -1195,17 +1233,27 @@ public class MainFrame extends javax.swing.JFrame {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 213, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(adminSchCusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton11)
-                    .addComponent(jButton12)))
+                    .addComponent(adminAddCusSchedule)
+                    .addComponent(adminDelCusSchedule)))
         );
 
         adminCusTab.addTab("Schedule Types", adminSchCusPanel);
 
-        jButton13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/new.png"))); // NOI18N
-        jButton13.setText("Add");
+        adminAddCusAsset.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/new.png"))); // NOI18N
+        adminAddCusAsset.setText("Add");
+        adminAddCusAsset.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                adminAddCusAssetActionPerformed(evt);
+            }
+        });
 
-        jButton14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/delete.png"))); // NOI18N
-        jButton14.setText("Delete");
+        adminDelCusAsset.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/delete.png"))); // NOI18N
+        adminDelCusAsset.setText("Delete");
+        adminDelCusAsset.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                adminDelCusAssetActionPerformed(evt);
+            }
+        });
 
         AssetCusList.setModel(new DefaultListModel());
         jScrollPane3.setViewportView(AssetCusList);
@@ -1215,9 +1263,9 @@ public class MainFrame extends javax.swing.JFrame {
         adminAssetCusPanelLayout.setHorizontalGroup(
             adminAssetCusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(adminAssetCusPanelLayout.createSequentialGroup()
-                .addComponent(jButton13)
+                .addComponent(adminAddCusAsset)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton14)
+                .addComponent(adminDelCusAsset)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 510, Short.MAX_VALUE)
         );
@@ -1228,17 +1276,27 @@ public class MainFrame extends javax.swing.JFrame {
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 213, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(adminAssetCusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton13)
-                    .addComponent(jButton14)))
+                    .addComponent(adminAddCusAsset)
+                    .addComponent(adminDelCusAsset)))
         );
 
         adminCusTab.addTab("Asset Types", adminAssetCusPanel);
 
-        jButton15.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/new.png"))); // NOI18N
-        jButton15.setText("Add");
+        adminAddCusEmployee.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/new.png"))); // NOI18N
+        adminAddCusEmployee.setText("Add");
+        adminAddCusEmployee.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                adminAddCusEmployeeActionPerformed(evt);
+            }
+        });
 
-        jButton16.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/delete.png"))); // NOI18N
-        jButton16.setText("Delete");
+        adminDelCusEmployee.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/delete.png"))); // NOI18N
+        adminDelCusEmployee.setText("Delete");
+        adminDelCusEmployee.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                adminDelCusEmployeeActionPerformed(evt);
+            }
+        });
 
         EmpCusList.setModel(new DefaultListModel());
         jScrollPane4.setViewportView(EmpCusList);
@@ -1248,9 +1306,9 @@ public class MainFrame extends javax.swing.JFrame {
         adminDeptCusPanelLayout.setHorizontalGroup(
             adminDeptCusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(adminDeptCusPanelLayout.createSequentialGroup()
-                .addComponent(jButton15)
+                .addComponent(adminAddCusEmployee)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton16)
+                .addComponent(adminDelCusEmployee)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 510, Short.MAX_VALUE)
         );
@@ -1261,8 +1319,8 @@ public class MainFrame extends javax.swing.JFrame {
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 213, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(adminDeptCusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton15)
-                    .addComponent(jButton16)))
+                    .addComponent(adminAddCusEmployee)
+                    .addComponent(adminDelCusEmployee)))
         );
 
         adminCusTab.addTab("Employee Departments", adminDeptCusPanel);
@@ -1426,6 +1484,10 @@ public class MainFrame extends javax.swing.JFrame {
         menuBar.add(menuTable);
 
         menuHelp.setText("Help");
+
+        menuHelpBug.setText("Report Bug");
+        menuHelp.add(menuHelpBug);
+
         menuBar.add(menuHelp);
 
         menuUser.setIcon(new javax.swing.ImageIcon(getClass().getResource("/user.png"))); // NOI18N
@@ -1494,7 +1556,6 @@ public class MainFrame extends javax.swing.JFrame {
 
     //New Asset
     private void newAssetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newAssetButtonActionPerformed
-        System.out.println("CORRECT");
         if(locationTable.getRowCount() == 0){
             PopupPanel.display("You must add a Location before you can add an Asset.", newAssetButton.getLocationOnScreen().x+10, newAssetButton.getLocationOnScreen().y+newAssetButton.getHeight()+10);
         }
@@ -1785,7 +1846,6 @@ public class MainFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_reportTableKeyPressed
 
-    //Reset user password
     private void adminUserResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adminUserResetActionPerformed
         admin.resetUserPass();
     }//GEN-LAST:event_adminUserResetActionPerformed
@@ -1798,6 +1858,38 @@ public class MainFrame extends javax.swing.JFrame {
         admin.deleteUser();
     }//GEN-LAST:event_adminUserDeleteActionPerformed
 
+    private void adminDelCusScheduleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adminDelCusScheduleActionPerformed
+        admin.deleteCustomSchedule();
+    }//GEN-LAST:event_adminDelCusScheduleActionPerformed
+
+    private void adminAddCusScheduleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adminAddCusScheduleActionPerformed
+        admin.addCustomSchedule();
+    }//GEN-LAST:event_adminAddCusScheduleActionPerformed
+
+    private void adminDelCusWOActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adminDelCusWOActionPerformed
+        admin.deleteCustomWO();
+    }//GEN-LAST:event_adminDelCusWOActionPerformed
+
+    private void adminDelCusAssetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adminDelCusAssetActionPerformed
+        admin.deleteCustomAsset();
+    }//GEN-LAST:event_adminDelCusAssetActionPerformed
+
+    private void adminDelCusEmployeeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adminDelCusEmployeeActionPerformed
+        admin.deleteCustomEmployee();
+    }//GEN-LAST:event_adminDelCusEmployeeActionPerformed
+
+    private void adminAddCusWOActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adminAddCusWOActionPerformed
+        admin.addCustomWO();
+    }//GEN-LAST:event_adminAddCusWOActionPerformed
+
+    private void adminAddCusAssetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adminAddCusAssetActionPerformed
+        admin.addCustomAsset();
+    }//GEN-LAST:event_adminAddCusAssetActionPerformed
+
+    private void adminAddCusEmployeeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adminAddCusEmployeeActionPerformed
+        admin.addCustomEmployee();
+    }//GEN-LAST:event_adminAddCusEmployeeActionPerformed
+
     //Load tables
     public void loadTables(){
         schedule.load();
@@ -1805,7 +1897,7 @@ public class MainFrame extends javax.swing.JFrame {
         locations.load();
         parts.load();
         employees.load();
-        admin.load();
+        if(isAdmin) admin.load();
     } 
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1813,10 +1905,18 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JList<String> EmpCusList;
     private javax.swing.JList<String> SchCusList;
     private javax.swing.JList<String> WOCusList;
+    private javax.swing.JButton adminAddCusAsset;
+    private javax.swing.JButton adminAddCusEmployee;
+    private javax.swing.JButton adminAddCusSchedule;
+    private javax.swing.JButton adminAddCusWO;
     private javax.swing.JPanel adminArchivePanel;
     private javax.swing.JPanel adminAssetCusPanel;
     private javax.swing.JPanel adminCusPanel;
     private javax.swing.JTabbedPane adminCusTab;
+    private javax.swing.JButton adminDelCusAsset;
+    private javax.swing.JButton adminDelCusEmployee;
+    private javax.swing.JButton adminDelCusSchedule;
+    private javax.swing.JButton adminDelCusWO;
     private javax.swing.JPanel adminDeptCusPanel;
     private javax.swing.JPanel adminPanel;
     private javax.swing.JPanel adminSchCusPanel;
@@ -1870,19 +1970,11 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.Box.Filler filler6;
     private javax.swing.Box.Filler filler7;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton10;
-    private javax.swing.JButton jButton11;
-    private javax.swing.JButton jButton12;
-    private javax.swing.JButton jButton13;
-    private javax.swing.JButton jButton14;
-    private javax.swing.JButton jButton15;
-    private javax.swing.JButton jButton16;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
-    private javax.swing.JButton jButton9;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
@@ -1900,6 +1992,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JMenuItem menuFileArchive;
     private javax.swing.JMenuItem menuFileDisconnect;
     private javax.swing.JMenu menuHelp;
+    private javax.swing.JMenuItem menuHelpBug;
     private javax.swing.JMenuItem menuLogout;
     private javax.swing.JMenu menuTable;
     private javax.swing.JMenuItem menuTableFilter;

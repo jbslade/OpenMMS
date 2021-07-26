@@ -22,24 +22,24 @@ import com.mms.MMS;
 import com.mms.utilities.DateTools;
 import com.mms.utilities.OtherTools;
 import com.mms.utilities.TableTools;
+import com.sun.glass.events.KeyEvent;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.MouseListener;
-import java.awt.font.TextAttribute;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.GroupLayout;
 import javax.swing.JTable;
 import javax.swing.border.MatteBorder;
 import javax.swing.table.DefaultTableModel;
+
 
 /**
  *
@@ -60,16 +60,13 @@ public class ScheduleFrame extends javax.swing.JInternalFrame {
         assetLocations = new ArrayList<>();
         getRootPane().setDefaultButton(continueButton);
 
+        //Desc view area
+        descViewScroll.setVisible(false);
+        descViewPane.setBackground(Color.WHITE);
+        
         //Set right click listeners
         nameField.addMouseListener(MMS.getMouseListener());
-        descPane.addMouseListener(MMS.getMouseListener());
-        
-        //Set underline button
-        Font font = underlineButton.getFont();
-        Map attributes = font.getAttributes();
-        attributes.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
-        font = font.deriveFont(attributes);
-        underlineButton.setFont(font);
+        descArea.addMouseListener(MMS.getMouseListener());
         
         //Set date picker
         datePanel.setPreferredSize(nameField.getPreferredSize());
@@ -132,7 +129,7 @@ public class ScheduleFrame extends javax.swing.JInternalFrame {
             try {
                 if(rs.next()){
                     datePicker.setDate(rs.getDate(1).toLocalDate());
-                    descPane.setText(rs.getObject(2).toString());
+                    descArea.setText(rs.getObject(2).toString());
                 }
             } catch (SQLException ex) {
                 Logger.getLogger(ScheduleFrame.class.getName()).log(Level.SEVERE, null, ex);
@@ -153,9 +150,9 @@ public class ScheduleFrame extends javax.swing.JInternalFrame {
             datePicker.getComponentToggleCalendarButton().setEnabled(false);
             for(MouseListener l : datePicker.getComponentToggleCalendarButton().getMouseListeners())
                 datePicker.getComponentToggleCalendarButton().removeMouseListener(l);        
-            descPane.setEditable(false);
-            descPane.setBackground(Color.WHITE);
-            descPane.setFocusable(false);
+            viewToggleButton.setSelected(true);
+            viewToggleButtonActionPerformed(null);
+            descViewPane.setFocusable(false);
             continueButton.setEnabled(false);
             continueButton.setVisible(false);
             for(Component c : textTools.getComponents())
@@ -173,15 +170,16 @@ public class ScheduleFrame extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        descViewScroll = new javax.swing.JScrollPane();
+        descViewPane = new javax.swing.JTextPane();
         backPanel = new javax.swing.JPanel();
         continueButton = new javax.swing.JButton();
         textTools = new javax.swing.JToolBar();
         boldButton = new javax.swing.JButton();
         italicsButton = new javax.swing.JButton();
-        underlineButton = new javax.swing.JButton();
         bulletButton = new javax.swing.JButton();
-        descScroll = new javax.swing.JScrollPane();
-        descPane = new javax.swing.JTextPane();
+        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
+        viewToggleButton = new javax.swing.JToggleButton();
         leftPanel = new javax.swing.JPanel();
         nameLabel = new javax.swing.JLabel();
         nameField = new javax.swing.JTextField();
@@ -196,6 +194,14 @@ public class ScheduleFrame extends javax.swing.JInternalFrame {
         freqCombo = new javax.swing.JComboBox<>();
         locationLabel = new javax.swing.JLabel();
         locationCombo = new javax.swing.JComboBox<>();
+        descPanel = new javax.swing.JPanel();
+        descScroll = new javax.swing.JScrollPane();
+        descArea = new javax.swing.JTextArea();
+
+        descViewPane.setEditable(false);
+        descViewPane.setContentType("text/html"); // NOI18N
+        descViewPane.setPreferredSize(descArea.getPreferredSize());
+        descViewScroll.setViewportView(descViewPane);
 
         setClosable(true);
         setIconifiable(true);
@@ -260,18 +266,6 @@ public class ScheduleFrame extends javax.swing.JInternalFrame {
         });
         textTools.add(italicsButton);
 
-        underlineButton.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        underlineButton.setText("U");
-        underlineButton.setFocusable(false);
-        underlineButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        underlineButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        underlineButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                underlineButtonActionPerformed(evt);
-            }
-        });
-        textTools.add(underlineButton);
-
         bulletButton.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         bulletButton.setText("•");
         bulletButton.setFocusable(false);
@@ -283,9 +277,18 @@ public class ScheduleFrame extends javax.swing.JInternalFrame {
             }
         });
         textTools.add(bulletButton);
+        textTools.add(filler1);
 
-        descPane.setContentType("text/html"); // NOI18N
-        descScroll.setViewportView(descPane);
+        viewToggleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/eye.png"))); // NOI18N
+        viewToggleButton.setFocusable(false);
+        viewToggleButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        viewToggleButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        viewToggleButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                viewToggleButtonActionPerformed(evt);
+            }
+        });
+        textTools.add(viewToggleButton);
 
         nameLabel.setText("Name:");
 
@@ -385,6 +388,27 @@ public class ScheduleFrame extends javax.swing.JInternalFrame {
                 .addComponent(locationCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
+        descArea.setColumns(20);
+        descArea.setLineWrap(true);
+        descArea.setRows(10);
+        descArea.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                descAreaKeyPressed(evt);
+            }
+        });
+        descScroll.setViewportView(descArea);
+
+        javax.swing.GroupLayout descPanelLayout = new javax.swing.GroupLayout(descPanel);
+        descPanel.setLayout(descPanelLayout);
+        descPanelLayout.setHorizontalGroup(
+            descPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(descScroll)
+        );
+        descPanelLayout.setVerticalGroup(
+            descPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(descScroll)
+        );
+
         javax.swing.GroupLayout backPanelLayout = new javax.swing.GroupLayout(backPanel);
         backPanel.setLayout(backPanelLayout);
         backPanelLayout.setHorizontalGroup(
@@ -396,11 +420,11 @@ public class ScheduleFrame extends javax.swing.JInternalFrame {
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(continueButton))
                     .addComponent(textTools, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(descScroll)
                     .addGroup(backPanelLayout.createSequentialGroup()
                         .addComponent(leftPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGap(12, 12, 12)
-                        .addComponent(rightPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(rightPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(descPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         backPanelLayout.setVerticalGroup(
@@ -413,7 +437,7 @@ public class ScheduleFrame extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(textTools, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(descScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE)
+                .addComponent(descPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(continueButton)
                 .addContainerGap())
@@ -445,8 +469,7 @@ public class ScheduleFrame extends javax.swing.JInternalFrame {
                 freq = freqCombo.getSelectedItem().toString(),
                 locName = locationCombo.getSelectedItem().toString(),
                 assName = assetCombo.getSelectedItem().toString(),
-                desc = descPane.getText();
-        
+                desc = descArea.getText();
         Date date = DateTools.convertToSQLDate(datePicker.getDate());
         LocalDate lastDate = DateTools.getDueDate(datePicker.getDate(), freq, -1);
         
@@ -515,16 +538,32 @@ public class ScheduleFrame extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_formInternalFrameDeiconified
 
     private void boldButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boldButtonActionPerformed
-       
+       if(descArea.getSelectedText() == null){
+           int caret = descArea.getCaretPosition();
+           descArea.replaceSelection("****");
+           descArea.setCaretPosition(caret+2);
+       }
+       else{
+           int start = descArea.getSelectionStart(), end = descArea.getSelectionEnd();
+           descArea.replaceSelection("**"+descArea.getSelectedText()+"**");
+           descArea.setSelectionStart(start+2);
+           descArea.setSelectionEnd(end+2);
+       }
     }//GEN-LAST:event_boldButtonActionPerformed
 
     private void italicsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_italicsButtonActionPerformed
-      
+      if(descArea.getSelectedText() == null){
+           int caret = descArea.getCaretPosition();
+           descArea.replaceSelection("__");
+           descArea.setCaretPosition(caret+1);
+       }
+       else{
+           int start = descArea.getSelectionStart(), end = descArea.getSelectionEnd();
+           descArea.replaceSelection("_"+descArea.getSelectedText()+"_");
+           descArea.setSelectionStart(start+1);
+           descArea.setSelectionEnd(end+1);
+       }
     }//GEN-LAST:event_italicsButtonActionPerformed
-
-    private void underlineButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_underlineButtonActionPerformed
-       
-    }//GEN-LAST:event_underlineButtonActionPerformed
 
     private void bulletButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bulletButtonActionPerformed
      
@@ -546,6 +585,48 @@ public class ScheduleFrame extends javax.swing.JInternalFrame {
     private void formComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentResized
         datePicker.setSize(datePanel.getSize());
     }//GEN-LAST:event_formComponentResized
+
+    private void viewToggleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewToggleButtonActionPerformed
+        if(viewToggleButton.isSelected()){ //Replace text area with view pane
+            descScroll.setVisible(false);
+            descViewScroll.setVisible(true);
+            String text = com.github.rjeschke.txtmark.Processor.process(descArea.getText());
+            if(!text.isEmpty()) text = text.substring(3, text.length()-3);
+            descViewPane.setText(text);
+            GroupLayout descPanelLayout = new javax.swing.GroupLayout(descPanel);
+            descPanel.setLayout(descPanelLayout);
+            descPanelLayout.setHorizontalGroup(
+                descPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(descViewScroll)
+            );
+            descPanelLayout.setVerticalGroup(
+                descPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(descViewScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+            );
+            descViewPane.requestFocus();
+        }
+        else{
+            descViewScroll.setVisible(false);
+            descScroll.setVisible(true);
+            GroupLayout descPanelLayout = new javax.swing.GroupLayout(descPanel);
+            descPanel.setLayout(descPanelLayout);
+            descPanelLayout.setHorizontalGroup(
+                descPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(descScroll)
+            );
+            descPanelLayout.setVerticalGroup(
+                descPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(descScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+            );
+            descArea.requestFocus();
+        }
+    }//GEN-LAST:event_viewToggleButtonActionPerformed
+
+    private void descAreaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_descAreaKeyPressed
+        if(evt.getKeyCode() == KeyEvent.VK_ENTER){
+            descArea.insert("  ", descArea.getCaretPosition());
+        }
+    }//GEN-LAST:event_descAreaKeyPressed
      
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> assetCombo;
@@ -556,8 +637,12 @@ public class ScheduleFrame extends javax.swing.JInternalFrame {
     private javax.swing.JButton continueButton;
     private javax.swing.JLabel dateLabel;
     private javax.swing.JPanel datePanel;
-    private javax.swing.JTextPane descPane;
+    private javax.swing.JTextArea descArea;
+    private javax.swing.JPanel descPanel;
     private javax.swing.JScrollPane descScroll;
+    private javax.swing.JTextPane descViewPane;
+    private javax.swing.JScrollPane descViewScroll;
+    private javax.swing.Box.Filler filler1;
     private javax.swing.JComboBox<String> freqCombo;
     private javax.swing.JLabel freqLabel;
     private javax.swing.JButton italicsButton;
@@ -570,6 +655,6 @@ public class ScheduleFrame extends javax.swing.JInternalFrame {
     private javax.swing.JToolBar textTools;
     private javax.swing.JComboBox<String> typeCombo;
     private javax.swing.JLabel typeLabel;
-    private javax.swing.JButton underlineButton;
+    private javax.swing.JToggleButton viewToggleButton;
     // End of variables declaration//GEN-END:variables
 }

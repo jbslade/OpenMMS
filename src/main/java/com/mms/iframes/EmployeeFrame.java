@@ -189,7 +189,6 @@ public class EmployeeFrame extends javax.swing.JInternalFrame {
     private void continueButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_continueButtonActionPerformed
         String name = nameField.getText(), desc = descField.getText(), dept = deptCombo.getSelectedItem().toString();
         if(name.isEmpty()) nameField.requestFocus();
-        else if(desc.isEmpty()) descField.requestFocus();
         else{
             OtherTools.disablePanel(backPanel);
             new Thread(){

@@ -124,6 +124,13 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Help"/>
           </Properties>
+          <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="menuHelpBug">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Report Bug"/>
+              </Properties>
+            </MenuItem>
+          </SubComponents>
         </Menu>
         <Menu class="javax.swing.JMenu" name="menuUser">
           <Properties>
@@ -1443,8 +1450,8 @@
                               <Properties>
                                 <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
                                   <Table columnCount="2" rowCount="0">
-                                    <Column editable="true" title=" Username" type="java.lang.Object"/>
-                                    <Column editable="true" title=" User Level" type="java.lang.Object"/>
+                                    <Column editable="true" title=" Name" type="java.lang.Object"/>
+                                    <Column editable="true" title=" Access Level" type="java.lang.Object"/>
                                   </Table>
                                 </Property>
                               </Properties>
@@ -1552,9 +1559,9 @@
                                 <DimensionLayout dim="0">
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Group type="102" attributes="0">
-                                          <Component id="jButton9" min="-2" max="-2" attributes="0"/>
+                                          <Component id="adminAddCusWO" min="-2" max="-2" attributes="0"/>
                                           <EmptySpace max="-2" attributes="0"/>
-                                          <Component id="jButton10" min="-2" max="-2" attributes="0"/>
+                                          <Component id="adminDelCusWO" min="-2" max="-2" attributes="0"/>
                                           <EmptySpace pref="339" max="32767" attributes="0"/>
                                       </Group>
                                       <Component id="jScrollPane2" max="32767" attributes="0"/>
@@ -1567,8 +1574,8 @@
                                           <Component id="jScrollPane2" pref="213" max="32767" attributes="0"/>
                                           <EmptySpace max="-2" attributes="0"/>
                                           <Group type="103" groupAlignment="3" attributes="0">
-                                              <Component id="jButton9" alignment="3" min="-2" max="-2" attributes="0"/>
-                                              <Component id="jButton10" alignment="3" min="-2" max="-2" attributes="0"/>
+                                              <Component id="adminAddCusWO" alignment="3" min="-2" max="-2" attributes="0"/>
+                                              <Component id="adminDelCusWO" alignment="3" min="-2" max="-2" attributes="0"/>
                                           </Group>
                                       </Group>
                                   </Group>
@@ -1594,21 +1601,27 @@
                                     </Component>
                                   </SubComponents>
                                 </Container>
-                                <Component class="javax.swing.JButton" name="jButton9">
+                                <Component class="javax.swing.JButton" name="adminAddCusWO">
                                   <Properties>
                                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                                       <Image iconType="3" name="/buttons/new.png"/>
                                     </Property>
                                     <Property name="text" type="java.lang.String" value="Add"/>
                                   </Properties>
+                                  <Events>
+                                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="adminAddCusWOActionPerformed"/>
+                                  </Events>
                                 </Component>
-                                <Component class="javax.swing.JButton" name="jButton10">
+                                <Component class="javax.swing.JButton" name="adminDelCusWO">
                                   <Properties>
                                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                                       <Image iconType="3" name="/buttons/delete.png"/>
                                     </Property>
                                     <Property name="text" type="java.lang.String" value="Delete"/>
                                   </Properties>
+                                  <Events>
+                                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="adminDelCusWOActionPerformed"/>
+                                  </Events>
                                 </Component>
                               </SubComponents>
                             </Container>
@@ -1625,9 +1638,9 @@
                                 <DimensionLayout dim="0">
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Group type="102" attributes="0">
-                                          <Component id="jButton11" min="-2" max="-2" attributes="0"/>
+                                          <Component id="adminAddCusSchedule" min="-2" max="-2" attributes="0"/>
                                           <EmptySpace max="-2" attributes="0"/>
-                                          <Component id="jButton12" min="-2" max="-2" attributes="0"/>
+                                          <Component id="adminDelCusSchedule" min="-2" max="-2" attributes="0"/>
                                           <EmptySpace pref="339" max="32767" attributes="0"/>
                                       </Group>
                                       <Component id="jScrollPane1" alignment="1" max="32767" attributes="0"/>
@@ -1640,8 +1653,8 @@
                                           <Component id="jScrollPane1" pref="213" max="32767" attributes="0"/>
                                           <EmptySpace max="-2" attributes="0"/>
                                           <Group type="103" groupAlignment="3" attributes="0">
-                                              <Component id="jButton11" alignment="3" min="-2" max="-2" attributes="0"/>
-                                              <Component id="jButton12" alignment="3" min="-2" max="-2" attributes="0"/>
+                                              <Component id="adminAddCusSchedule" alignment="3" min="-2" max="-2" attributes="0"/>
+                                              <Component id="adminDelCusSchedule" alignment="3" min="-2" max="-2" attributes="0"/>
                                           </Group>
                                       </Group>
                                   </Group>
@@ -1667,21 +1680,27 @@
                                     </Component>
                                   </SubComponents>
                                 </Container>
-                                <Component class="javax.swing.JButton" name="jButton11">
+                                <Component class="javax.swing.JButton" name="adminAddCusSchedule">
                                   <Properties>
                                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                                       <Image iconType="3" name="/buttons/new.png"/>
                                     </Property>
                                     <Property name="text" type="java.lang.String" value="Add"/>
                                   </Properties>
+                                  <Events>
+                                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="adminAddCusScheduleActionPerformed"/>
+                                  </Events>
                                 </Component>
-                                <Component class="javax.swing.JButton" name="jButton12">
+                                <Component class="javax.swing.JButton" name="adminDelCusSchedule">
                                   <Properties>
                                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                                       <Image iconType="3" name="/buttons/delete.png"/>
                                     </Property>
                                     <Property name="text" type="java.lang.String" value="Delete"/>
                                   </Properties>
+                                  <Events>
+                                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="adminDelCusScheduleActionPerformed"/>
+                                  </Events>
                                 </Component>
                               </SubComponents>
                             </Container>
@@ -1698,9 +1717,9 @@
                                 <DimensionLayout dim="0">
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Group type="102" attributes="0">
-                                          <Component id="jButton13" min="-2" max="-2" attributes="0"/>
+                                          <Component id="adminAddCusAsset" min="-2" max="-2" attributes="0"/>
                                           <EmptySpace max="-2" attributes="0"/>
-                                          <Component id="jButton14" min="-2" max="-2" attributes="0"/>
+                                          <Component id="adminDelCusAsset" min="-2" max="-2" attributes="0"/>
                                           <EmptySpace max="32767" attributes="0"/>
                                       </Group>
                                       <Component id="jScrollPane3" pref="510" max="32767" attributes="0"/>
@@ -1713,29 +1732,35 @@
                                           <Component id="jScrollPane3" pref="213" max="32767" attributes="0"/>
                                           <EmptySpace max="-2" attributes="0"/>
                                           <Group type="103" groupAlignment="3" attributes="0">
-                                              <Component id="jButton13" alignment="3" min="-2" max="-2" attributes="0"/>
-                                              <Component id="jButton14" alignment="3" min="-2" max="-2" attributes="0"/>
+                                              <Component id="adminAddCusAsset" alignment="3" min="-2" max="-2" attributes="0"/>
+                                              <Component id="adminDelCusAsset" alignment="3" min="-2" max="-2" attributes="0"/>
                                           </Group>
                                       </Group>
                                   </Group>
                                 </DimensionLayout>
                               </Layout>
                               <SubComponents>
-                                <Component class="javax.swing.JButton" name="jButton13">
+                                <Component class="javax.swing.JButton" name="adminAddCusAsset">
                                   <Properties>
                                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                                       <Image iconType="3" name="/buttons/new.png"/>
                                     </Property>
                                     <Property name="text" type="java.lang.String" value="Add"/>
                                   </Properties>
+                                  <Events>
+                                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="adminAddCusAssetActionPerformed"/>
+                                  </Events>
                                 </Component>
-                                <Component class="javax.swing.JButton" name="jButton14">
+                                <Component class="javax.swing.JButton" name="adminDelCusAsset">
                                   <Properties>
                                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                                       <Image iconType="3" name="/buttons/delete.png"/>
                                     </Property>
                                     <Property name="text" type="java.lang.String" value="Delete"/>
                                   </Properties>
+                                  <Events>
+                                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="adminDelCusAssetActionPerformed"/>
+                                  </Events>
                                 </Component>
                                 <Container class="javax.swing.JScrollPane" name="jScrollPane3">
                                   <AuxValues>
@@ -1771,9 +1796,9 @@
                                 <DimensionLayout dim="0">
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Group type="102" attributes="0">
-                                          <Component id="jButton15" min="-2" max="-2" attributes="0"/>
+                                          <Component id="adminAddCusEmployee" min="-2" max="-2" attributes="0"/>
                                           <EmptySpace max="-2" attributes="0"/>
-                                          <Component id="jButton16" min="-2" max="-2" attributes="0"/>
+                                          <Component id="adminDelCusEmployee" min="-2" max="-2" attributes="0"/>
                                           <EmptySpace max="32767" attributes="0"/>
                                       </Group>
                                       <Component id="jScrollPane4" pref="510" max="32767" attributes="0"/>
@@ -1786,29 +1811,35 @@
                                           <Component id="jScrollPane4" pref="213" max="32767" attributes="0"/>
                                           <EmptySpace max="-2" attributes="0"/>
                                           <Group type="103" groupAlignment="3" attributes="0">
-                                              <Component id="jButton15" alignment="3" min="-2" max="-2" attributes="0"/>
-                                              <Component id="jButton16" alignment="3" min="-2" max="-2" attributes="0"/>
+                                              <Component id="adminAddCusEmployee" alignment="3" min="-2" max="-2" attributes="0"/>
+                                              <Component id="adminDelCusEmployee" alignment="3" min="-2" max="-2" attributes="0"/>
                                           </Group>
                                       </Group>
                                   </Group>
                                 </DimensionLayout>
                               </Layout>
                               <SubComponents>
-                                <Component class="javax.swing.JButton" name="jButton15">
+                                <Component class="javax.swing.JButton" name="adminAddCusEmployee">
                                   <Properties>
                                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                                       <Image iconType="3" name="/buttons/new.png"/>
                                     </Property>
                                     <Property name="text" type="java.lang.String" value="Add"/>
                                   </Properties>
+                                  <Events>
+                                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="adminAddCusEmployeeActionPerformed"/>
+                                  </Events>
                                 </Component>
-                                <Component class="javax.swing.JButton" name="jButton16">
+                                <Component class="javax.swing.JButton" name="adminDelCusEmployee">
                                   <Properties>
                                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                                       <Image iconType="3" name="/buttons/delete.png"/>
                                     </Property>
                                     <Property name="text" type="java.lang.String" value="Delete"/>
                                   </Properties>
+                                  <Events>
+                                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="adminDelCusEmployeeActionPerformed"/>
+                                  </Events>
                                 </Component>
                                 <Container class="javax.swing.JScrollPane" name="jScrollPane4">
                                   <AuxValues>

@@ -17,7 +17,9 @@ package com.mms.iframes;
 
 import com.mms.Database;
 import com.mms.MMS;
+import com.mms.dialogs.InternalDialog;
 import com.mms.utilities.Hasher;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
@@ -80,7 +82,7 @@ public class UserFrame extends javax.swing.JInternalFrame {
 
         nameLabel.setText("Name:");
 
-        levelLabel.setText("User Level:");
+        levelLabel.setText("Access Level:");
 
         continueButton.setText("Add");
         continueButton.addActionListener(new java.awt.event.ActionListener() {
@@ -89,7 +91,7 @@ public class UserFrame extends javax.swing.JInternalFrame {
             }
         });
 
-        levelCombo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        levelCombo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Worker", "Supervisor", "Manager", "Administrator" }));
 
         passwordLabel.setText("Password:");
 
@@ -159,13 +161,16 @@ public class UserFrame extends javax.swing.JInternalFrame {
         int level = levelCombo.getSelectedIndex();
         boolean exists = false;
         for(int i = 0; i < table.getRowCount(); i++){
-            if(table.getValueAt(i, 0).equals(name)){
+            if(table.getValueAt(i, 0).toString().equalsIgnoreCase(name)){
                 exists = true;
                 break;
             }
         }
-        if(exists || name.isEmpty() || name.equalsIgnoreCase("administrator")) nameField.requestFocus();
+        if(name.isEmpty()) nameField.requestFocus();
         else if(password.isEmpty()) passwordField.requestFocus();
+        else if(exists || name.equalsIgnoreCase("administrator")){
+            InternalDialog.showInternalConfirmDialog(this, "User already exists.", "Add User Error", -1, JOptionPane.ERROR_MESSAGE, null);
+        }
         else{  
             //Get password hash
             String salt = Hasher.getSalt();
@@ -174,9 +179,8 @@ public class UserFrame extends javax.swing.JInternalFrame {
             Database.executeQuery("INSERT INTO users (user_name, user_level, password, salt) VALUES (?, ?, ?, ?)",
                     new Object[]{name, level, password, salt});
             //Insert into table
-            Object [] o = {name, level};
             DefaultTableModel m = (DefaultTableModel)table.getModel();
-            m.insertRow(0, o);
+            m.insertRow(0, new Object[]{name, levelCombo.getSelectedItem()});
             //Select new row
             table.setRowSelectionInterval(0, 0);
             dispose();
