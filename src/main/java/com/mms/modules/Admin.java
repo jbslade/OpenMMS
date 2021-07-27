@@ -244,7 +244,7 @@ public class Admin {
             public void run(){
                 String value = JOptionPane.showInputDialog("Field name:");
                 if(value != null && !value.isEmpty()){
-                    Database.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES ('aset_type', ?)",
+                    Database.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES ('asset_type', ?)",
                             new Object[]{value});
                     ((DefaultListModel)assetList.getModel()).addElement(value);
                     assetList.setSelectedIndex(assetList.getLastVisibleIndex());

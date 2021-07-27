@@ -16,13 +16,15 @@
 package com.mms.utilities;
 
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.event.MouseListener;
+import java.awt.font.FontRenderContext;
+import java.awt.geom.AffineTransform;
 import javax.swing.AbstractButton;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.text.JTextComponent;
 
 /**
  *
@@ -72,5 +74,12 @@ public class OtherTools {
                 ab.removeMouseListener(listener);
           }
        }
+    }
+    
+    public static int getStringWidth(String s){
+        AffineTransform affinetransform = new AffineTransform();     
+        FontRenderContext frc = new FontRenderContext(affinetransform,true,true);     
+        Font font = new Font("Tahoma", Font.PLAIN, 12);
+        return (int)(font.getStringBounds(s, frc).getWidth());
     }
 }

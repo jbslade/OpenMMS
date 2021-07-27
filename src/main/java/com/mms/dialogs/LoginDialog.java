@@ -20,8 +20,13 @@ import com.mms.utilities.Hasher;
 import com.mms.utilities.RotatedIcon;
 import com.mms.MMS;
 import com.mms.MainFrame;
+import com.mms.utilities.OtherTools;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import static java.awt.SystemColor.text;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
@@ -41,13 +46,11 @@ public class LoginDialog extends javax.swing.JDialog {
         initComponents();
         passwordField.putClientProperty("JTextField.placeholderText", "Password");
         getRootPane().setDefaultButton(button);
-        //Set combo box users
-        userCombo.removeAllItems();
-        
+
         //Set users
         try {
             ResultSet rs = Database.select("SELECT user_name FROM users");
-            while(rs.next()){
+            while(rs.next()){     
                 userCombo.addItem(rs.getString(1).trim());
             }
             rs.close();

@@ -588,6 +588,7 @@ public class ScheduleFrame extends javax.swing.JInternalFrame {
 
     private void viewToggleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewToggleButtonActionPerformed
         if(viewToggleButton.isSelected()){ //Replace text area with view pane
+            boolean hadFocus = descArea.hasFocus();
             descScroll.setVisible(false);
             descViewScroll.setVisible(true);
             String text = com.github.rjeschke.txtmark.Processor.process(descArea.getText());
@@ -603,9 +604,10 @@ public class ScheduleFrame extends javax.swing.JInternalFrame {
                 descPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addComponent(descViewScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
             );
-            descViewPane.requestFocus();
+            if(hadFocus) descViewPane.requestFocus();
         }
         else{
+            boolean hadFocus = descViewPane.hasFocus();
             descViewScroll.setVisible(false);
             descScroll.setVisible(true);
             GroupLayout descPanelLayout = new javax.swing.GroupLayout(descPanel);
@@ -618,7 +620,7 @@ public class ScheduleFrame extends javax.swing.JInternalFrame {
                 descPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addComponent(descScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
             );
-            descArea.requestFocus();
+            if(hadFocus) descArea.requestFocus();
         }
     }//GEN-LAST:event_viewToggleButtonActionPerformed
 
