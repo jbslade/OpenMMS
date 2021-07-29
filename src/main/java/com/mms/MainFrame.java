@@ -25,6 +25,7 @@ import com.mms.modules.Employees;
 import com.mms.modules.Locations;
 import com.mms.modules.Parts;
 import com.mms.modules.Schedule;
+import com.mms.modules.WorkOrders;
 import com.mms.utilities.OtherTools;
 import com.mms.utilities.TableTools;
 import java.awt.event.KeyEvent;
@@ -45,6 +46,7 @@ import javax.swing.event.ListSelectionEvent;
 public class MainFrame extends javax.swing.JFrame {
     
     private FindPanel find;
+    private final WorkOrders workOrders;
     private final Schedule schedule;
     private final Locations locations;
     private final Assets assets;
@@ -100,6 +102,7 @@ public class MainFrame extends javax.swing.JFrame {
         }
         
         //Modules
+        workOrders = new WorkOrders(workOrderTable, workLoadLabel);
         schedule = new Schedule(scheduleTable, scheduleLoadLabel);
         locations = new Locations(locationTable, locationLoadLabel);
         assets = new Assets(assetTable, assetLoadLabel);
@@ -112,6 +115,34 @@ public class MainFrame extends javax.swing.JFrame {
         TableTools.format(workOrderTable);
         
         //Table selection listeners
+        workOrderTable.getSelectionModel().addListSelectionListener((ListSelectionEvent e) -> {
+            switch (workOrderTable.getSelectedRowCount()) {
+                case 0:
+                    editWOButton.setEnabled(false);
+                    deleteWOButton.setEnabled(false);
+                    archiveWOButton.setEnabled(false);
+                    statusWOButton.setEnabled(false);
+                    viewWOButton.setEnabled(false);
+                    printWOButton.setEnabled(false);
+                    break;
+                case 1:
+                    editWOButton.setEnabled(true);
+                    deleteWOButton.setEnabled(true);
+                    archiveWOButton.setEnabled(true);
+                    viewWOButton.setEnabled(true);
+                    printWOButton.setEnabled(true);
+                    statusWOButton.setEnabled(!workOrderTable.getValueAt(workOrderTable.getSelectedRow(), 7).equals("Closed"));
+                    break;
+                default:
+                    editWOButton.setEnabled(false);
+                    deleteWOButton.setEnabled(true);
+                    archiveWOButton.setEnabled(true);
+                    statusWOButton.setEnabled(false);
+                    viewWOButton.setEnabled(false);
+                    printWOButton.setEnabled(true);
+                    break;
+            }
+        });
         scheduleTable.getSelectionModel().addListSelectionListener((ListSelectionEvent e) -> {
             switch (scheduleTable.getSelectedRowCount()) {
                 case 0:
@@ -129,8 +160,7 @@ public class MainFrame extends javax.swing.JFrame {
                     viewScheduleButton.setEnabled(true);
                     createWOButton.setEnabled(true);
                     String s = OtherTools.escapeHTML(scheduleTable.getValueAt(scheduleTable.getSelectedRow(), 5).toString());
-                    if(s.equals("Today") || s.equals("Overdue")) completeScheduleButton.setEnabled(true);
-                    else completeScheduleButton.setEnabled(false);
+                    completeScheduleButton.setEnabled(s.equals("Today") || s.equals("Overdue"));
                     break;
                 default:
                     editScheduleButton.setEnabled(false);
@@ -567,6 +597,11 @@ public class MainFrame extends javax.swing.JFrame {
 
         newWOButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/new.png"))); // NOI18N
         newWOButton.setText("New");
+        newWOButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                newWOButtonActionPerformed(evt);
+            }
+        });
         workOrderTools.add(newWOButton);
 
         editWOButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/edit.png"))); // NOI18N
@@ -1705,7 +1740,7 @@ public class MainFrame extends javax.swing.JFrame {
         int index = tabbedPane.getSelectedIndex();
         switch(index){
             case 1: //Work orders
-                break;
+                workOrders.load(); break;
             case 2: //Schedule
                 schedule.load(); break;
             case 3: //Assets
@@ -2008,8 +2043,21 @@ public class MainFrame extends javax.swing.JFrame {
         admin.addCustomEmployee();
     }//GEN-LAST:event_adminAddCusEmployeeActionPerformed
 
+    private void newWOButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newWOButtonActionPerformed
+        if(locationTable.getRowCount() == 0){
+            PopupPanel.display("You must add a Location before you can add a Work Order.", newWOButton.getLocationOnScreen().x+10, newWOButton.getLocationOnScreen().y+newWOButton.getHeight()+10);
+        }
+        else if(employeeTable.getRowCount() == 0){
+            PopupPanel.display("You must add an Employee before you can add a Work Order.", newWOButton.getLocationOnScreen().x+10, newWOButton.getLocationOnScreen().y+newWOButton.getHeight()+10);
+        }
+        else{
+             workOrders.newWO();
+        }
+    }//GEN-LAST:event_newWOButtonActionPerformed
+
     //Load tables
     public void loadTables(){
+        workOrders.load();
         schedule.load();
         assets.load();
         locations.load();

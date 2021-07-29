@@ -80,6 +80,7 @@ public class ScheduleFrame extends javax.swing.JInternalFrame {
         datePicker.getComponentDateTextField().setBorder(nameField.getBorder());
         datePicker.getComponentDateTextField().setMargin(new Insets(2,5,2,2));
         datePanel.add(datePicker);
+        datePanel.repaint();
         
         //Set locations
         ResultSet rs = Database.select("SELECT id, location_name FROM locations WHERE archived = 'N'");
@@ -180,6 +181,10 @@ public class ScheduleFrame extends javax.swing.JInternalFrame {
         bulletButton = new javax.swing.JButton();
         filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
         viewToggleButton = new javax.swing.JToggleButton();
+        descPanel = new javax.swing.JPanel();
+        descScroll = new javax.swing.JScrollPane();
+        descArea = new javax.swing.JTextArea();
+        topPanel = new javax.swing.JPanel();
         leftPanel = new javax.swing.JPanel();
         nameLabel = new javax.swing.JLabel();
         nameField = new javax.swing.JTextField();
@@ -194,9 +199,6 @@ public class ScheduleFrame extends javax.swing.JInternalFrame {
         freqCombo = new javax.swing.JComboBox<>();
         locationLabel = new javax.swing.JLabel();
         locationCombo = new javax.swing.JComboBox<>();
-        descPanel = new javax.swing.JPanel();
-        descScroll = new javax.swing.JScrollPane();
-        descArea = new javax.swing.JTextArea();
 
         descViewPane.setEditable(false);
         descViewPane.setContentType("text/html"); // NOI18N
@@ -290,6 +292,31 @@ public class ScheduleFrame extends javax.swing.JInternalFrame {
         });
         textTools.add(viewToggleButton);
 
+        descArea.setColumns(20);
+        descArea.setLineWrap(true);
+        descArea.setRows(10);
+        descArea.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                descAreaKeyPressed(evt);
+            }
+        });
+        descScroll.setViewportView(descArea);
+
+        javax.swing.GroupLayout descPanelLayout = new javax.swing.GroupLayout(descPanel);
+        descPanel.setLayout(descPanelLayout);
+        descPanelLayout.setHorizontalGroup(
+            descPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(descScroll)
+        );
+        descPanelLayout.setVerticalGroup(
+            descPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, descPanelLayout.createSequentialGroup()
+                .addGap(0, 0, 0)
+                .addComponent(descScroll))
+        );
+
+        topPanel.setLayout(new java.awt.GridLayout(1, 2, 12, 0));
+
         nameLabel.setText("Name:");
 
         dateLabel.setText("Start Date:");
@@ -319,7 +346,7 @@ public class ScheduleFrame extends javax.swing.JInternalFrame {
         leftPanel.setLayout(leftPanelLayout);
         leftPanelLayout.setHorizontalGroup(
             leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(nameField, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)
+            .addComponent(nameField, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)
             .addComponent(assetCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(leftPanelLayout.createSequentialGroup()
                 .addGroup(leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -345,6 +372,8 @@ public class ScheduleFrame extends javax.swing.JInternalFrame {
                 .addComponent(assetCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
+        topPanel.add(leftPanel);
+
         typeLabel.setText("Type:");
 
         typeCombo.setPreferredSize(nameField.getPreferredSize());
@@ -369,7 +398,7 @@ public class ScheduleFrame extends javax.swing.JInternalFrame {
                     .addComponent(typeLabel)
                     .addComponent(freqLabel)
                     .addComponent(locationLabel))
-                .addGap(0, 111, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
             .addComponent(locationCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         rightPanelLayout.setVerticalGroup(
@@ -388,26 +417,7 @@ public class ScheduleFrame extends javax.swing.JInternalFrame {
                 .addComponent(locationCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        descArea.setColumns(20);
-        descArea.setLineWrap(true);
-        descArea.setRows(10);
-        descArea.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                descAreaKeyPressed(evt);
-            }
-        });
-        descScroll.setViewportView(descArea);
-
-        javax.swing.GroupLayout descPanelLayout = new javax.swing.GroupLayout(descPanel);
-        descPanel.setLayout(descPanelLayout);
-        descPanelLayout.setHorizontalGroup(
-            descPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(descScroll)
-        );
-        descPanelLayout.setVerticalGroup(
-            descPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(descScroll)
-        );
+        topPanel.add(rightPanel);
 
         javax.swing.GroupLayout backPanelLayout = new javax.swing.GroupLayout(backPanel);
         backPanel.setLayout(backPanelLayout);
@@ -416,14 +426,11 @@ public class ScheduleFrame extends javax.swing.JInternalFrame {
             .addGroup(backPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(backPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(topPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 353, Short.MAX_VALUE)
                     .addGroup(backPanelLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(continueButton))
                     .addComponent(textTools, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(backPanelLayout.createSequentialGroup()
-                        .addComponent(leftPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(12, 12, 12)
-                        .addComponent(rightPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addComponent(descPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -431,9 +438,7 @@ public class ScheduleFrame extends javax.swing.JInternalFrame {
             backPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, backPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(backPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(leftPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(rightPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(topPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(textTools, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
@@ -655,6 +660,7 @@ public class ScheduleFrame extends javax.swing.JInternalFrame {
     private javax.swing.JLabel nameLabel;
     private javax.swing.JPanel rightPanel;
     private javax.swing.JToolBar textTools;
+    private javax.swing.JPanel topPanel;
     private javax.swing.JComboBox<String> typeCombo;
     private javax.swing.JLabel typeLabel;
     private javax.swing.JToggleButton viewToggleButton;

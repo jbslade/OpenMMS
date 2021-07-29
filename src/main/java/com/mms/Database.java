@@ -130,6 +130,22 @@ public class Database {
                 + "archived VARCHAR(1)"
                 + ")");
         
+        //Work Orders
+        Database.executeQuery("CREATE TABLE work_orders("
+                + "id INT PRIMARY KEY,"
+                + "wo_date DATE,"
+                + "wo_type VARCHAR(50),"
+                + "wo_status VARCHAR(50),"
+                + "wo_priority VARCHAR(50),"
+                + "wo_desc VARCHAR(2000),"
+                + "wo_start_time DATE,"
+                + "wo_end_time DATE,"
+                + "location_id INT,"
+                + "asset_id INT,"
+                + "user_name VARCHAR(50),"
+                + "archived VARCHAR(1)"
+                + ")");
+        
         //CustomFields
         Database.executeQuery("CREATE TABLE custom_fields("
                 + "custom_type VARCHAR(50),"
@@ -147,6 +163,7 @@ public class Database {
         Database.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES (?, ?)", new Object[]{"schedule_type", "Shutdown Maintenance"});
         Database.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES (?, ?)", new Object[]{"schedule_type", "Building Maintenance"});
         Database.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES (?, ?)", new Object[]{"schedule_type", "Safety"});
+        Database.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES (?, ?)", new Object[]{"wo_type", "Shutdown"});
         
         System.out.println("[DATABASE] Database tables created");
     }
