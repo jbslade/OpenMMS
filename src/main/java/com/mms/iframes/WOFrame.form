@@ -33,10 +33,6 @@
           </Border>
         </Property>
       </Properties>
-      <Events>
-        <EventHandler event="componentShown" listener="java.awt.event.ComponentListener" parameters="java.awt.event.ComponentEvent" handler="employeePopupComponentShown"/>
-        <EventHandler event="propertyChange" listener="java.beans.PropertyChangeListener" parameters="java.beans.PropertyChangeEvent" handler="employeePopupPropertyChange"/>
-      </Events>
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout">
         <Property name="useNullLayout" type="boolean" value="true"/>
@@ -123,7 +119,7 @@
                   <Component id="textTools" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
                   <Component id="descPanel" max="32767" attributes="0"/>
-                  <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="continueButton" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="imageButton" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -227,7 +223,7 @@
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="descScroll" alignment="1" max="32767" attributes="0"/>
+                  <Component id="descScroll" alignment="1" pref="190" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
           </Layout>

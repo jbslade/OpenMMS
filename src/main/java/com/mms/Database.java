@@ -146,6 +146,12 @@ public class Database {
                 + "archived VARCHAR(1)"
                 + ")");
         
+        //Work Order Employees
+        Database.executeQuery("CREATE TABLE wo_employees("
+                + "wo_id INT,"
+                + "employee_id INT"
+                + ")");
+        
         //CustomFields
         Database.executeQuery("CREATE TABLE custom_fields("
                 + "custom_type VARCHAR(50),"

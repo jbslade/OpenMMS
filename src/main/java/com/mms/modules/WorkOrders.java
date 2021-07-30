@@ -65,10 +65,24 @@ public class WorkOrders {
                         o[0] = rs.getObject(1).toString().trim();//id
                         o[1] = rs.getObject(2).toString().trim();//date
                         o[2] = rs.getObject(3).toString().trim();//type
-                        o[3] = rs.getObject(4).toString().trim();//prio                      
+                        
+                        String prio = rs.getObject(4).toString().trim();//prio
+                        if(prio.equals("High")) prio = "<html><b>"+prio+"</b></html>";
+                        o[3] = prio;
+                        
                         o[4] = rs.getObject(5).toString().trim().equals("-1") ? "No Asset" : rs.getObject(5).toString().trim()+" - "+rs.getObject(6).toString().trim();//asset_id-name
                         o[5] = rs.getObject(7).toString().trim()+" - "+rs.getObject(8).toString().trim();//location_id-name
-                        o[6] = "EMPLOYEE";
+                        
+                        //Get employees
+                        String employees = "";
+                        ResultSet emp = Database.select("SELECT t1.employee_name FROM wo_employees t0 JOIN employees t1 ON t0.employee_id = t1.id WHERE t0.wo_id = ?",
+                                new Object[]{o[0]});
+                        while(emp.next()){
+                            if(employees.isEmpty()) employees += emp.getString(1).trim();
+                            else employees += "; "+emp.getString(1);
+                        }
+                        o[6] = employees;//employees
+                        
                         o[7] = rs.getObject(9).toString().trim();//status
                         o[8] = rs.getObject(10).toString().trim();//archived
                         if(o[8].equals("N")){

@@ -27,6 +27,9 @@ import com.sun.glass.events.KeyEvent;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.sql.Date;
 import java.sql.ResultSet;
@@ -122,8 +125,10 @@ public class WOFrame extends javax.swing.JInternalFrame {
         rs = Database.select("SELECT id, employee_name FROM employees");
         try {
             while(rs.next()){
+                JCheckBoxMenuItem j = new JCheckBoxMenuItem(rs.getString(2));
+                j.addActionListener(new EmployeeSelectListener());
+                employeePopup.add(j);
                 employees.add(rs.getInt(1));
-                employeePopup.add(new JCheckBoxMenuItem(rs.getString(2)));
             }
             rs.close();
         } catch (SQLException ex) {
@@ -137,10 +142,19 @@ public class WOFrame extends javax.swing.JInternalFrame {
         if (r != -1){
             typeCombo.setSelectedItem(table.getValueAt(row, 2));
             priorityCombo.setSelectedItem(table.getValueAt(row, 3));
-            assetCombo.setSelectedItem(table.getValueAt(row, 6));
-            locationCombo.setSelectedItem(table.getValueAt(row, 7));
+            assetCombo.setSelectedItem(table.getValueAt(row, 4));
+            locationCombo.setSelectedItem(table.getValueAt(row, 5));
+            
+            //Employees
+            employeeField.setText(table.getValueAt(row, 6).toString());
+            for(Component c : employeePopup.getComponents()){
+                if(c instanceof JCheckBoxMenuItem && employeeField.getText().contains(((JCheckBoxMenuItem)c).getText()))
+                    ((JCheckBoxMenuItem)c).setSelected(true);
+            }
+                
             continueButton.setText("Save");
             
+            //Date and desc
             rs = Database.select("SELECT wo_date, wo_desc FROM schedule WHERE id = ?",
                     new Object[]{table.getValueAt(row, 0)});
             try {
@@ -175,6 +189,32 @@ public class WOFrame extends javax.swing.JInternalFrame {
             for(Component c : textTools.getComponents())
                 c.setEnabled(false);
             backPanel.setBorder(new MatteBorder(0,0,6,0, backPanel.getBackground()));
+        }
+    }
+    
+    private class EmployeeSelectListener implements ActionListener{
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String s = employeeField.getText();
+            for(Component c : employeePopup.getComponents()){
+                if(c instanceof JCheckBoxMenuItem){
+                    JCheckBoxMenuItem m = (JCheckBoxMenuItem)c;
+                    if(m.isSelected() && !s.contains(m.getText())){
+                        if(s.isEmpty()) employeeField.setText(m.getText());
+                        else employeeField.setText(employeeField.getText()+"; "+m.getText());
+                    }
+                    else if(!m.isSelected()){
+                        if(s.contains("; "+m.getText()+"; "))
+                            employeeField.setText(employeeField.getText().replaceAll("; "+m.getText()+"; ", ""));
+                        else if(s.contains("; "+m.getText()))
+                            employeeField.setText(employeeField.getText().replaceAll("; "+m.getText(), ""));
+                        else if(s.contains(m.getText()+"; "))
+                            employeeField.setText(employeeField.getText().replaceAll(m.getText()+"; ", ""));
+                        else if(s.contains(m.getText()))
+                            employeeField.setText(employeeField.getText().replaceAll(m.getText(), ""));
+                    }
+                }
+            }
         }
     }
     
@@ -226,16 +266,6 @@ public class WOFrame extends javax.swing.JInternalFrame {
 
         employeePopup.setBackground(new java.awt.Color(255, 255, 255));
         employeePopup.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        employeePopup.addComponentListener(new java.awt.event.ComponentAdapter() {
-            public void componentShown(java.awt.event.ComponentEvent evt) {
-                employeePopupComponentShown(evt);
-            }
-        });
-        employeePopup.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                employeePopupPropertyChange(evt);
-            }
-        });
 
         setClosable(true);
         setIconifiable(true);
@@ -342,7 +372,7 @@ public class WOFrame extends javax.swing.JInternalFrame {
         );
         descPanelLayout.setVerticalGroup(
             descPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(descScroll, javax.swing.GroupLayout.Alignment.TRAILING)
+            .addComponent(descScroll, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE)
         );
 
         imageButton.setText("Attach Image(s)");
@@ -531,7 +561,8 @@ public class WOFrame extends javax.swing.JInternalFrame {
         
         int locNum = Integer.parseInt(locName.substring(0, locName.indexOf("-")-1)),
                 assNum = assName.equals("No Asset") ? -1 : Integer.parseInt(assName.substring(0, assName.indexOf("-")-1));
-        if(desc.isEmpty()) descArea.requestFocus();
+        if(employeeField.getText().isEmpty()) employeeField.requestFocus();
+        else if(desc.isEmpty()) descArea.requestFocus();
         else{
             OtherTools.disablePanel(backPanel);
             new Thread(){
@@ -552,10 +583,17 @@ public class WOFrame extends javax.swing.JInternalFrame {
                     Database.executeQuery("INSERT INTO work_orders (id, wo_date, wo_type, wo_priority, wo_desc, asset_id, location_id, user_name, wo_status, archived) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'Open', 'N')",
                             new Object[]{WONum, date, type, prio, desc , assNum, locNum, MMS.getUser()});
                     
-                    //INSERT EMPLOYEES!
+                    //Insert employees
+                    for(int i = 0; i < employeePopup.getComponentCount(); i++){
+                        JCheckBoxMenuItem m = (JCheckBoxMenuItem)employeePopup.getComponent(i);
+                        if(m.isSelected()){
+                            Database.executeQuery("INSERT INTO wo_employees (wo_id, employee_id) VALUES (?, ?)",
+                                    new Object[]{WONum, employees.get(i)});
+                        }
+                    }
 
                     //Update table
-                    Object [] o = {WONum, date, type, prio, assName, locName, "EMPLOYEE", "Open"};
+                    Object [] o = {WONum, date, type, prio.equals("High") ? "<html><b>High</b></html>" : prio, assName, locName, employeeField.getText(), "Open"};
                     DefaultTableModel m = (DefaultTableModel)table.getModel();
                     m.insertRow(0, o);
                     //Select new row
@@ -576,7 +614,7 @@ public class WOFrame extends javax.swing.JInternalFrame {
                         table.setValueAt(prio, row, 3);
                         table.setValueAt(assName, row, 4);
                         table.setValueAt(locName, row, 5);
-                        table.setValueAt("EMPLOYEES", row, 6);
+                        table.setValueAt(employeeField.getText(), row, 6);
                         table.setValueAt("Open", row, 7);
                         //Select updated row
                         table.setRowSelectionInterval(row, row);
@@ -686,50 +724,9 @@ public class WOFrame extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_descAreaKeyPressed
 
     private void employeeButtonMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_employeeButtonMousePressed
-        employeeField.selectAll();
         employeeField.requestFocus();
-        if(employeePopup.isVisible()) employeePopup.setVisible(false);
-        else employeePopup.show(employeeButton, employeeButton.getWidth()-employeePopup.getWidth(), employeeButton.getHeight()+3);
+        employeePopup.show(employeeButton, employeeButton.getWidth()-employeePopup.getWidth(), employeeButton.getHeight()+3);
     }//GEN-LAST:event_employeeButtonMousePressed
-
-    private void employeePopupComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_employeePopupComponentShown
-        String s = employeeField.getText();
-        for(Component c : employeePopup.getComponents()){
-            if(((JCheckBoxMenuItem)c).isSelected()){
-                if(s.isEmpty()) employeeField.setText(((JCheckBoxMenuItem)c).getText());
-                else employeeField.setText(employeeField.getText()+"; "+((JCheckBoxMenuItem)c).getText());
-            }
-            else{
-                if(s.contains(((JCheckBoxMenuItem)c).getText()+"; "))
-                    employeeField.setText(employeeField.getText().replaceAll(((JCheckBoxMenuItem)c).getText()+"; ", ""));
-                else if(s.contains(((JCheckBoxMenuItem)c).getText()))
-                    employeeField.setText(employeeField.getText().replaceAll(((JCheckBoxMenuItem)c).getText(), ""));
-            }
-        }
-    }//GEN-LAST:event_employeePopupComponentShown
-
-    private void employeePopupPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_employeePopupPropertyChange
-        String s = employeeField.getText();
-        for(Component c : employeePopup.getComponents()){
-            if(c instanceof JCheckBoxMenuItem){
-                JCheckBoxMenuItem m = (JCheckBoxMenuItem)c;
-                if(m.isSelected() && !s.contains(m.getText())){
-                    if(s.isEmpty()) employeeField.setText(m.getText());
-                    else employeeField.setText(employeeField.getText()+"; "+m.getText());
-                }
-                else if(!m.isSelected()){
-                    if(s.contains("; "+m.getText()+"; "))
-                        employeeField.setText(employeeField.getText().replaceAll("; "+m.getText()+"; ", ""));
-                    else if(s.contains("; "+m.getText()))
-                        employeeField.setText(employeeField.getText().replaceAll("; "+m.getText(), ""));
-                    else if(s.contains(m.getText()+"; "))
-                        employeeField.setText(employeeField.getText().replaceAll(m.getText()+"; ", ""));
-                    else if(s.contains(m.getText()))
-                        employeeField.setText(employeeField.getText().replaceAll(m.getText(), ""));
-                }
-            }
-        }
-    }//GEN-LAST:event_employeePopupPropertyChange
      
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> assetCombo;
