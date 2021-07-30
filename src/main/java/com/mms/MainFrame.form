@@ -601,6 +601,7 @@
                               <Image iconType="3" name="/buttons/edit.png"/>
                             </Property>
                             <Property name="text" type="java.lang.String" value="Edit"/>
+                            <Property name="enabled" type="boolean" value="false"/>
                           </Properties>
                         </Component>
                         <Component class="javax.swing.JButton" name="deleteWOButton">
@@ -609,6 +610,7 @@
                               <Image iconType="3" name="/buttons/delete.png"/>
                             </Property>
                             <Property name="text" type="java.lang.String" value="Delete"/>
+                            <Property name="enabled" type="boolean" value="false"/>
                           </Properties>
                           <Events>
                             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="deleteWOButtonActionPerformed"/>
@@ -620,6 +622,7 @@
                               <Image iconType="3" name="/buttons/archive.png"/>
                             </Property>
                             <Property name="text" type="java.lang.String" value="Archive"/>
+                            <Property name="enabled" type="boolean" value="false"/>
                           </Properties>
                         </Component>
                         <Component class="javax.swing.JButton" name="statusWOButton">
@@ -628,6 +631,7 @@
                               <Image iconType="3" name="/buttons/status.png"/>
                             </Property>
                             <Property name="text" type="java.lang.String" value="Status"/>
+                            <Property name="enabled" type="boolean" value="false"/>
                           </Properties>
                         </Component>
                         <Component class="javax.swing.JButton" name="viewWOButton">
@@ -636,6 +640,7 @@
                               <Image iconType="3" name="/buttons/view.png"/>
                             </Property>
                             <Property name="text" type="java.lang.String" value="View"/>
+                            <Property name="enabled" type="boolean" value="false"/>
                           </Properties>
                         </Component>
                         <Component class="javax.swing.JButton" name="printWOButton">
@@ -644,6 +649,7 @@
                               <Image iconType="3" name="/buttons/print.png"/>
                             </Property>
                             <Property name="text" type="java.lang.String" value="Print"/>
+                            <Property name="enabled" type="boolean" value="false"/>
                           </Properties>
                         </Component>
                         <Component class="javax.swing.Box$Filler" name="filler1">

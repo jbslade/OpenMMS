@@ -111,9 +111,6 @@ public class MainFrame extends javax.swing.JFrame {
         if(isAdmin) admin = new Admin(adminUserTable, WOCusList, SchCusList, AssetCusList, EmpCusList);
         else admin = null;
         
-        //Tables (move to WorkOrders class)
-        TableTools.format(workOrderTable);
-        
         //Table selection listeners
         workOrderTable.getSelectionModel().addListSelectionListener((ListSelectionEvent e) -> {
             switch (workOrderTable.getSelectedRowCount()) {
@@ -606,10 +603,12 @@ public class MainFrame extends javax.swing.JFrame {
 
         editWOButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/edit.png"))); // NOI18N
         editWOButton.setText("Edit");
+        editWOButton.setEnabled(false);
         workOrderTools.add(editWOButton);
 
         deleteWOButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/delete.png"))); // NOI18N
         deleteWOButton.setText("Delete");
+        deleteWOButton.setEnabled(false);
         deleteWOButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 deleteWOButtonActionPerformed(evt);
@@ -619,18 +618,22 @@ public class MainFrame extends javax.swing.JFrame {
 
         archiveWOButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/archive.png"))); // NOI18N
         archiveWOButton.setText("Archive");
+        archiveWOButton.setEnabled(false);
         workOrderTools.add(archiveWOButton);
 
         statusWOButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/status.png"))); // NOI18N
         statusWOButton.setText("Status");
+        statusWOButton.setEnabled(false);
         workOrderTools.add(statusWOButton);
 
         viewWOButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/view.png"))); // NOI18N
         viewWOButton.setText("View");
+        viewWOButton.setEnabled(false);
         workOrderTools.add(viewWOButton);
 
         printWOButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/print.png"))); // NOI18N
         printWOButton.setText("Print");
+        printWOButton.setEnabled(false);
         workOrderTools.add(printWOButton);
         workOrderTools.add(filler1);
 

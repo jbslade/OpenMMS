@@ -20,6 +20,7 @@ import com.github.lgooddatepicker.components.DatePickerSettings;
 import com.mms.Database;
 import com.mms.MMS;
 import com.mms.utilities.DateTools;
+import com.mms.utilities.MenuScroller;
 import com.mms.utilities.OtherTools;
 import com.mms.utilities.TableTools;
 import com.sun.glass.events.KeyEvent;
@@ -128,6 +129,7 @@ public class WOFrame extends javax.swing.JInternalFrame {
         } catch (SQLException ex) {
             Logger.getLogger(EmployeeFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
+        if(employeePopup.getComponentCount() > 10) MenuScroller.setScrollerFor(employeePopup, 10);
         employeePopup.show(null, 0, 0);
         employeePopup.setVisible(false);
         
@@ -224,14 +226,14 @@ public class WOFrame extends javax.swing.JInternalFrame {
 
         employeePopup.setBackground(new java.awt.Color(255, 255, 255));
         employeePopup.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        employeePopup.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                employeePopupFocusLost(evt);
-            }
-        });
         employeePopup.addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentShown(java.awt.event.ComponentEvent evt) {
                 employeePopupComponentShown(evt);
+            }
+        });
+        employeePopup.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                employeePopupPropertyChange(evt);
             }
         });
 
@@ -690,19 +692,44 @@ public class WOFrame extends javax.swing.JInternalFrame {
         else employeePopup.show(employeeButton, employeeButton.getWidth()-employeePopup.getWidth(), employeeButton.getHeight()+3);
     }//GEN-LAST:event_employeeButtonMousePressed
 
-    private void employeePopupFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_employeePopupFocusLost
-        
-    }//GEN-LAST:event_employeePopupFocusLost
-
     private void employeePopupComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_employeePopupComponentShown
+        String s = employeeField.getText();
         for(Component c : employeePopup.getComponents()){
             if(((JCheckBoxMenuItem)c).isSelected()){
-                String s = employeeField.getText();
                 if(s.isEmpty()) employeeField.setText(((JCheckBoxMenuItem)c).getText());
-                else if(!s.contains(((JCheckBoxMenuItem)c).getText())) employeeField.setText(employeeField.getText()+"; "+((JCheckBoxMenuItem)c).getText());
+                else employeeField.setText(employeeField.getText()+"; "+((JCheckBoxMenuItem)c).getText());
+            }
+            else{
+                if(s.contains(((JCheckBoxMenuItem)c).getText()+"; "))
+                    employeeField.setText(employeeField.getText().replaceAll(((JCheckBoxMenuItem)c).getText()+"; ", ""));
+                else if(s.contains(((JCheckBoxMenuItem)c).getText()))
+                    employeeField.setText(employeeField.getText().replaceAll(((JCheckBoxMenuItem)c).getText(), ""));
             }
         }
     }//GEN-LAST:event_employeePopupComponentShown
+
+    private void employeePopupPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_employeePopupPropertyChange
+        String s = employeeField.getText();
+        for(Component c : employeePopup.getComponents()){
+            if(c instanceof JCheckBoxMenuItem){
+                JCheckBoxMenuItem m = (JCheckBoxMenuItem)c;
+                if(m.isSelected() && !s.contains(m.getText())){
+                    if(s.isEmpty()) employeeField.setText(m.getText());
+                    else employeeField.setText(employeeField.getText()+"; "+m.getText());
+                }
+                else if(!m.isSelected()){
+                    if(s.contains("; "+m.getText()+"; "))
+                        employeeField.setText(employeeField.getText().replaceAll("; "+m.getText()+"; ", ""));
+                    else if(s.contains("; "+m.getText()))
+                        employeeField.setText(employeeField.getText().replaceAll("; "+m.getText(), ""));
+                    else if(s.contains(m.getText()+"; "))
+                        employeeField.setText(employeeField.getText().replaceAll(m.getText()+"; ", ""));
+                    else if(s.contains(m.getText()))
+                        employeeField.setText(employeeField.getText().replaceAll(m.getText(), ""));
+                }
+            }
+        }
+    }//GEN-LAST:event_employeePopupPropertyChange
      
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> assetCombo;
