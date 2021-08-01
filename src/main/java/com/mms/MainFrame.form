@@ -4,6 +4,49 @@
   <NonVisualComponents>
     <Component class="javax.swing.ButtonGroup" name="tableSizeGroup">
     </Component>
+    <Container class="javax.swing.JPopupMenu" name="statusPopup">
+
+      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout">
+        <Property name="useNullLayout" type="boolean" value="true"/>
+      </Layout>
+      <SubComponents>
+        <MenuItem class="javax.swing.JRadioButtonMenuItem" name="statusOpen">
+          <Properties>
+            <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+              <ComponentRef name="statusGroup"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="Open"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="statusOpenActionPerformed"/>
+          </Events>
+        </MenuItem>
+        <MenuItem class="javax.swing.JRadioButtonMenuItem" name="statusOnHold">
+          <Properties>
+            <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+              <ComponentRef name="statusGroup"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="On Hold"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="statusOnHoldActionPerformed"/>
+          </Events>
+        </MenuItem>
+        <MenuItem class="javax.swing.JRadioButtonMenuItem" name="statusClosed">
+          <Properties>
+            <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+              <ComponentRef name="statusGroup"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="Closed"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="statusClosedActionPerformed"/>
+          </Events>
+        </MenuItem>
+      </SubComponents>
+    </Container>
+    <Component class="javax.swing.ButtonGroup" name="statusGroup">
+    </Component>
     <Menu class="javax.swing.JMenuBar" name="menuBar">
       <SubComponents>
         <Menu class="javax.swing.JMenu" name="menuFile">
@@ -603,6 +646,9 @@
                             <Property name="text" type="java.lang.String" value="Edit"/>
                             <Property name="enabled" type="boolean" value="false"/>
                           </Properties>
+                          <Events>
+                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="editWOButtonActionPerformed"/>
+                          </Events>
                         </Component>
                         <Component class="javax.swing.JButton" name="deleteWOButton">
                           <Properties>
@@ -624,15 +670,9 @@
                             <Property name="text" type="java.lang.String" value="Archive"/>
                             <Property name="enabled" type="boolean" value="false"/>
                           </Properties>
-                        </Component>
-                        <Component class="javax.swing.JButton" name="statusWOButton">
-                          <Properties>
-                            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                              <Image iconType="3" name="/buttons/status.png"/>
-                            </Property>
-                            <Property name="text" type="java.lang.String" value="Status"/>
-                            <Property name="enabled" type="boolean" value="false"/>
-                          </Properties>
+                          <Events>
+                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="archiveWOButtonActionPerformed"/>
+                          </Events>
                         </Component>
                         <Component class="javax.swing.JButton" name="viewWOButton">
                           <Properties>
@@ -642,6 +682,21 @@
                             <Property name="text" type="java.lang.String" value="View"/>
                             <Property name="enabled" type="boolean" value="false"/>
                           </Properties>
+                          <Events>
+                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="viewWOButtonActionPerformed"/>
+                          </Events>
+                        </Component>
+                        <Component class="javax.swing.JButton" name="statusWOButton">
+                          <Properties>
+                            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                              <Image iconType="3" name="/buttons/status.png"/>
+                            </Property>
+                            <Property name="text" type="java.lang.String" value="Status"/>
+                            <Property name="enabled" type="boolean" value="false"/>
+                          </Properties>
+                          <Events>
+                            <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="statusWOButtonMousePressed"/>
+                          </Events>
                         </Component>
                         <Component class="javax.swing.JButton" name="printWOButton">
                           <Properties>
@@ -706,6 +761,7 @@
                             <Property name="dragEnabled" type="boolean" value="true"/>
                           </Properties>
                           <Events>
+                            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="workOrderTableMouseClicked"/>
                             <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="workOrderTableKeyPressed"/>
                           </Events>
                         </Component>
@@ -800,18 +856,6 @@
                             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="archiveScheduleButtonActionPerformed"/>
                           </Events>
                         </Component>
-                        <Component class="javax.swing.JButton" name="completeScheduleButton">
-                          <Properties>
-                            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                              <Image iconType="3" name="/buttons/complete.png"/>
-                            </Property>
-                            <Property name="text" type="java.lang.String" value="Complete"/>
-                            <Property name="enabled" type="boolean" value="false"/>
-                          </Properties>
-                          <Events>
-                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="completeScheduleButtonActionPerformed"/>
-                          </Events>
-                        </Component>
                         <Component class="javax.swing.JButton" name="viewScheduleButton">
                           <Properties>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
@@ -829,9 +873,24 @@
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/buttons/createWO.png"/>
                             </Property>
-                            <Property name="text" type="java.lang.String" value="Create W/O"/>
+                            <Property name="text" type="java.lang.String" value="Create WO"/>
                             <Property name="enabled" type="boolean" value="false"/>
                           </Properties>
+                          <Events>
+                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="createWOButtonActionPerformed"/>
+                          </Events>
+                        </Component>
+                        <Component class="javax.swing.JButton" name="completeScheduleButton">
+                          <Properties>
+                            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                              <Image iconType="3" name="/buttons/complete.png"/>
+                            </Property>
+                            <Property name="text" type="java.lang.String" value="Complete"/>
+                            <Property name="enabled" type="boolean" value="false"/>
+                          </Properties>
+                          <Events>
+                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="completeScheduleButtonActionPerformed"/>
+                          </Events>
                         </Component>
                         <Component class="javax.swing.Box$Filler" name="filler2">
                           <Properties>
@@ -1761,90 +1820,11 @@
 
                           <Layout class="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout"/>
                           <SubComponents>
-                            <Container class="javax.swing.JPanel" name="adminWOCusPanel">
+                            <Container class="javax.swing.JPanel" name="adminTypePanel">
                               <Constraints>
                                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-                                  <JTabbedPaneConstraints tabName="Work Order Types">
-                                    <Property name="tabTitle" type="java.lang.String" value="Work Order Types"/>
-                                  </JTabbedPaneConstraints>
-                                </Constraint>
-                              </Constraints>
-
-                              <Layout>
-                                <DimensionLayout dim="0">
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Group type="102" attributes="0">
-                                          <Component id="adminAddCusWO" min="-2" max="-2" attributes="0"/>
-                                          <EmptySpace max="-2" attributes="0"/>
-                                          <Component id="adminDelCusWO" min="-2" max="-2" attributes="0"/>
-                                          <EmptySpace pref="339" max="32767" attributes="0"/>
-                                      </Group>
-                                      <Component id="jScrollPane2" max="32767" attributes="0"/>
-                                  </Group>
-                                </DimensionLayout>
-                                <DimensionLayout dim="1">
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Group type="102" alignment="0" attributes="0">
-                                          <EmptySpace max="-2" attributes="0"/>
-                                          <Component id="jScrollPane2" pref="213" max="32767" attributes="0"/>
-                                          <EmptySpace max="-2" attributes="0"/>
-                                          <Group type="103" groupAlignment="3" attributes="0">
-                                              <Component id="adminAddCusWO" alignment="3" min="-2" max="-2" attributes="0"/>
-                                              <Component id="adminDelCusWO" alignment="3" min="-2" max="-2" attributes="0"/>
-                                          </Group>
-                                      </Group>
-                                  </Group>
-                                </DimensionLayout>
-                              </Layout>
-                              <SubComponents>
-                                <Container class="javax.swing.JScrollPane" name="jScrollPane2">
-                                  <AuxValues>
-                                    <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
-                                  </AuxValues>
-
-                                  <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
-                                  <SubComponents>
-                                    <Component class="javax.swing.JList" name="WOCusList">
-                                      <Properties>
-                                        <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                                          <Connection code="new DefaultListModel()" type="code"/>
-                                        </Property>
-                                      </Properties>
-                                      <AuxValues>
-                                        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
-                                      </AuxValues>
-                                    </Component>
-                                  </SubComponents>
-                                </Container>
-                                <Component class="javax.swing.JButton" name="adminAddCusWO">
-                                  <Properties>
-                                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                                      <Image iconType="3" name="/buttons/new.png"/>
-                                    </Property>
-                                    <Property name="text" type="java.lang.String" value="Add"/>
-                                  </Properties>
-                                  <Events>
-                                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="adminAddCusWOActionPerformed"/>
-                                  </Events>
-                                </Component>
-                                <Component class="javax.swing.JButton" name="adminDelCusWO">
-                                  <Properties>
-                                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                                      <Image iconType="3" name="/buttons/delete.png"/>
-                                    </Property>
-                                    <Property name="text" type="java.lang.String" value="Delete"/>
-                                  </Properties>
-                                  <Events>
-                                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="adminDelCusWOActionPerformed"/>
-                                  </Events>
-                                </Component>
-                              </SubComponents>
-                            </Container>
-                            <Container class="javax.swing.JPanel" name="adminSchCusPanel">
-                              <Constraints>
-                                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-                                  <JTabbedPaneConstraints tabName="Schedule Types">
-                                    <Property name="tabTitle" type="java.lang.String" value="Schedule Types"/>
+                                  <JTabbedPaneConstraints tabName="Maintenance Types">
+                                    <Property name="tabTitle" type="java.lang.String" value="Maintenance Types"/>
                                   </JTabbedPaneConstraints>
                                 </Constraint>
                               </Constraints>

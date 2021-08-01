@@ -19,6 +19,8 @@ import com.github.lgooddatepicker.components.DatePicker;
 import com.github.lgooddatepicker.components.DatePickerSettings;
 import com.mms.Database;
 import com.mms.MMS;
+import com.mms.dialogs.InternalDialog;
+import com.mms.modules.Schedule;
 import com.mms.utilities.DateTools;
 import com.mms.utilities.MenuScroller;
 import com.mms.utilities.OtherTools;
@@ -41,6 +43,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.GroupLayout;
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.border.MatteBorder;
 import javax.swing.table.DefaultTableModel;
@@ -56,14 +59,17 @@ public class WOFrame extends javax.swing.JInternalFrame {
     private final JTable table;
     private final DatePicker datePicker;
     private ArrayList<Integer> assetLocations, employees;
-
+    private final Schedule schedule;
+    private int scheduleRow;
     
-    public WOFrame(JTable t, int r, boolean view) {
+    public WOFrame(JTable t, int r, boolean view, Schedule s) {
         initComponents();
         table = t;
         row = r;
         assetLocations = new ArrayList<>();
         employees = new ArrayList<>();
+        schedule = s;
+        if(schedule != null) scheduleRow = schedule.getTable().getSelectedRow();
         getRootPane().setDefaultButton(continueButton);
 
         //Desc view area
@@ -111,7 +117,7 @@ public class WOFrame extends javax.swing.JInternalFrame {
         }
         
         //Set types
-        rs = Database.select("SELECT custom_value FROM custom_fields WHERE custom_type = 'wo_type'");
+        rs = Database.select("SELECT custom_value FROM custom_fields WHERE custom_type = 'maintenance_type'");
         try {
             while(rs.next()){
                 typeCombo.addItem(rs.getString(1));
@@ -141,7 +147,7 @@ public class WOFrame extends javax.swing.JInternalFrame {
         //Edit
         if (r != -1){
             typeCombo.setSelectedItem(table.getValueAt(row, 2));
-            priorityCombo.setSelectedItem(table.getValueAt(row, 3));
+            priorityCombo.setSelectedItem(OtherTools.escapeHTML(table.getValueAt(row, 3).toString()));
             assetCombo.setSelectedItem(table.getValueAt(row, 4));
             locationCombo.setSelectedItem(table.getValueAt(row, 5));
             
@@ -155,7 +161,7 @@ public class WOFrame extends javax.swing.JInternalFrame {
             continueButton.setText("Save");
             
             //Date and desc
-            rs = Database.select("SELECT wo_date, wo_desc FROM schedule WHERE id = ?",
+            rs = Database.select("SELECT wo_date, wo_desc FROM work_orders WHERE id = ?",
                     new Object[]{table.getValueAt(row, 0)});
             try {
                 if(rs.next()){
@@ -167,11 +173,31 @@ public class WOFrame extends javax.swing.JInternalFrame {
             }
         }
         
+        //Schedule
+        if(s != null){
+            //Get schedule desc
+            ResultSet srs = Database.select("SELECT schedule_desc FROM schedule WHERE id = ?",
+                    new Object[]{schedule.getTable().getValueAt(schedule.getTable().getSelectedRow(), 0)});
+            //Set values
+            try {
+                if(srs.next()){
+                    descArea.setText(srs.getString(1).trim());
+                }
+                srs.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(WOFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            typeCombo.setSelectedItem(schedule.getTable().getValueAt(schedule.getTable().getSelectedRow(), 2));
+            assetCombo.setSelectedItem(schedule.getTable().getValueAt(schedule.getTable().getSelectedRow(), 6));
+            locationCombo.setSelectedItem(schedule.getTable().getValueAt(schedule.getTable().getSelectedRow(), 7));
+        }
+        
         //View
         if(view){
             employeeField.setEditable(false);
             employeeField.setFocusable(false);
             employeeField.setBackground(Color.WHITE);
+            employeeButton.setEnabled(false);
             OtherTools.setComboBoxReadOnly(typeCombo);
             OtherTools.setComboBoxReadOnly(priorityCombo);
             OtherTools.setComboBoxReadOnly(assetCombo);
@@ -186,9 +212,10 @@ public class WOFrame extends javax.swing.JInternalFrame {
             descViewPane.setFocusable(false);
             continueButton.setEnabled(false);
             continueButton.setVisible(false);
+            imageButton.setText("Open Images");
             for(Component c : textTools.getComponents())
                 c.setEnabled(false);
-            backPanel.setBorder(new MatteBorder(0,0,6,0, backPanel.getBackground()));
+            backPanel.setBorder(new MatteBorder(0,0,0,6, backPanel.getBackground()));
         }
     }
     
@@ -372,7 +399,7 @@ public class WOFrame extends javax.swing.JInternalFrame {
         );
         descPanelLayout.setVerticalGroup(
             descPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(descScroll, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE)
+            .addComponent(descScroll)
         );
 
         imageButton.setText("Attach Image(s)");
@@ -503,16 +530,16 @@ public class WOFrame extends javax.swing.JInternalFrame {
         backPanel.setLayout(backPanelLayout);
         backPanelLayout.setHorizontalGroup(
             backPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, backPanelLayout.createSequentialGroup()
+            .addGroup(backPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(backPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(topPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 391, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, backPanelLayout.createSequentialGroup()
+                .addGroup(backPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(topPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 391, Short.MAX_VALUE)
+                    .addComponent(textTools, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(descPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, backPanelLayout.createSequentialGroup()
                         .addComponent(imageButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(continueButton))
-                    .addComponent(textTools, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(descPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(continueButton)))
                 .addContainerGap())
         );
         backPanelLayout.setVerticalGroup(
@@ -606,20 +633,38 @@ public class WOFrame extends javax.swing.JInternalFrame {
                         Database.executeQuery("UPDATE work_orders SET wo_date = ?, wo_type = ?, wo_priority = ?, wo_desc = ?, asset_id = ?, location_id = ? WHERE id = ?",
                                 new Object[]{date, type, prio, desc , assNum, locNum, WONum});
                         
-                        //SET EMPLOYEES
+                        //Insert employees
+                        Database.executeQuery("DELETE FROM wo_employees WHERE wo_id = ?",
+                                new Object[]{WONum});
+                        for(int i = 0; i < employeePopup.getComponentCount(); i++){
+                            JCheckBoxMenuItem m = (JCheckBoxMenuItem)employeePopup.getComponent(i);
+                            if(m.isSelected()){
+                                Database.executeQuery("INSERT INTO wo_employees (wo_id, employee_id) VALUES (?, ?)",
+                                        new Object[]{WONum, employees.get(i)});
+                            }
+                        }
 
                         //Update table
                         table.setValueAt(date, row, 1);
                         table.setValueAt(type, row, 2);
-                        table.setValueAt(prio, row, 3);
+                        table.setValueAt(prio.equals("High") ? "<html><b>High</b></html>" : prio, row, 3);
                         table.setValueAt(assName, row, 4);
                         table.setValueAt(locName, row, 5);
                         table.setValueAt(employeeField.getText(), row, 6);
-                        table.setValueAt("Open", row, 7);
                         //Select updated row
                         table.setRowSelectionInterval(row, row);
                     }
                     TableTools.resize(table);
+                    
+                    if(schedule != null){
+                        String s = OtherTools.escapeHTML(schedule.getTable().getValueAt(scheduleRow, 5).toString());
+                        if(s.equals("Today") || s.equals("Overdue")){
+                            if(InternalDialog.showInternalConfirmDialog(MMS.getMainFrame().getDesktopPane(), "Would you like to mark Scheduled Task #"+schedule.getTable().getValueAt(scheduleRow, 0).toString()+" as complete?", "Complete Scheduled Task", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null) == 0){
+                                schedule.completeTask(scheduleRow);
+                            }
+                        }
+                    }
+                    
                     dispose();
                 }
             }.start();
@@ -724,8 +769,10 @@ public class WOFrame extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_descAreaKeyPressed
 
     private void employeeButtonMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_employeeButtonMousePressed
-        employeeField.requestFocus();
-        employeePopup.show(employeeButton, employeeButton.getWidth()-employeePopup.getWidth(), employeeButton.getHeight()+3);
+        if(employeeButton.isEnabled()){
+            employeeField.requestFocus();
+            employeePopup.show(employeeButton, employeeButton.getWidth()-employeePopup.getWidth(), employeeButton.getHeight()+3);
+        }
     }//GEN-LAST:event_employeeButtonMousePressed
      
     // Variables declaration - do not modify//GEN-BEGIN:variables

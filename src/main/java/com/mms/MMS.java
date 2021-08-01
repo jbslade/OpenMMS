@@ -19,13 +19,10 @@ import com.mms.dialogs.SetupDialog;
 import com.mms.utilities.ContextMenuMouseListener;
 import com.formdev.flatlaf.intellijthemes.FlatGrayIJTheme;
 import com.mms.dialogs.LoginDialog;
-import com.mms.utilities.OtherTools;
 import java.awt.Color;
 import java.awt.Toolkit;
 import java.awt.event.MouseListener;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
@@ -184,7 +181,7 @@ public class MMS {
     static void login(){
         splash.setVisible(true);
         LoginDialog lg = new LoginDialog(splash, true);
-        lg.setSize(DIAG_WIDTH, lg.getHeight());
+        lg.setSize(DIAG_WIDTH+DIAG_WIDTH/10, lg.getHeight());
         lg.setIconImage(systemIcon.getImage());
         lg.setLocationRelativeTo(splash);
         splash.setVisible(true);

@@ -20,6 +20,7 @@ import com.mms.MMS;
 import com.mms.MainFrame;
 import com.mms.dialogs.InternalDialog;
 import com.mms.iframes.ScheduleFrame;
+import com.mms.iframes.WOFrame;
 import com.mms.utilities.DateTools;
 import com.mms.utilities.TableTools;
 import java.sql.ResultSet;
@@ -46,6 +47,8 @@ public class Schedule {
         loadLabel = l;
         TableTools.format(table);
     }
+    
+    public JTable getTable(){ return table; }
     
     public void load(){
         int row = table.getSelectedRow() == -1 ? 0 : table.getSelectedRow();
@@ -78,8 +81,8 @@ public class Schedule {
                         if(DateTools.isToday(dueDate)) row = "<html><b>Today</b></html>";
                         else if(DateTools.isPassed(dueDate)) row = "<html><p style=\"color:#ff4b40\"><b>Overdue</b></p><html>";
                         else row = dueDate;
-                        o[5] = row;
-                        
+                        o[5] = row; 
+                       
                         o[6] = rs.getObject(7).toString().trim().equals("-1") ? "No Asset" : rs.getObject(7).toString().trim()+" - "+rs.getObject(8).toString().trim();//asset_id-name
                         o[7] = rs.getObject(9).toString().trim()+" - "+rs.getObject(10).toString().trim();//location_id-name
                         o[8] = rs.getObject(11).toString().trim();//archived
@@ -187,9 +190,9 @@ public class Schedule {
         }
     }
     
-    public void completeTask(){
-        int id = Integer.parseInt(table.getValueAt(table.getSelectedRow(), 0).toString());
-        String freq = table.getValueAt(table.getSelectedRow(), 3).toString();
+    public void completeTask(int row){
+        int id = Integer.parseInt(table.getValueAt(row, 0).toString());
+        String freq = table.getValueAt(row, 3).toString();
         //Get last date
         ResultSet rs = Database.select("SELECT schedule_last_date FROM schedule WHERE id = ?",
                 new Object[]{id});
@@ -205,7 +208,7 @@ public class Schedule {
                 Database.executeQuery("UPDATE schedule SET schedule_last_date = ? WHERE id = ?",
                     new Object[]{DateTools.convertToSQLDate(doneDate), id});
                 //Update table
-                table.setValueAt("<html><p style=\"color:#00b800\"><b>Complete</b></p><html>", table.getSelectedRow(), 5);
+                table.setValueAt("<html><p style=\"color:#00b800\"><b>Complete</b></p><html>", row, 5);
             }
             
         } catch (SQLException ex) {

@@ -40,25 +40,22 @@ import javax.swing.table.DefaultTableModel;
 public class Admin {
     
     private final JTable userTable;
-    private final JList woList, scheduleList, assetList, employeeList;
+    private final JList maintTypeList, assetList, employeeList;
     
-    public Admin(JTable u, JList w, JList s, JList a, JList e){
+    public Admin(JTable u, JList m, JList a, JList e){
         userTable = u;
-        woList = w;
-        scheduleList = s;
+        maintTypeList = m;
         assetList = a;
         employeeList = e;
         TableTools.format(userTable);
-        woList.setBackground(Color.WHITE);
-        scheduleList.setBackground(Color.WHITE);
+        maintTypeList.setBackground(Color.WHITE);
         assetList.setBackground(Color.WHITE);
         employeeList.setBackground(Color.WHITE);
     }
     
     public void load(){
         loadUsers();
-        loadCustomWO();
-        loadCustomSchedule();
+        loadCustomMaintType();
         loadCustomAssets();
         loadCustomEmployees();
     }
@@ -129,95 +126,49 @@ public class Admin {
     }
     
     //Custom WO types
-    private void loadCustomWO(){
+    private void loadCustomMaintType(){
         new Thread(){
             @Override
             public void run(){
                 try {
-                    try (ResultSet rs = Database.select("SELECT custom_value FROM custom_fields WHERE custom_type = 'wo_type'")) {
+                    try (ResultSet rs = Database.select("SELECT custom_value FROM custom_fields WHERE custom_type = 'maintenance_type'")) {
                         while(rs.next()){
-                            ((DefaultListModel)woList.getModel()).addElement(rs.getObject(1).toString().trim());
+                            ((DefaultListModel)maintTypeList.getModel()).addElement(rs.getObject(1).toString().trim());
                         }
                     }
                 } catch (SQLException ex) {
                     Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                woList.setSelectedIndex(0);
+                maintTypeList.setSelectedIndex(0);
             }
         }.start();
     }
-    public void addCustomWO(){
+    public void addCustomMaintType(){
         new Thread(){
             @Override
             public void run(){
                 String value = JOptionPane.showInputDialog("Field name:");
                 if(value != null && !value.isEmpty()){
-                    Database.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES ('wo_type', ?)",
+                    Database.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES ('maintenance_type', ?)",
                         new Object[]{value});
-                    ((DefaultListModel)woList.getModel()).addElement(value);
-                    woList.setSelectedIndex(woList.getLastVisibleIndex());
+                    ((DefaultListModel)maintTypeList.getModel()).addElement(value);
+                    maintTypeList.setSelectedIndex(maintTypeList.getLastVisibleIndex());
                 }
             }
         }.start();
     }
-    public void deleteCustomWO(){
-        if(woList.getVisibleRowCount() != 0){
+    public void deleteCustomMaintType(){
+        if(maintTypeList.getVisibleRowCount() != 0){
             new Thread(){
                 @Override
                 public void run(){
-                    Database.executeQuery("DELETE FROM custom_fields WHERE custom_type = 'wo_type' AND custom_value = ?",
-                            new Object[]{woList.getSelectedValue()});
-                    ((DefaultListModel)woList.getModel()).removeElement(woList.getSelectedValue());
-                    woList.setSelectedIndex(0);
+                    Database.executeQuery("DELETE FROM custom_fields WHERE custom_type = 'maintenance_type' AND custom_value = ?",
+                            new Object[]{maintTypeList.getSelectedValue()});
+                    ((DefaultListModel)maintTypeList.getModel()).removeElement(maintTypeList.getSelectedValue());
+                    maintTypeList.setSelectedIndex(0);
                 }
             }.start();
         }  
-    }
-    
-    //Custom Schedule types
-    private void loadCustomSchedule(){
-        new Thread(){
-            @Override
-            public void run(){
-                try {
-                    try (ResultSet rs = Database.select("SELECT custom_value FROM custom_fields WHERE custom_type = 'schedule_type'")) {
-                        while(rs.next()){
-                            ((DefaultListModel)scheduleList.getModel()).addElement(rs.getObject(1).toString().trim());
-                        }
-                    }
-                } catch (SQLException ex) {
-                    Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                scheduleList.setSelectedIndex(0);
-            }
-        }.start();
-    }
-    public void addCustomSchedule(){
-        new Thread(){
-            @Override
-            public void run(){
-                String value = JOptionPane.showInputDialog("Field name:");
-                if(value != null && !value.isEmpty()){
-                    Database.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES ('schedule_type', ?)",
-                            new Object[]{value});
-                    ((DefaultListModel)scheduleList.getModel()).addElement(value);
-                    scheduleList.setSelectedIndex(scheduleList.getLastVisibleIndex());
-                }
-            }
-        }.start();
-    }
-    public void deleteCustomSchedule(){
-        if(scheduleList.getVisibleRowCount() != 0){
-            new Thread(){
-                @Override
-                public void run(){
-                    Database.executeQuery("DELETE FROM custom_fields WHERE custom_type = 'schedule_type' AND custom_value = ?",
-                            new Object[]{scheduleList.getSelectedValue()});
-                    ((DefaultListModel)scheduleList.getModel()).removeElement(scheduleList.getSelectedValue());
-                    scheduleList.setSelectedIndex(0);
-                }
-            }.start();
-        }
     }
     
     //Custom Asset types

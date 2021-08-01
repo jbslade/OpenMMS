@@ -106,7 +106,7 @@ public class ScheduleFrame extends javax.swing.JInternalFrame {
         }
         
         //Set types
-        rs = Database.select("SELECT custom_value FROM custom_fields WHERE custom_type = 'schedule_type'");
+        rs = Database.select("SELECT custom_value FROM custom_fields WHERE custom_type = 'maintenance_type'");
         try {
             while(rs.next()){
                 typeCombo.addItem(rs.getString(1));

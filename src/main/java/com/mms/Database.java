@@ -164,12 +164,11 @@ public class Database {
         Database.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES (?, ?)", new Object[]{"employee_dept", "IT"});
         Database.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES (?, ?)", new Object[]{"employee_dept", "Contractor"});
         Database.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES (?, ?)", new Object[]{"asset_type", "Production Machine"});
-        Database.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES (?, ?)", new Object[]{"schedule_type", "General"});
-        Database.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES (?, ?)", new Object[]{"schedule_type", "Inspection"});
-        Database.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES (?, ?)", new Object[]{"schedule_type", "Shutdown Maintenance"});
-        Database.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES (?, ?)", new Object[]{"schedule_type", "Building Maintenance"});
-        Database.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES (?, ?)", new Object[]{"schedule_type", "Safety"});
-        Database.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES (?, ?)", new Object[]{"wo_type", "Shutdown"});
+        Database.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES (?, ?)", new Object[]{"maintenance_type", "General"});
+        Database.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES (?, ?)", new Object[]{"maintenance_type", "Inspection"});
+        Database.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES (?, ?)", new Object[]{"maintenance_type", "Shutdown Maintenance"});
+        Database.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES (?, ?)", new Object[]{"maintenance_type", "Building Maintenance"});
+        Database.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES (?, ?)", new Object[]{"maintenance_type", "Safety"});
         
         System.out.println("[DATABASE] Database tables created");
     }

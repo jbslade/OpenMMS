@@ -101,8 +101,8 @@ public class WorkOrders {
         }.start();
     }
     
-    public void newWO(){
-        WOFrame w = new WOFrame(table, -1, false);
+    public void newWO(boolean schedule, Schedule s){
+        WOFrame w = new WOFrame(table, -1, false, s);
         w.setSize(MMS.DIAG_WIDTH*2-10, w.getHeight());
         w.setLocation(MMS.getMainFrame().getDesktopPane().getWidth()/2-w.getWidth()/2, MMS.getMainFrame().getDesktopPane().getHeight()/2-w.getHeight()/2-50);
         MMS.getMainFrame().getDesktopPane().add(w);
@@ -110,42 +110,42 @@ public class WorkOrders {
         w.setVisible(true);
     }
     
-    public void editSchedule(){
-        ScheduleFrame s = new ScheduleFrame(table, table.getSelectedRow(), false);
-        s.setSize(MMS.DIAG_WIDTH*2-10, s.getHeight());
-        s.setTitle("Edit Scheduled Task #"+table.getValueAt(table.getSelectedRow(), 0));
-        s.setLocation(MMS.getMainFrame().getDesktopPane().getWidth()/2-s.getWidth()/2, MMS.getMainFrame().getDesktopPane().getHeight()/2-s.getHeight()/2-50);
-        MMS.getMainFrame().getDesktopPane().add(s);
-        MMS.getMainFrame().getDesktopPane().setLayer(s, 1);
-        s.setVisible(true);
+    public void editWO(){
+        WOFrame w = new WOFrame(table, table.getSelectedRow(), false, null);
+        w.setSize(MMS.DIAG_WIDTH*2-10, w.getHeight());
+        w.setTitle("Edit Work Order #"+table.getValueAt(table.getSelectedRow(), 0));
+        w.setLocation(MMS.getMainFrame().getDesktopPane().getWidth()/2-w.getWidth()/2, MMS.getMainFrame().getDesktopPane().getHeight()/2-w.getHeight()/2-50);
+        MMS.getMainFrame().getDesktopPane().add(w);
+        MMS.getMainFrame().getDesktopPane().setLayer(w, 1);
+        w.setVisible(true);
     }
     
-    public void viewSchedule(){
-        ScheduleFrame s = new ScheduleFrame(table, table.getSelectedRow(), true);
-        s.setSize(MMS.DIAG_WIDTH*2-10, s.getHeight());
-        s.setTitle("View Scheduled Task #"+table.getValueAt(table.getSelectedRow(), 0));
-        s.setLocation(MMS.getMainFrame().getDesktopPane().getWidth()/2-s.getWidth()/2, MMS.getMainFrame().getDesktopPane().getHeight()/2-s.getHeight()/2-50);
-        MMS.getMainFrame().getDesktopPane().add(s);
-        MMS.getMainFrame().getDesktopPane().setLayer(s, 1);
-        s.setVisible(true);
+    public void viewWO(){
+        WOFrame w = new WOFrame(table, table.getSelectedRow(), true, null);
+        w.setSize(MMS.DIAG_WIDTH*2-10, w.getHeight());
+        w.setTitle("View Work Order #"+table.getValueAt(table.getSelectedRow(), 0));
+        w.setLocation(MMS.getMainFrame().getDesktopPane().getWidth()/2-w.getWidth()/2, MMS.getMainFrame().getDesktopPane().getHeight()/2-w.getHeight()/2-50);
+        MMS.getMainFrame().getDesktopPane().add(w);
+        MMS.getMainFrame().getDesktopPane().setLayer(w, 1);
+        w.setVisible(true);
     }
     
-    public void deleteSchedule(){
+    public void deleteWO(){
         String message, title;
         if(table.getSelectedRowCount() > 1){
-            message = "Are you sure you want to delete these "+table.getSelectedRowCount()+" Scheduled Tasks?";
-            title = "Delete Scheduled Tasks";
+            message = "Are you sure you want to delete these "+table.getSelectedRowCount()+" Work Orders?";
+            title = "Delete Work Orders";
         }
         else{
             message = "Are you sure you want to delete '"+table.getValueAt(table.getSelectedRow(), 1)+"'?";
-            title = "Delete Scheduled Task #"+table.getValueAt(table.getSelectedRow(), 0);
+            title = "Delete Work Order #"+table.getValueAt(table.getSelectedRow(), 0);
         }
         if(InternalDialog.showInternalConfirmDialog(MMS.getMainFrame().getDesktopPane(), message, title, JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null) == 0){
             int rows [] = table.getSelectedRows();
             //Delete from DB
             for(int row : rows){
                 int id = Integer.parseInt(table.getValueAt(row, 0).toString());
-                Database.executeQuery("DELETE FROM schedule WHERE id = ?",
+                Database.executeQuery("DELETE FROM work_orders WHERE id = ?",
                         new Object[]{id});
             }
             //Delete from table
@@ -159,15 +159,15 @@ public class WorkOrders {
         }
     }
     
-    public void archiveSchedule(){
+    public void archiveWO(){
         String message, title;
         if(table.getSelectedRowCount() > 1){
-            message = "Are you sure you want to archive these "+table.getSelectedRowCount()+" Scheduled Tasks?";
-            title = "Archive Scheduled Tasks";
+            message = "Are you sure you want to archive these "+table.getSelectedRowCount()+" Work Orders?";
+            title = "Archive Work Orders";
         }
         else{
             message = "Are you sure you want to archive '"+table.getValueAt(table.getSelectedRow(), 1)+"'?";
-            title = "Archive Scheduled Task #"+table.getValueAt(table.getSelectedRow(), 0);
+            title = "Archive Work Order #"+table.getValueAt(table.getSelectedRow(), 0);
         }
         
         if(InternalDialog.showInternalConfirmDialog(MMS.getMainFrame().getDesktopPane(), message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null) == 0){
@@ -175,7 +175,7 @@ public class WorkOrders {
             //Set Archived = Y
             for(int row : rows){
                 int id = Integer.parseInt(table.getValueAt(row, 0).toString());
-                Database.executeQuery("UPDATE schedule SET archived = ? WHERE id = ?",
+                Database.executeQuery("UPDATE work_orders SET archived = ? WHERE id = ?",
                         new Object[]{"Y", id});
             }
             //Delete from table
@@ -189,29 +189,11 @@ public class WorkOrders {
         }
     }
     
-    public void completeTask(){
+    public void setStatus(String s){
         int id = Integer.parseInt(table.getValueAt(table.getSelectedRow(), 0).toString());
-        String freq = table.getValueAt(table.getSelectedRow(), 3).toString();
-        //Get last date
-        ResultSet rs = Database.select("SELECT schedule_last_date FROM schedule WHERE id = ?",
-                new Object[]{id});
-        try {
-            if(rs.next()){
-                LocalDate lastDate = rs.getDate(1).toLocalDate();
-                //Get next date that isn't passed or today
-                LocalDate doneDate = DateTools.getDueDate(lastDate, freq , 1);
-                while(DateTools.isPassed(doneDate)){
-                    doneDate = DateTools.getDueDate(doneDate, freq , 1);
-                }
-                //Update last date (increase by one increment)
-                Database.executeQuery("UPDATE schedule SET schedule_last_date = ? WHERE id = ?",
-                    new Object[]{DateTools.convertToSQLDate(doneDate), id});
-                //Update table
-                table.setValueAt("<html><p style=\"color:#00b800\"><b>Complete</b></p><html>", table.getSelectedRow(), 5);
-            }
-            
-        } catch (SQLException ex) {
-            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        //Set status
+        Database.executeQuery("UPDATE work_orders SET wo_status = ? WHERE id = ?",
+                new Object[]{s, id});
+        table.setValueAt(s, table.getSelectedRow(), 7);
     }
 }
