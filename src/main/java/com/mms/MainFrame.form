@@ -871,7 +871,7 @@
                         <Component class="javax.swing.JButton" name="createWOButton">
                           <Properties>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                              <Image iconType="3" name="/buttons/createWO.png"/>
+                              <Image iconType="3" name="/dialogs/workOrders.png"/>
                             </Property>
                             <Property name="text" type="java.lang.String" value="Create WO"/>
                             <Property name="enabled" type="boolean" value="false"/>
@@ -1372,8 +1372,8 @@
                               <Table columnCount="4" rowCount="0">
                                 <Column editable="false" title=" #" type="java.lang.Object"/>
                                 <Column editable="false" title=" Name" type="java.lang.Object"/>
-                                <Column editable="false" title=" Quantity" type="java.lang.Object"/>
-                                <Column editable="false" title=" Price/Unit" type="java.lang.Object"/>
+                                <Column editable="false" title=" Quantity" type="java.lang.Integer"/>
+                                <Column editable="false" title=" Price/Unit" type="java.lang.Double"/>
                               </Table>
                             </Property>
                             <Property name="dragEnabled" type="boolean" value="true"/>

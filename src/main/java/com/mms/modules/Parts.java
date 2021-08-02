@@ -60,8 +60,8 @@ public class Parts {
                         Object [] o = new Object[5];
                         o[0] = rs.getObject(1).toString().trim();
                         o[1] = rs.getObject(2).toString().trim();
-                        o[2] = rs.getObject(3).toString().trim();
-                        o[3] = rs.getObject(4).toString().trim();
+                        o[2] = rs.getInt(3);
+                        o[3] = rs.getDouble(4);
                         o[4] = rs.getObject(5).toString().trim();
                         if(o[4].equals("N")){
                             t.addRow(o);

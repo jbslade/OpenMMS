@@ -793,7 +793,7 @@ public class MainFrame extends javax.swing.JFrame {
         });
         scheduleTools.add(viewScheduleButton);
 
-        createWOButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/createWO.png"))); // NOI18N
+        createWOButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/dialogs/workOrders.png"))); // NOI18N
         createWOButton.setText("Create WO");
         createWOButton.setEnabled(false);
         createWOButton.addActionListener(new java.awt.event.ActionListener() {
@@ -1110,9 +1110,16 @@ public class MainFrame extends javax.swing.JFrame {
                 " #", " Name", " Quantity", " Price/Unit"
             }
         ) {
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Object.class, java.lang.Integer.class, java.lang.Double.class
+            };
             boolean[] canEdit = new boolean [] {
                 false, false, false, false
             };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
@@ -2086,9 +2093,9 @@ public class MainFrame extends javax.swing.JFrame {
 
     //Set WO status (Closed)
     private void statusClosedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_statusClosedActionPerformed
-        //Do close work order and if successful do below
-        workOrders.setStatus("Closed");
-        statusWOButton.setEnabled(false);
+        workOrders.closeWO();
+        //workOrders.setStatus("Closed");
+        //statusWOButton.setEnabled(false);
     }//GEN-LAST:event_statusClosedActionPerformed
 
     private void createWOButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createWOButtonActionPerformed

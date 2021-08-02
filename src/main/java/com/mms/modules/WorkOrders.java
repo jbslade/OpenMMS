@@ -20,6 +20,7 @@ import com.mms.MMS;
 import com.mms.MainFrame;
 import com.mms.dialogs.InternalDialog;
 import com.mms.iframes.ScheduleFrame;
+import com.mms.iframes.WOCloseFrame;
 import com.mms.iframes.WOFrame;
 import com.mms.utilities.DateTools;
 import com.mms.utilities.TableTools;
@@ -137,7 +138,7 @@ public class WorkOrders {
             title = "Delete Work Orders";
         }
         else{
-            message = "Are you sure you want to delete '"+table.getValueAt(table.getSelectedRow(), 1)+"'?";
+            message = "Are you sure you want to delete Work Order #"+table.getValueAt(table.getSelectedRow(), 0)+"?";
             title = "Delete Work Order #"+table.getValueAt(table.getSelectedRow(), 0);
         }
         if(InternalDialog.showInternalConfirmDialog(MMS.getMainFrame().getDesktopPane(), message, title, JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null) == 0){
@@ -166,7 +167,7 @@ public class WorkOrders {
             title = "Archive Work Orders";
         }
         else{
-            message = "Are you sure you want to archive '"+table.getValueAt(table.getSelectedRow(), 1)+"'?";
+            message = "Are you sure you want to archive Work Order #"+table.getValueAt(table.getSelectedRow(), 0)+"?";
             title = "Archive Work Order #"+table.getValueAt(table.getSelectedRow(), 0);
         }
         
@@ -195,5 +196,15 @@ public class WorkOrders {
         Database.executeQuery("UPDATE work_orders SET wo_status = ? WHERE id = ?",
                 new Object[]{s, id});
         table.setValueAt(s, table.getSelectedRow(), 7);
+    }
+    
+    public void closeWO(){
+        WOCloseFrame w = new WOCloseFrame();
+        w.setSize(MMS.DIAG_WIDTH+MMS.DIAG_WIDTH/2, w.getHeight());
+        w.setTitle("Close Work Order #"+table.getValueAt(table.getSelectedRow(), 0));
+        w.setLocation(MMS.getMainFrame().getDesktopPane().getWidth()/2-w.getWidth()/2, MMS.getMainFrame().getDesktopPane().getHeight()/2-w.getHeight()/2-50);
+        MMS.getMainFrame().getDesktopPane().add(w);
+        MMS.getMainFrame().getDesktopPane().setLayer(w, 1);
+        w.setVisible(true);
     }
 }

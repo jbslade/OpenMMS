@@ -10,6 +10,7 @@ com\mms\utilities\MenuScroller.class
 com\mms\MainFrame$45.class
 com\mms\MMS.class
 com\mms\iframes\ScheduleFrame$9.class
+com\mms\iframes\WOCloseFrame.class
 com\mms\MainFrame$6.class
 com\mms\Database.class
 com\mms\dialogs\SetupDialog$11.class
@@ -150,6 +151,7 @@ com\mms\utilities\Hasher.class
 com\mms\utilities\MenuScroller$MenuScrollTimer.class
 com\mms\panels\PopupPanel.class
 com\mms\utilities\ContextMenuMouseListener$2.class
+com\mms\iframes\WOCloseFrame$1.class
 com\mms\MainFrame$56.class
 com\mms\MainFrame$61.class
 com\mms\MainFrame$19.class
