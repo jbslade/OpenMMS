@@ -29,6 +29,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
@@ -198,8 +199,8 @@ public class WorkOrders {
         table.setValueAt(s, table.getSelectedRow(), 7);
     }
     
-    public void closeWO(){
-        WOCloseFrame w = new WOCloseFrame();
+    public void closeWO(JTable partsTable, JButton woButton){
+        WOCloseFrame w = new WOCloseFrame(table.getSelectedRow(), partsTable, table, woButton);
         w.setSize(MMS.DIAG_WIDTH+MMS.DIAG_WIDTH/2, w.getHeight());
         w.setTitle("Close Work Order #"+table.getValueAt(table.getSelectedRow(), 0));
         w.setLocation(MMS.getMainFrame().getDesktopPane().getWidth()/2-w.getWidth()/2, MMS.getMainFrame().getDesktopPane().getHeight()/2-w.getHeight()/2-50);

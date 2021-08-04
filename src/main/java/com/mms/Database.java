@@ -140,6 +140,7 @@ public class Database {
                 + "wo_desc VARCHAR(2000),"
                 + "wo_start_time DATE,"
                 + "wo_end_time DATE,"
+                + "wo_action VARCHAR(1000),"
                 + "location_id INT,"
                 + "asset_id INT,"
                 + "user_name VARCHAR(50),"
@@ -150,6 +151,13 @@ public class Database {
         Database.executeQuery("CREATE TABLE wo_employees("
                 + "wo_id INT,"
                 + "employee_id INT"
+                + ")");
+        
+        //Work Order Parts
+        Database.executeQuery("CREATE TABLE wo_parts("
+                + "wo_id INT,"
+                + "part_id INT,"
+                + "qty INT"
                 + ")");
         
         //CustomFields

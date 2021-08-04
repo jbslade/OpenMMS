@@ -2093,9 +2093,7 @@ public class MainFrame extends javax.swing.JFrame {
 
     //Set WO status (Closed)
     private void statusClosedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_statusClosedActionPerformed
-        workOrders.closeWO();
-        //workOrders.setStatus("Closed");
-        //statusWOButton.setEnabled(false);
+        workOrders.closeWO(partTable, statusWOButton);
     }//GEN-LAST:event_statusClosedActionPerformed
 
     private void createWOButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createWOButtonActionPerformed

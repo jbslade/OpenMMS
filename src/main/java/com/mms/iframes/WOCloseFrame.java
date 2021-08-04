@@ -20,12 +20,13 @@ import com.github.lgooddatepicker.components.DateTimePicker;
 import com.github.lgooddatepicker.components.TimePickerSettings;
 import com.mms.Database;
 import com.mms.MMS;
+import com.mms.utilities.OtherTools;
 import com.mms.utilities.TableTools;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javax.swing.JButton;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -34,37 +35,44 @@ import javax.swing.table.DefaultTableModel;
  */
 public class WOCloseFrame extends javax.swing.JInternalFrame {
 
+    private final Object id;
+    private final JTable parts, wo;
+    private final int woRow;
+    private final JButton woButton;
     DateTimePicker startTimePicker, endTimePicker;
     
-    public WOCloseFrame() {
+    public WOCloseFrame(int row, JTable parts, JTable wo, JButton woButton) {
         initComponents();
+        this.id = wo.getValueAt(row, 0);
+        this.parts = parts;
+        this.wo = wo;
+        this.woRow = row;
+        this.woButton = woButton;
         getRootPane().setDefaultButton(continueButton);
         
         //Set right click listeners
         actionArea.addMouseListener(MMS.getMouseListener());
         
         //Set parts
-        Object [] o = new Object[4];
         DefaultTableModel t = (DefaultTableModel)partsTable.getModel();
-        ResultSet rs = Database.select("SELECT id, part_name, part_qty FROM parts");
-        try {
-            while(rs.next()){
-                o[0] = rs.getObject(1).toString().trim();
-                o[1] = rs.getObject(2).toString().trim();
-                o[2] = rs.getInt(3);
-                o[3] = 0;
-                t.addRow(o);
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(WOCloseFrame.class.getName()).log(Level.SEVERE, null, ex);
+        for(int i = 0; i < parts.getRowCount(); i++){
+            Object [] o = new Object[4];
+            o[0] = parts.getValueAt(i, 0);
+            o[1] = parts.getValueAt(i, 1);
+            o[2] = parts.getValueAt(i, 2);
+            o[3] = 0;
+            t.addRow(o);
         }
         TableTools.format(partsTable);
         TableTools.resize(partsTable);
         
         //Set date pickers
+        String [] d = wo.getValueAt(row, 1).toString().split("-");
+        LocalDate woDate =  LocalDate.of(Integer.parseInt(d[0]), Integer.parseInt(d[1]), Integer.parseInt(d[2]));
         //Time settings
         TimePickerSettings timeSettings = new TimePickerSettings();
-        timeSettings.setFormatForDisplayTime(DateTimeFormatter.ISO_LOCAL_TIME);
+        timeSettings.setFormatForDisplayTime("HH:mm");
+        timeSettings.setFormatForMenuTimes("HH:mm");
         timeSettings.setDisplayToggleTimeMenuButton(true);
         timeSettings.setAllowEmptyTimes(false);
         //Date settings
@@ -78,17 +86,21 @@ public class WOCloseFrame extends javax.swing.JInternalFrame {
         endDateSettings.setAllowEmptyDates(false);
         //Start time picker
         startTimePicker = new DateTimePicker(startDateSettings, timeSettings);
-        startTimePicker.getDatePicker().getComponentDateTextField().setBorder(actionScrollPane.getBorder());
-        startTimePicker.getTimePicker().getComponentTimeTextField().setBorder(actionScrollPane.getBorder());
-        startTimePicker.getDatePicker().setPreferredSize(startTimePicker.getTimePicker().getPreferredSize());
+        startTimePicker.datePicker.getComponentDateTextField().setBorder(actionScrollPane.getBorder());
+        startTimePicker.timePicker.getComponentTimeTextField().setBorder(actionScrollPane.getBorder());
+        startTimePicker.datePicker.setPreferredSize(startTimePicker.getTimePicker().getPreferredSize());
+        startTimePicker.datePicker.setDate(woDate);
         startTimePanel.add(startTimePicker);
+        startTimePanel.repaint();
         //End time picker
         endTimePicker = new DateTimePicker(endDateSettings, timeSettings);
-        endTimePicker.getDatePicker().getComponentDateTextField().setBorder(actionScrollPane.getBorder());
-        endTimePicker.getTimePicker().getComponentTimeTextField().setBorder(actionScrollPane.getBorder());
-        endTimePicker.getDatePicker().setPreferredSize(endTimePicker.getTimePicker().getPreferredSize());
+        endTimePicker.datePicker.getComponentDateTextField().setBorder(actionScrollPane.getBorder());
+        endTimePicker.timePicker.getComponentTimeTextField().setBorder(actionScrollPane.getBorder());
+        endTimePicker.datePicker.setPreferredSize(endTimePicker.getTimePicker().getPreferredSize());
+        endTimePicker.datePicker.setDate(woDate);
+        endTimePicker.timePicker.setTimeToNow();
         endTimePanel.add(endTimePicker);
-        startTimePanel.repaint();
+        endTimePanel.repaint();
     }
 
     /**
@@ -155,13 +167,18 @@ public class WOCloseFrame extends javax.swing.JInternalFrame {
         startTimeLabel.setText("Start Time:");
 
         continueButton.setText("Done");
+        continueButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                continueButtonActionPerformed(evt);
+            }
+        });
 
         startTimePanel.setDoubleBuffered(false);
         startTimePanel.setPreferredSize(new java.awt.Dimension(0, 23));
-        startTimePanel.setLayout(new java.awt.GridLayout());
+        startTimePanel.setLayout(new java.awt.GridLayout(1, 0));
 
         endTimePanel.setPreferredSize(new java.awt.Dimension(0, 23));
-        endTimePanel.setLayout(new java.awt.GridLayout());
+        endTimePanel.setLayout(new java.awt.GridLayout(1, 0));
 
         endTimeLabel.setText("End Time:");
 
@@ -230,6 +247,39 @@ public class WOCloseFrame extends javax.swing.JInternalFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void continueButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_continueButtonActionPerformed
+        String action = actionArea.getText();
+        if(action.isEmpty()) actionArea.requestFocus();
+        else{
+            OtherTools.disablePanel(backPanel);
+            new Thread(){
+                @Override
+                public void run(){
+                    //Update work order
+                    Database.executeQuery("UPDATE work_orders SET wo_action = ?, wo_start_time = ?, wo_end_time = ?, wo_status = ? WHERE id = ?",
+                            new Object[]{action, Timestamp.valueOf(startTimePicker.getDateTimePermissive()), Timestamp.valueOf(endTimePicker.getDateTimePermissive()), "Closed", id});
+                    for(int i = 0; i < partsTable.getRowCount(); i++){
+                        int qty = Integer.parseInt(partsTable.getValueAt(i, 3).toString());
+                        if(qty > 0){
+                            Object partID = partsTable.getValueAt(i, 0);
+                            //Insert into wo_parts table
+                            Database.executeQuery("INSERT INTO wo_parts (wo_id, part_id, qty) VALUES (?, ?, ?)",
+                                    new Object[]{id, partID, qty});
+                            //Update parts table
+                            int newQty = Integer.parseInt(parts.getValueAt(i, 2).toString()) - qty;
+                            Database.executeQuery("UPDATE parts SET part_qty = ? WHERE id = ?",
+                                    new Object[]{newQty, partID});
+                            parts.setValueAt(newQty, i, 2);
+                        }
+                    }
+                    wo.setValueAt("Closed", woRow, 7);
+                    woButton.setEnabled(false);
+                    dispose();
+                }
+            }.start();
+        }
+    }//GEN-LAST:event_continueButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
