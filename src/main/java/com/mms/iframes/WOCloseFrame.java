@@ -78,24 +78,24 @@ public class WOCloseFrame extends javax.swing.JInternalFrame {
         //Date settings
         DatePickerSettings startDateSettings = new DatePickerSettings();
         startDateSettings.setFormatForDatesCommonEra(DateTimeFormatter.ISO_LOCAL_DATE);
-        startDateSettings.setBorderCalendarPopup(actionScrollPane.getBorder());
+        startDateSettings.setBorderCalendarPopup(actionScroll.getBorder());
         startDateSettings.setAllowEmptyDates(false);
         DatePickerSettings endDateSettings = new DatePickerSettings();
         endDateSettings.setFormatForDatesCommonEra(DateTimeFormatter.ISO_LOCAL_DATE);
-        endDateSettings.setBorderCalendarPopup(actionScrollPane.getBorder());
+        endDateSettings.setBorderCalendarPopup(actionScroll.getBorder());
         endDateSettings.setAllowEmptyDates(false);
         //Start time picker
         startTimePicker = new DateTimePicker(startDateSettings, timeSettings);
-        startTimePicker.datePicker.getComponentDateTextField().setBorder(actionScrollPane.getBorder());
-        startTimePicker.timePicker.getComponentTimeTextField().setBorder(actionScrollPane.getBorder());
+        startTimePicker.datePicker.getComponentDateTextField().setBorder(actionScroll.getBorder());
+        startTimePicker.timePicker.getComponentTimeTextField().setBorder(actionScroll.getBorder());
         startTimePicker.datePicker.setPreferredSize(startTimePicker.getTimePicker().getPreferredSize());
         startTimePicker.datePicker.setDate(woDate);
         startTimePanel.add(startTimePicker);
         startTimePanel.repaint();
         //End time picker
         endTimePicker = new DateTimePicker(endDateSettings, timeSettings);
-        endTimePicker.datePicker.getComponentDateTextField().setBorder(actionScrollPane.getBorder());
-        endTimePicker.timePicker.getComponentTimeTextField().setBorder(actionScrollPane.getBorder());
+        endTimePicker.datePicker.getComponentDateTextField().setBorder(actionScroll.getBorder());
+        endTimePicker.timePicker.getComponentTimeTextField().setBorder(actionScroll.getBorder());
         endTimePicker.datePicker.setPreferredSize(endTimePicker.getTimePicker().getPreferredSize());
         endTimePicker.datePicker.setDate(woDate);
         endTimePicker.timePicker.setTimeToNow();
@@ -114,10 +114,10 @@ public class WOCloseFrame extends javax.swing.JInternalFrame {
 
         backPanel = new javax.swing.JPanel();
         actionLabel = new javax.swing.JLabel();
-        actionScrollPane = new javax.swing.JScrollPane();
+        actionScroll = new javax.swing.JScrollPane();
         actionArea = new javax.swing.JTextArea();
         partsLabel = new javax.swing.JLabel();
-        jScrollPane2 = new javax.swing.JScrollPane();
+        partsScroll = new javax.swing.JScrollPane();
         partsTable = new javax.swing.JTable();
         startTimeLabel = new javax.swing.JLabel();
         continueButton = new javax.swing.JButton();
@@ -134,7 +134,7 @@ public class WOCloseFrame extends javax.swing.JInternalFrame {
 
         actionArea.setColumns(20);
         actionArea.setRows(3);
-        actionScrollPane.setViewportView(actionArea);
+        actionScroll.setViewportView(actionArea);
 
         partsLabel.setText("Parts Used:");
 
@@ -144,7 +144,7 @@ public class WOCloseFrame extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                " #", " Name", " In Stock", " Used"
+                " #", " Name", " In Stock", " Used Qty"
             }
         ) {
             Class[] types = new Class [] {
@@ -162,7 +162,7 @@ public class WOCloseFrame extends javax.swing.JInternalFrame {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane2.setViewportView(partsTable);
+        partsScroll.setViewportView(partsTable);
 
         startTimeLabel.setText("Start Time:");
 
@@ -189,10 +189,10 @@ public class WOCloseFrame extends javax.swing.JInternalFrame {
             .addGroup(backPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(backPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(actionScrollPane)
+                    .addComponent(actionScroll)
                     .addComponent(actionLabel)
                     .addComponent(partsLabel)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 373, Short.MAX_VALUE)
+                    .addComponent(partsScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 373, Short.MAX_VALUE)
                     .addComponent(continueButton, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(backPanelLayout.createSequentialGroup()
                         .addGroup(backPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
@@ -210,11 +210,11 @@ public class WOCloseFrame extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addComponent(actionLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(actionScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(actionScroll, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(partsLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(partsScroll, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(backPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(startTimePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -285,13 +285,13 @@ public class WOCloseFrame extends javax.swing.JInternalFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextArea actionArea;
     private javax.swing.JLabel actionLabel;
-    private javax.swing.JScrollPane actionScrollPane;
+    private javax.swing.JScrollPane actionScroll;
     private javax.swing.JPanel backPanel;
     private javax.swing.JButton continueButton;
     private javax.swing.JLabel endTimeLabel;
     private javax.swing.JPanel endTimePanel;
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel partsLabel;
+    private javax.swing.JScrollPane partsScroll;
     private javax.swing.JTable partsTable;
     private javax.swing.JLabel startTimeLabel;
     private javax.swing.JPanel startTimePanel;

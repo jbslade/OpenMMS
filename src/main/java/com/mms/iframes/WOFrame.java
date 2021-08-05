@@ -32,6 +32,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
+import java.io.File;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -40,11 +41,14 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.GroupLayout;
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.border.MatteBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 
 
@@ -58,6 +62,7 @@ public class WOFrame extends javax.swing.JInternalFrame {
     private final JTable table;
     private final DatePicker datePicker;
     private ArrayList<Integer> assetLocations, employees;
+    private ArrayList<String> images;
     private final Schedule schedule;
     private int scheduleRow;
     
@@ -67,9 +72,14 @@ public class WOFrame extends javax.swing.JInternalFrame {
         row = r;
         assetLocations = new ArrayList<>();
         employees = new ArrayList<>();
+        images = new ArrayList<>();
         schedule = s;
         if(schedule != null) scheduleRow = schedule.getTable().getSelectedRow();
         getRootPane().setDefaultButton(continueButton);
+        
+        //Closed panel
+        closedPanel.setVisible(false);
+        backPanel.setBorder(new MatteBorder(0,0,0,6, backPanel.getBackground()));
 
         //Desc view area
         descViewScroll.setVisible(false);
@@ -143,7 +153,7 @@ public class WOFrame extends javax.swing.JInternalFrame {
         employeePopup.show(null, 0, 0);
         employeePopup.setVisible(false);
         
-        //Edit
+        //Edit/view
         if (r != -1){
             typeCombo.setSelectedItem(table.getValueAt(row, 2));
             priorityCombo.setSelectedItem(OtherTools.escapeHTML(table.getValueAt(row, 3).toString()));
@@ -169,6 +179,11 @@ public class WOFrame extends javax.swing.JInternalFrame {
                 }
             } catch (SQLException ex) {
                 Logger.getLogger(WOFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            //Closed panel
+            if(table.getValueAt(r, 7).equals("Closed")){
+                closedPanel.setVisible(true);
             }
         }
         
@@ -214,7 +229,6 @@ public class WOFrame extends javax.swing.JInternalFrame {
             imageButton.setText("Open Images");
             for(Component c : textTools.getComponents())
                 c.setEnabled(false);
-            backPanel.setBorder(new MatteBorder(0,0,0,6, backPanel.getBackground()));
         }
     }
     
@@ -256,6 +270,7 @@ public class WOFrame extends javax.swing.JInternalFrame {
         descViewScroll = new javax.swing.JScrollPane();
         descViewPane = new javax.swing.JTextPane();
         employeePopup = new javax.swing.JPopupMenu();
+        imageChooser = new javax.swing.JFileChooser();
         backPanel = new javax.swing.JPanel();
         continueButton = new javax.swing.JButton();
         textTools = new javax.swing.JToolBar();
@@ -284,6 +299,18 @@ public class WOFrame extends javax.swing.JInternalFrame {
         employeeLabel = new javax.swing.JLabel();
         employeeField = new javax.swing.JTextField();
         employeeButton = new javax.swing.JButton();
+        imageLabel = new javax.swing.JLabel();
+        closedPanel = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
+        partsScroll = new javax.swing.JScrollPane();
+        partsTable = new javax.swing.JTable();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jTextField1 = new javax.swing.JTextField();
+        jTextField2 = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
 
         descViewPane.setEditable(false);
         descViewPane.setContentType("text/html"); // NOI18N
@@ -292,6 +319,13 @@ public class WOFrame extends javax.swing.JInternalFrame {
 
         employeePopup.setBackground(new java.awt.Color(255, 255, 255));
         employeePopup.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+
+        imageChooser.setAcceptAllFileFilterUsed(false);
+        imageChooser.setApproveButtonText("Select");
+        imageChooser.setApproveButtonToolTipText("");
+        imageChooser.setDialogTitle("Select Image(s)");
+        imageChooser.setFileFilter(new FileNameExtensionFilter("Image files", ImageIO.getReaderFileSuffixes()));
+        imageChooser.setMultiSelectionEnabled(true);
 
         setClosable(true);
         setIconifiable(true);
@@ -402,6 +436,11 @@ public class WOFrame extends javax.swing.JInternalFrame {
         );
 
         imageButton.setText("Attach Image(s)");
+        imageButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                imageButtonActionPerformed(evt);
+            }
+        });
 
         topPanel.setLayout(new java.awt.GridLayout(1, 2, 12, 0));
 
@@ -440,7 +479,7 @@ public class WOFrame extends javax.swing.JInternalFrame {
                     .addComponent(nameLabel)
                     .addComponent(freqLabel)
                     .addComponent(locationLabel))
-                .addGap(0, 145, Short.MAX_VALUE))
+                .addGap(0, 154, Short.MAX_VALUE))
             .addComponent(locationCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         leftPanelLayout.setVerticalGroup(
@@ -499,7 +538,7 @@ public class WOFrame extends javax.swing.JInternalFrame {
                     .addComponent(typeLabel)
                     .addComponent(assetLabel)
                     .addComponent(employeeLabel))
-                .addGap(0, 126, Short.MAX_VALUE))
+                .addGap(0, 135, Short.MAX_VALUE))
             .addGroup(rightPanelLayout.createSequentialGroup()
                 .addComponent(employeeField)
                 .addGap(3, 3, 3)
@@ -525,6 +564,8 @@ public class WOFrame extends javax.swing.JInternalFrame {
 
         topPanel.add(rightPanel);
 
+        imageLabel.setText(" ");
+
         javax.swing.GroupLayout backPanelLayout = new javax.swing.GroupLayout(backPanel);
         backPanel.setLayout(backPanelLayout);
         backPanelLayout.setHorizontalGroup(
@@ -532,12 +573,14 @@ public class WOFrame extends javax.swing.JInternalFrame {
             .addGroup(backPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(backPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(topPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 391, Short.MAX_VALUE)
+                    .addComponent(topPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(textTools, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(descPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, backPanelLayout.createSequentialGroup()
                         .addComponent(imageButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(imageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(continueButton)))
                 .addContainerGap())
         );
@@ -553,8 +596,97 @@ public class WOFrame extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(backPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(continueButton)
+                    .addComponent(imageLabel)
                     .addComponent(imageButton))
                 .addContainerGap())
+        );
+
+        closedPanel.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 1, 0, 0, new java.awt.Color(204, 204, 204)));
+
+        jLabel1.setText("Actions Performed:");
+
+        jTextArea1.setEditable(false);
+        jTextArea1.setColumns(20);
+        jTextArea1.setRows(3);
+        jTextArea1.setFocusable(false);
+        jScrollPane1.setViewportView(jTextArea1);
+
+        partsTable.setAutoCreateRowSorter(true);
+        partsTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                " #", " Name", " Used Qty"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Object.class, java.lang.Integer.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        partsScroll.setViewportView(partsTable);
+
+        jLabel2.setText("Parts Used:");
+
+        jLabel3.setText("Start Time:");
+
+        jLabel4.setText("End Time:");
+
+        javax.swing.GroupLayout closedPanelLayout = new javax.swing.GroupLayout(closedPanel);
+        closedPanel.setLayout(closedPanelLayout);
+        closedPanelLayout.setHorizontalGroup(
+            closedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(closedPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(closedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(partsScroll, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
+                    .addGroup(closedPanelLayout.createSequentialGroup()
+                        .addGroup(closedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel1))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(closedPanelLayout.createSequentialGroup()
+                        .addGroup(closedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel4))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(closedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jTextField2)
+                            .addComponent(jTextField1))))
+                .addContainerGap())
+        );
+        closedPanelLayout.setVerticalGroup(
+            closedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(closedPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(partsScroll, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(closedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(closedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -564,13 +696,17 @@ public class WOFrame extends javax.swing.JInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(backPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(closedPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(backPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(closedPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(backPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -625,7 +761,7 @@ public class WOFrame extends javax.swing.JInternalFrame {
                     //Select new row
                     table.setRowSelectionInterval(0, 0);
                     }
-                    else{ //Edit schedule
+                    else{ //Edit WO
                         //Get selected number
                         int WONum = Integer.parseInt(table.getValueAt(row, 0).toString());
                         //Update database
@@ -773,6 +909,16 @@ public class WOFrame extends javax.swing.JInternalFrame {
             employeePopup.show(employeeButton, employeeButton.getWidth()-employeePopup.getWidth(), employeeButton.getHeight()+3);
         }
     }//GEN-LAST:event_employeeButtonMousePressed
+
+    private void imageButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_imageButtonActionPerformed
+        if(imageChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION){
+            File [] files = imageChooser.getSelectedFiles();
+            for(File f : files){
+                images.add(f.getAbsolutePath());
+            }
+            imageLabel.setText(files.length + (files.length > 1 ? " images" : " image") +" selected");
+        }
+    }//GEN-LAST:event_imageButtonActionPerformed
      
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> assetCombo;
@@ -780,6 +926,7 @@ public class WOFrame extends javax.swing.JInternalFrame {
     private javax.swing.JPanel backPanel;
     private javax.swing.JButton boldButton;
     private javax.swing.JButton bulletButton;
+    private javax.swing.JPanel closedPanel;
     private javax.swing.JButton continueButton;
     private javax.swing.JPanel datePanel;
     private javax.swing.JTextArea descArea;
@@ -794,11 +941,23 @@ public class WOFrame extends javax.swing.JInternalFrame {
     private javax.swing.Box.Filler filler1;
     private javax.swing.JLabel freqLabel;
     private javax.swing.JButton imageButton;
+    private javax.swing.JFileChooser imageChooser;
+    private javax.swing.JLabel imageLabel;
     private javax.swing.JButton italicsButton;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTextField2;
     private javax.swing.JPanel leftPanel;
     private javax.swing.JComboBox<String> locationCombo;
     private javax.swing.JLabel locationLabel;
     private javax.swing.JLabel nameLabel;
+    private javax.swing.JScrollPane partsScroll;
+    private javax.swing.JTable partsTable;
     private javax.swing.JComboBox<String> priorityCombo;
     private javax.swing.JPanel rightPanel;
     private javax.swing.JToolBar textTools;

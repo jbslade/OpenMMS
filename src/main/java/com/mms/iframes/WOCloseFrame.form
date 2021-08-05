@@ -53,10 +53,10 @@
               <Group type="102" attributes="0">
                   <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="actionScrollPane" max="32767" attributes="0"/>
+                      <Component id="actionScroll" max="32767" attributes="0"/>
                       <Component id="actionLabel" min="-2" max="-2" attributes="0"/>
                       <Component id="partsLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                      <Component id="jScrollPane2" alignment="0" pref="373" max="32767" attributes="0"/>
+                      <Component id="partsScroll" alignment="0" pref="373" max="32767" attributes="0"/>
                       <Component id="continueButton" alignment="1" min="-2" max="-2" attributes="0"/>
                       <Group type="102" alignment="0" attributes="0">
                           <Group type="103" groupAlignment="1" max="-2" attributes="0">
@@ -80,11 +80,11 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="actionLabel" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="actionScrollPane" min="-2" max="-2" attributes="0"/>
+                  <Component id="actionScroll" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="partsLabel" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jScrollPane2" min="-2" pref="160" max="-2" attributes="0"/>
+                  <Component id="partsScroll" min="-2" pref="160" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
                       <Component id="startTimePanel" max="32767" attributes="0"/>
@@ -108,7 +108,7 @@
             <Property name="text" type="java.lang.String" value="Actions Performed:"/>
           </Properties>
         </Component>
-        <Container class="javax.swing.JScrollPane" name="actionScrollPane">
+        <Container class="javax.swing.JScrollPane" name="actionScroll">
           <AuxValues>
             <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
           </AuxValues>
@@ -128,7 +128,7 @@
             <Property name="text" type="java.lang.String" value="Parts Used:"/>
           </Properties>
         </Component>
-        <Container class="javax.swing.JScrollPane" name="jScrollPane2">
+        <Container class="javax.swing.JScrollPane" name="partsScroll">
           <AuxValues>
             <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
           </AuxValues>
@@ -143,7 +143,7 @@
                     <Column editable="false" title=" #" type="java.lang.Object"/>
                     <Column editable="false" title=" Name" type="java.lang.Object"/>
                     <Column editable="false" title=" In Stock" type="java.lang.Integer"/>
-                    <Column editable="true" title=" Used" type="java.lang.Integer"/>
+                    <Column editable="true" title=" Used Qty" type="java.lang.Integer"/>
                   </Table>
                 </Property>
               </Properties>

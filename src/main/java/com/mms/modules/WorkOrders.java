@@ -124,7 +124,9 @@ public class WorkOrders {
     
     public void viewWO(){
         WOFrame w = new WOFrame(table, table.getSelectedRow(), true, null);
-        w.setSize(MMS.DIAG_WIDTH*2-10, w.getHeight());
+        if(table.getValueAt(table.getSelectedRow(), 7).equals("Closed"))
+            w.setSize(MMS.DIAG_WIDTH*3, w.getHeight());
+        else w.setSize(MMS.DIAG_WIDTH*2-10, w.getHeight());
         w.setTitle("View Work Order #"+table.getValueAt(table.getSelectedRow(), 0));
         w.setLocation(MMS.getMainFrame().getDesktopPane().getWidth()/2-w.getWidth()/2, MMS.getMainFrame().getDesktopPane().getHeight()/2-w.getHeight()/2-50);
         MMS.getMainFrame().getDesktopPane().add(w);

@@ -157,6 +157,7 @@ com\mms\iframes\WOCloseFrame$1.class
 com\mms\MainFrame$56.class
 com\mms\MainFrame$61.class
 com\mms\MainFrame$19.class
+com\mms\iframes\WOFrame$12.class
 com\mms\utilities\MenuScroller$MenuScrollListener.class
 com\mms\iframes\AssetFrame$3.class
 com\mms\iframes\ScheduleFrame$8.class
@@ -169,6 +170,7 @@ com\mms\modules\Admin.class
 com\mms\MainFrame.class
 com\mms\panels\FindPanel.class
 com\mms\utilities\MenuScroller$MenuScrollTimer$1.class
+com\mms\iframes\WOFrame$13.class
 com\mms\MainFrame$60.class
 com\mms\iframes\LocationFrame$3.class
 com\mms\utilities\ContextMenuMouseListener$3.class
