@@ -75,7 +75,7 @@ public class ScheduleFrame extends javax.swing.JInternalFrame {
         pickerSettings.setBorderCalendarPopup(nameField.getBorder());
         pickerSettings.setAllowEmptyDates(false);
         datePicker = new DatePicker(pickerSettings);
-        if(!MMS.DEBUG) pickerSettings.setDateRangeLimits(LocalDate.now(), LocalDate.MAX);
+        if(!view) pickerSettings.setDateRangeLimits(LocalDate.now(), LocalDate.MAX);
         datePicker.setDateToToday();
         datePicker.getComponentDateTextField().setBorder(nameField.getBorder());
         datePicker.getComponentDateTextField().setMargin(new Insets(2,5,2,2));
@@ -140,20 +140,17 @@ public class ScheduleFrame extends javax.swing.JInternalFrame {
         //View
         if(view){
             nameField.setEditable(false);
-            nameField.setFocusable(false);
             nameField.setBackground(Color.WHITE);
             OtherTools.setComboBoxReadOnly(typeCombo);
             OtherTools.setComboBoxReadOnly(freqCombo);
             OtherTools.setComboBoxReadOnly(assetCombo);
             OtherTools.setComboBoxReadOnly(locationCombo);           
             datePicker.getComponentDateTextField().setEditable(false);
-            datePicker.getComponentDateTextField().setFocusable(false);
             datePicker.getComponentToggleCalendarButton().setEnabled(false);
             for(MouseListener l : datePicker.getComponentToggleCalendarButton().getMouseListeners())
                 datePicker.getComponentToggleCalendarButton().removeMouseListener(l);        
             viewToggleButton.setSelected(true);
             viewToggleButtonActionPerformed(null);
-            descViewPane.setFocusable(false);
             continueButton.setEnabled(false);
             continueButton.setVisible(false);
             for(Component c : textTools.getComponents())
@@ -531,7 +528,14 @@ public class ScheduleFrame extends javax.swing.JInternalFrame {
                         //Select updated row
                         table.setRowSelectionInterval(row, row);
                     }
-                    TableTools.resize(table);
+                    TableTools.resize(table, 20);
+                    if(MMS.DEBUG){
+                        try {
+                            Thread.sleep(4000);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(WOCloseFrame.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
                     dispose();
                 }
             }.start();

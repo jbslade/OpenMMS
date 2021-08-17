@@ -19,14 +19,11 @@ import com.mms.Database;
 import com.mms.MMS;
 import com.mms.MainFrame;
 import com.mms.dialogs.InternalDialog;
-import com.mms.iframes.ScheduleFrame;
 import com.mms.iframes.WOCloseFrame;
 import com.mms.iframes.WOFrame;
-import com.mms.utilities.DateTools;
 import com.mms.utilities.TableTools;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
@@ -96,7 +93,7 @@ public class WorkOrders {
                 } catch (SQLException ex) {
                     Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                TableTools.resize(table);
+                TableTools.resize(table, 20);
                 if(t.getRowCount() != 0) table.setRowSelectionInterval(row, row);
                 loadLabel.setVisible(false);
             }
@@ -125,7 +122,7 @@ public class WorkOrders {
     public void viewWO(){
         WOFrame w = new WOFrame(table, table.getSelectedRow(), true, null);
         if(table.getValueAt(table.getSelectedRow(), 7).equals("Closed"))
-            w.setSize(MMS.DIAG_WIDTH*3, w.getHeight());
+            w.setSize(MMS.DIAG_WIDTH*3-10, w.getHeight());
         else w.setSize(MMS.DIAG_WIDTH*2-10, w.getHeight());
         w.setTitle("View Work Order #"+table.getValueAt(table.getSelectedRow(), 0));
         w.setLocation(MMS.getMainFrame().getDesktopPane().getWidth()/2-w.getWidth()/2, MMS.getMainFrame().getDesktopPane().getHeight()/2-w.getHeight()/2-50);
@@ -141,7 +138,7 @@ public class WorkOrders {
             title = "Delete Work Orders";
         }
         else{
-            message = "Are you sure you want to delete Work Order #"+table.getValueAt(table.getSelectedRow(), 0)+"?";
+            message = "Are you sure you want to delete this Work Order?";
             title = "Delete Work Order #"+table.getValueAt(table.getSelectedRow(), 0);
         }
         if(InternalDialog.showInternalConfirmDialog(MMS.getMainFrame().getDesktopPane(), message, title, JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null) == 0){
@@ -170,7 +167,7 @@ public class WorkOrders {
             title = "Archive Work Orders";
         }
         else{
-            message = "Are you sure you want to archive Work Order #"+table.getValueAt(table.getSelectedRow(), 0)+"?";
+            message = "Are you sure you want to archive this Work Order?";
             title = "Archive Work Order #"+table.getValueAt(table.getSelectedRow(), 0);
         }
         

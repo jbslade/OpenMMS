@@ -28,6 +28,7 @@ import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
 /**
@@ -38,7 +39,7 @@ public class MMS {
     
     //Variables
     public static final String NAME = "OpenMMS", VERSION = "1.0";
-    public static final boolean DEBUG = false;
+    public static boolean DEBUG = true;
     public static final int DIAG_WIDTH = Toolkit.getDefaultToolkit().getScreenSize().width/5 > 310 ? 310 : Toolkit.getDefaultToolkit().getScreenSize().width/5;
     private static MouseListener mouseListener;
     private static Thread shutdownThread;
@@ -73,6 +74,7 @@ public class MMS {
     
     //Main
     public static void main (String [] args){
+        if(DEBUG) if(JOptionPane.showConfirmDialog(null, "RUN IN DEBUG?") != 0) DEBUG = false;
         //L&F
         FlatGrayIJTheme.install();
         System.setProperty("flatlaf.menuBarEmbedded", "true");

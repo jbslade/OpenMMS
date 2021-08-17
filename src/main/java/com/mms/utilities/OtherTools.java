@@ -54,7 +54,6 @@ public class OtherTools {
     }
     
     public static void setComboBoxReadOnly(JComboBox jcb){
-       jcb.setFocusable(false);
        ((JTextField)jcb.getEditor().getEditorComponent()).setEditable(false);
 
        MouseListener[] mls = jcb.getMouseListeners();

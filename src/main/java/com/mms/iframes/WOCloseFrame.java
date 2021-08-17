@@ -20,11 +20,16 @@ import com.github.lgooddatepicker.components.DateTimePicker;
 import com.github.lgooddatepicker.components.TimePickerSettings;
 import com.mms.Database;
 import com.mms.MMS;
+import com.mms.utilities.DateTools;
 import com.mms.utilities.OtherTools;
 import com.mms.utilities.TableTools;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -64,7 +69,7 @@ public class WOCloseFrame extends javax.swing.JInternalFrame {
             t.addRow(o);
         }
         TableTools.format(partsTable);
-        TableTools.resize(partsTable);
+        TableTools.resize(partsTable, 10);
         
         //Set date pickers
         String [] d = wo.getValueAt(row, 1).toString().split("-");
@@ -257,8 +262,9 @@ public class WOCloseFrame extends javax.swing.JInternalFrame {
                 @Override
                 public void run(){
                     //Update work order
-                    Database.executeQuery("UPDATE work_orders SET wo_action = ?, wo_start_time = ?, wo_end_time = ?, wo_status = ? WHERE id = ?",
-                            new Object[]{action, Timestamp.valueOf(startTimePicker.getDateTimePermissive()), Timestamp.valueOf(endTimePicker.getDateTimePermissive()), "Closed", id});
+                    Database.executeQuery("UPDATE work_orders SET wo_action = ?, wo_start_time = ?, wo_end_time = ?, wo_start_date = ?, wo_end_date = ?, wo_status = ? WHERE id = ?",
+                            new Object[]{action, Time.valueOf(startTimePicker.getTimePicker().getTime()), Time.valueOf(endTimePicker.getTimePicker().getTime()),
+                                DateTools.convertToSQLDate(startTimePicker.getDatePicker().getDate()), DateTools.convertToSQLDate(endTimePicker.getDatePicker().getDate()), "Closed", id});
                     for(int i = 0; i < partsTable.getRowCount(); i++){
                         int qty = Integer.parseInt(partsTable.getValueAt(i, 3).toString());
                         if(qty > 0){
@@ -275,6 +281,13 @@ public class WOCloseFrame extends javax.swing.JInternalFrame {
                     }
                     wo.setValueAt("Closed", woRow, 7);
                     woButton.setEnabled(false);
+                    if(MMS.DEBUG){
+                        try {
+                            Thread.sleep(4000);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(WOCloseFrame.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
                     dispose();
                 }
             }.start();

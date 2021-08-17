@@ -203,7 +203,7 @@ public class LocationFrame extends javax.swing.JInternalFrame {
                         //Select updated row
                         table.setRowSelectionInterval(row, row);
                     }
-                    TableTools.resize(table);
+                    TableTools.resize(table, 20);
                     dispose();
                 }
             }.start();

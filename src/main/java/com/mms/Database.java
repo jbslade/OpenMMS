@@ -138,8 +138,10 @@ public class Database {
                 + "wo_status VARCHAR(50),"
                 + "wo_priority VARCHAR(50),"
                 + "wo_desc VARCHAR(2000),"
-                + "wo_start_time DATE,"
-                + "wo_end_time DATE,"
+                + "wo_start_time TIME,"
+                + "wo_end_time TIME,"
+                + "wo_start_date DATE,"
+                + "wo_end_date DATE,"
                 + "wo_action VARCHAR(1000),"
                 + "location_id INT,"
                 + "asset_id INT,"
@@ -158,6 +160,12 @@ public class Database {
                 + "wo_id INT,"
                 + "part_id INT,"
                 + "qty INT"
+                + ")");
+        
+        //Work Order Images
+        Database.executeQuery("CREATE TABLE wo_images("
+                + "wo_id INT,"
+                + "img_link VARCHAR(100)"
                 + ")");
         
         //CustomFields

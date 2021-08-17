@@ -92,8 +92,8 @@ public class FindPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(findField, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(button)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(button, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         backPanelLayout.setVerticalGroup(
             backPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -122,7 +122,7 @@ public class FindPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_buttonActionPerformed
 
     private void findFieldCaretUpdate(javax.swing.event.CaretEvent evt) {//GEN-FIRST:event_findFieldCaretUpdate
-        sorter.setRowFilter(RowFilter.regexFilter(findField.getText()));
+        sorter.setRowFilter(RowFilter.regexFilter("(?i)"+findField.getText()));
         table.setRowSorter(sorter);
         if(table.getRowCount() != 0) table.setRowSelectionInterval(0, 0);
     }//GEN-LAST:event_findFieldCaretUpdate

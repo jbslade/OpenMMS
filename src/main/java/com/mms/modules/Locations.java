@@ -71,7 +71,7 @@ public class Locations {
                 } catch (SQLException ex) {
                     Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                TableTools.resize(table);
+                TableTools.resize(table, 20);
                 if(t.getRowCount() != 0) table.setRowSelectionInterval(row, row);
                 loadLabel.setVisible(false);
             }

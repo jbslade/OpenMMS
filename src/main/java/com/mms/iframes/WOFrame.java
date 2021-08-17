@@ -28,11 +28,15 @@ import com.mms.utilities.TableTools;
 import com.sun.glass.events.KeyEvent;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Desktop;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -50,6 +54,7 @@ import javax.swing.JTable;
 import javax.swing.border.MatteBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.BadLocationException;
 
 
 /**
@@ -79,7 +84,8 @@ public class WOFrame extends javax.swing.JInternalFrame {
         
         //Closed panel
         closedPanel.setVisible(false);
-        backPanel.setBorder(new MatteBorder(0,0,0,6, backPanel.getBackground()));
+        splitPane.setDividerSize(0);
+        //backPanel.setBorder(new MatteBorder(0,0,0,6, backPanel.getBackground()));
 
         //Desc view area
         descViewScroll.setVisible(false);
@@ -95,7 +101,7 @@ public class WOFrame extends javax.swing.JInternalFrame {
         pickerSettings.setBorderCalendarPopup(employeeField.getBorder());
         pickerSettings.setAllowEmptyDates(false);
         datePicker = new DatePicker(pickerSettings);
-        if(!MMS.DEBUG) pickerSettings.setDateRangeLimits(LocalDate.now(), LocalDate.MAX);
+        if(!view) pickerSettings.setDateRangeLimits(LocalDate.now(), LocalDate.MAX);
         datePicker.setDateToToday();
         datePicker.getComponentDateTextField().setBorder(employeeField.getBorder());
         datePicker.getComponentDateTextField().setMargin(new Insets(2,5,2,2));
@@ -180,24 +186,19 @@ public class WOFrame extends javax.swing.JInternalFrame {
             } catch (SQLException ex) {
                 Logger.getLogger(WOFrame.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
-            //Closed panel
-            if(table.getValueAt(r, 7).equals("Closed")){
-                closedPanel.setVisible(true);
-            }
         }
         
         //Schedule
         if(s != null){
             //Get schedule desc
-            ResultSet srs = Database.select("SELECT schedule_desc FROM schedule WHERE id = ?",
+            rs = Database.select("SELECT schedule_desc FROM schedule WHERE id = ?",
                     new Object[]{schedule.getTable().getValueAt(schedule.getTable().getSelectedRow(), 0)});
             //Set values
             try {
-                if(srs.next()){
-                    descArea.setText(srs.getString(1).trim());
+                if(rs.next()){
+                    descArea.setText(rs.getString(1).trim());
                 }
-                srs.close();
+                rs.close();
             } catch (SQLException ex) {
                 Logger.getLogger(WOFrame.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -209,7 +210,6 @@ public class WOFrame extends javax.swing.JInternalFrame {
         //View
         if(view){
             employeeField.setEditable(false);
-            employeeField.setFocusable(false);
             employeeField.setBackground(Color.WHITE);
             employeeButton.setEnabled(false);
             OtherTools.setComboBoxReadOnly(typeCombo);
@@ -217,18 +217,61 @@ public class WOFrame extends javax.swing.JInternalFrame {
             OtherTools.setComboBoxReadOnly(assetCombo);
             OtherTools.setComboBoxReadOnly(locationCombo);           
             datePicker.getComponentDateTextField().setEditable(false);
-            datePicker.getComponentDateTextField().setFocusable(false);
             datePicker.getComponentToggleCalendarButton().setEnabled(false);
             for(MouseListener l : datePicker.getComponentToggleCalendarButton().getMouseListeners())
                 datePicker.getComponentToggleCalendarButton().removeMouseListener(l);        
             viewToggleButton.setSelected(true);
             viewToggleButtonActionPerformed(null);
-            descViewPane.setFocusable(false);
             continueButton.setEnabled(false);
             continueButton.setVisible(false);
-            imageButton.setText("Open Images");
             for(Component c : textTools.getComponents())
                 c.setEnabled(false);
+            backPanel.setBorder(new MatteBorder(0,0,0,6, backPanel.getBackground()));
+            
+            //Images
+            rs = Database.select("SELECT img_link FROM wo_images WHERE wo_id = ?",
+                    new Object[]{table.getValueAt(row, 0)});
+            try {
+                while(rs.next()){
+                    images.add(rs.getString(1).trim());
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(WOFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            if(images.size() > 0){
+                imageButton.setText("Open Image(s)");
+                imageLabel.setText(images.size() > 1 ? images.size()+" images attached" : images.size()+" image attached");
+            }
+
+            //Closed panel
+            if(table.getValueAt(r, 7).equals("Closed")){
+                closedPanel.setVisible(true);
+                splitPane.setDividerSize(10);
+                actionsArea.setBackground(Color.WHITE);
+                try {
+                    rs = Database.select("SELECT wo_action, wo_start_time, wo_end_time, wo_start_date, wo_end_date FROM work_orders WHERE id = ?",
+                        new Object[]{table.getValueAt(row, 0)});
+                    if(rs.next()){
+                        actionsArea.setText(rs.getString(1).trim());
+                        String startTime = rs.getString(2).trim(), endTime = rs.getString(3).trim(),
+                                startDate = rs.getString(4).trim(), endDate = rs.getString(5).trim();
+                        startTimeField.setText(startDate+" "+startTime.substring(0, 5));
+                        endTimeField.setText(endDate+" "+endTime.substring(0, 5));
+                    }
+                    
+                    DefaultTableModel p = (DefaultTableModel)partsTable.getModel();
+                    rs = Database.select("SELECT t0.part_id, t1.part_name, t0.qty FROM wo_parts t0 JOIN parts t1 ON t0.part_id = t1.id WHERE t0.wo_id = ?",
+                        new Object[]{table.getValueAt(row, 0)});
+                    while(rs != null && rs.next()){
+                        p.addRow(new Object[]{rs.getString(1).trim(), rs.getString(2).trim(), rs.getInt(3)});
+                    }
+                    TableTools.format(partsTable);
+                    TableTools.resize(partsTable, 10);
+                    if(rs != null) rs.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(WOFrame.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
         }
     }
     
@@ -271,6 +314,18 @@ public class WOFrame extends javax.swing.JInternalFrame {
         descViewPane = new javax.swing.JTextPane();
         employeePopup = new javax.swing.JPopupMenu();
         imageChooser = new javax.swing.JFileChooser();
+        splitPane = new javax.swing.JSplitPane();
+        closedPanel = new javax.swing.JPanel();
+        actionsLabel = new javax.swing.JLabel();
+        actionsScroll = new javax.swing.JScrollPane();
+        actionsArea = new javax.swing.JTextArea();
+        partsScroll = new javax.swing.JScrollPane();
+        partsTable = new javax.swing.JTable();
+        partsLabel = new javax.swing.JLabel();
+        startTimeLabel = new javax.swing.JLabel();
+        startTimeField = new javax.swing.JTextField();
+        endTimeField = new javax.swing.JTextField();
+        endTimeLabel = new javax.swing.JLabel();
         backPanel = new javax.swing.JPanel();
         continueButton = new javax.swing.JButton();
         textTools = new javax.swing.JToolBar();
@@ -300,17 +355,6 @@ public class WOFrame extends javax.swing.JInternalFrame {
         employeeField = new javax.swing.JTextField();
         employeeButton = new javax.swing.JButton();
         imageLabel = new javax.swing.JLabel();
-        closedPanel = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
-        partsScroll = new javax.swing.JScrollPane();
-        partsTable = new javax.swing.JTable();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
-        jLabel4 = new javax.swing.JLabel();
 
         descViewPane.setEditable(false);
         descViewPane.setContentType("text/html"); // NOI18N
@@ -353,6 +397,107 @@ public class WOFrame extends javax.swing.JInternalFrame {
         addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentResized(java.awt.event.ComponentEvent evt) {
                 formComponentResized(evt);
+            }
+        });
+
+        splitPane.setDividerLocation(500);
+
+        actionsLabel.setText("Actions Performed:");
+
+        actionsArea.setEditable(false);
+        actionsArea.setColumns(20);
+        actionsArea.setRows(3);
+        actionsScroll.setViewportView(actionsArea);
+
+        partsTable.setAutoCreateRowSorter(true);
+        partsTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                " #", " Name", " Used Qty"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Object.class, java.lang.Integer.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        partsScroll.setViewportView(partsTable);
+
+        partsLabel.setText("Parts Used:");
+
+        startTimeLabel.setText("Start Time:");
+
+        startTimeField.setEditable(false);
+        startTimeField.setBackground(new java.awt.Color(255, 255, 255));
+
+        endTimeField.setEditable(false);
+        endTimeField.setBackground(new java.awt.Color(255, 255, 255));
+
+        endTimeLabel.setText("End Time:");
+
+        javax.swing.GroupLayout closedPanelLayout = new javax.swing.GroupLayout(closedPanel);
+        closedPanel.setLayout(closedPanelLayout);
+        closedPanelLayout.setHorizontalGroup(
+            closedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(closedPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(closedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(partsScroll, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(actionsScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 371, Short.MAX_VALUE)
+                    .addGroup(closedPanelLayout.createSequentialGroup()
+                        .addGroup(closedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(partsLabel)
+                            .addComponent(actionsLabel))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(closedPanelLayout.createSequentialGroup()
+                        .addGroup(closedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(startTimeLabel)
+                            .addComponent(endTimeLabel))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(closedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(endTimeField)
+                            .addComponent(startTimeField))))
+                .addContainerGap())
+        );
+        closedPanelLayout.setVerticalGroup(
+            closedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(closedPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(actionsLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(actionsScroll, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(partsLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(partsScroll, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(closedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(startTimeLabel)
+                    .addComponent(startTimeField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(closedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(endTimeLabel)
+                    .addComponent(endTimeField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        splitPane.setRightComponent(closedPanel);
+
+        backPanel.addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentResized(java.awt.event.ComponentEvent evt) {
+                backPanelComponentResized(evt);
             }
         });
 
@@ -432,7 +577,9 @@ public class WOFrame extends javax.swing.JInternalFrame {
         );
         descPanelLayout.setVerticalGroup(
             descPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(descScroll)
+            .addGroup(descPanelLayout.createSequentialGroup()
+                .addComponent(descScroll)
+                .addGap(0, 0, 0))
         );
 
         imageButton.setText("Attach Image(s)");
@@ -479,7 +626,7 @@ public class WOFrame extends javax.swing.JInternalFrame {
                     .addComponent(nameLabel)
                     .addComponent(freqLabel)
                     .addComponent(locationLabel))
-                .addGap(0, 154, Short.MAX_VALUE))
+                .addGap(0, 189, Short.MAX_VALUE))
             .addComponent(locationCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         leftPanelLayout.setVerticalGroup(
@@ -538,7 +685,7 @@ public class WOFrame extends javax.swing.JInternalFrame {
                     .addComponent(typeLabel)
                     .addComponent(assetLabel)
                     .addComponent(employeeLabel))
-                .addGap(0, 135, Short.MAX_VALUE))
+                .addGap(0, 170, Short.MAX_VALUE))
             .addGroup(rightPanelLayout.createSequentialGroup()
                 .addComponent(employeeField)
                 .addGap(3, 3, 3)
@@ -573,7 +720,7 @@ public class WOFrame extends javax.swing.JInternalFrame {
             .addGroup(backPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(backPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(topPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(topPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 479, Short.MAX_VALUE)
                     .addComponent(textTools, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(descPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, backPanelLayout.createSequentialGroup()
@@ -601,93 +748,7 @@ public class WOFrame extends javax.swing.JInternalFrame {
                 .addContainerGap())
         );
 
-        closedPanel.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 1, 0, 0, new java.awt.Color(204, 204, 204)));
-
-        jLabel1.setText("Actions Performed:");
-
-        jTextArea1.setEditable(false);
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(3);
-        jTextArea1.setFocusable(false);
-        jScrollPane1.setViewportView(jTextArea1);
-
-        partsTable.setAutoCreateRowSorter(true);
-        partsTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                " #", " Name", " Used Qty"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.Object.class, java.lang.Integer.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, false, false
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        partsScroll.setViewportView(partsTable);
-
-        jLabel2.setText("Parts Used:");
-
-        jLabel3.setText("Start Time:");
-
-        jLabel4.setText("End Time:");
-
-        javax.swing.GroupLayout closedPanelLayout = new javax.swing.GroupLayout(closedPanel);
-        closedPanel.setLayout(closedPanelLayout);
-        closedPanelLayout.setHorizontalGroup(
-            closedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(closedPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(closedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(partsScroll, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
-                    .addGroup(closedPanelLayout.createSequentialGroup()
-                        .addGroup(closedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel1))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(closedPanelLayout.createSequentialGroup()
-                        .addGroup(closedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel4))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(closedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextField2)
-                            .addComponent(jTextField1))))
-                .addContainerGap())
-        );
-        closedPanelLayout.setVerticalGroup(
-            closedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(closedPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(partsScroll, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(closedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(closedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+        splitPane.setLeftComponent(backPanel);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -695,18 +756,14 @@ public class WOFrame extends javax.swing.JInternalFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(backPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(closedPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(splitPane)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(closedPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(backPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(splitPane)
                 .addContainerGap())
         );
 
@@ -730,40 +787,40 @@ public class WOFrame extends javax.swing.JInternalFrame {
             new Thread(){
                 @Override
                 public void run(){
-                    if(row == -1){ //New Work Order
-                    //Get next no
                     int WONum = 0;
-                    ResultSet rs = Database.select("SELECT MAX(id) FROM work_orders");
-                    try {
-                        if(rs.next()) WONum = rs.getInt(1);
-                        rs.close();
-                    } catch (SQLException ex) {
-                        Logger.getLogger(AssetFrame.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    WONum++;
-                    //Insert into DB
-                    Database.executeQuery("INSERT INTO work_orders (id, wo_date, wo_type, wo_priority, wo_desc, asset_id, location_id, user_name, wo_status, archived) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'Open', 'N')",
-                            new Object[]{WONum, date, type, prio, desc , assNum, locNum, MMS.getUser()});
-                    
-                    //Insert employees
-                    for(int i = 0; i < employeePopup.getComponentCount(); i++){
-                        JCheckBoxMenuItem m = (JCheckBoxMenuItem)employeePopup.getComponent(i);
-                        if(m.isSelected()){
-                            Database.executeQuery("INSERT INTO wo_employees (wo_id, employee_id) VALUES (?, ?)",
-                                    new Object[]{WONum, employees.get(i)});
+                    if(row == -1){ //New Work Order
+                        //Get next no
+                        ResultSet rs = Database.select("SELECT MAX(id) FROM work_orders");
+                        try {
+                            if(rs.next()) WONum = rs.getInt(1);
+                            rs.close();
+                        } catch (SQLException ex) {
+                            Logger.getLogger(AssetFrame.class.getName()).log(Level.SEVERE, null, ex);
                         }
-                    }
+                        WONum++;
+                        //Insert into DB
+                        Database.executeQuery("INSERT INTO work_orders (id, wo_date, wo_type, wo_priority, wo_desc, asset_id, location_id, user_name, wo_status, archived) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'Open', 'N')",
+                                new Object[]{WONum, date, type, prio, desc , assNum, locNum, MMS.getUser()});
 
-                    //Update table
-                    Object [] o = {WONum, date, type, prio.equals("High") ? "<html><b>High</b></html>" : prio, assName, locName, employeeField.getText(), "Open"};
-                    DefaultTableModel m = (DefaultTableModel)table.getModel();
-                    m.insertRow(0, o);
-                    //Select new row
-                    table.setRowSelectionInterval(0, 0);
+                        //Insert employees
+                        for(int i = 0; i < employeePopup.getComponentCount(); i++){
+                            JCheckBoxMenuItem m = (JCheckBoxMenuItem)employeePopup.getComponent(i);
+                            if(m.isSelected()){
+                                Database.executeQuery("INSERT INTO wo_employees (wo_id, employee_id) VALUES (?, ?)",
+                                        new Object[]{WONum, employees.get(i)});
+                            }
+                        }
+
+                        //Update table
+                        Object [] o = {WONum, date, type, prio.equals("High") ? "<html><b>High</b></html>" : prio, assName, locName, employeeField.getText(), "Open"};
+                        DefaultTableModel m = (DefaultTableModel)table.getModel();
+                        m.insertRow(0, o);
+                        //Select new row
+                        table.setRowSelectionInterval(0, 0);
                     }
                     else{ //Edit WO
                         //Get selected number
-                        int WONum = Integer.parseInt(table.getValueAt(row, 0).toString());
+                        WONum = Integer.parseInt(table.getValueAt(row, 0).toString());
                         //Update database
                         Database.executeQuery("UPDATE work_orders SET wo_date = ?, wo_type = ?, wo_priority = ?, wo_desc = ?, asset_id = ?, location_id = ? WHERE id = ?",
                                 new Object[]{date, type, prio, desc , assNum, locNum, WONum});
@@ -789,7 +846,28 @@ public class WOFrame extends javax.swing.JInternalFrame {
                         //Select updated row
                         table.setRowSelectionInterval(row, row);
                     }
-                    TableTools.resize(table);
+                    
+                    //Images
+                    if(images.size() > 0){
+                        int count = 1;
+                        for(String s : images){
+                            //Move to images folder
+                            File source = new File(s);
+                            File dest = new File("wo_images\\"+WONum+"-"+count+source.getName().substring(source.getName().lastIndexOf(".")));
+                            try {
+                                Files.createDirectories(dest.toPath());
+                                Files.copy(source.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                            } catch (IOException ex) {
+                                Logger.getLogger(WOFrame.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                            //Insert into DB
+                            Database.executeQuery("INSERT INTO wo_images (wo_id, img_link) VALUES (?, ?)",
+                                    new Object[]{WONum, dest.getName()});
+                            count++;
+                        }
+                    }
+                    
+                    TableTools.resize(table, 20);
                     
                     if(schedule != null){
                         String s = OtherTools.escapeHTML(schedule.getTable().getValueAt(scheduleRow, 5).toString());
@@ -799,7 +877,13 @@ public class WOFrame extends javax.swing.JInternalFrame {
                             }
                         }
                     }
-                    
+                    if(MMS.DEBUG){
+                        try {
+                            Thread.sleep(4000);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(WOFrame.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
                     dispose();
                 }
             }.start();
@@ -825,7 +909,7 @@ public class WOFrame extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_boldButtonActionPerformed
 
     private void italicsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_italicsButtonActionPerformed
-      if(descArea.getSelectedText() == null){
+    if(descArea.getSelectedText() == null){
            int caret = descArea.getCaretPosition();
            descArea.replaceSelection("__");
            descArea.setCaretPosition(caret+1);
@@ -839,7 +923,25 @@ public class WOFrame extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_italicsButtonActionPerformed
 
     private void bulletButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bulletButtonActionPerformed
-     
+    String text = descArea.getSelectedText();
+    if(text == null){
+        try {
+            String line = descArea.getText().split("\n")[descArea.getLineOfOffset(descArea.getCaretPosition())];
+            if(line.isEmpty()) descArea.replaceSelection("- ");
+            else if(line.startsWith("-")) descArea.replaceSelection("  \n- ");
+            else descArea.replaceSelection("  \n  \n- ");
+        } catch (BadLocationException ex) {
+            Logger.getLogger(WOFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    else{
+        String [] lines = text.split("\n");
+        String newText = "";
+        for(String line : lines){
+            newText += "- "+line+"\n";
+        }
+        descArea.replaceSelection(newText);
+    }
     }//GEN-LAST:event_bulletButtonActionPerformed
 
     private void assetComboItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_assetComboItemStateChanged
@@ -854,10 +956,6 @@ public class WOFrame extends javax.swing.JInternalFrame {
             } 
         }
     }//GEN-LAST:event_assetComboItemStateChanged
-
-    private void formComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentResized
-        datePicker.setSize(datePanel.getSize());
-    }//GEN-LAST:event_formComponentResized
 
     private void viewToggleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewToggleButtonActionPerformed
         if(viewToggleButton.isSelected()){ //Replace text area with view pane
@@ -911,7 +1009,17 @@ public class WOFrame extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_employeeButtonMousePressed
 
     private void imageButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_imageButtonActionPerformed
-        if(imageChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION){
+        if(imageButton.getText().equals("Open Image(s)")){
+            for(String s : images){
+                File f = new File(System.getProperty("user.dir")+"\\wo_images\\"+s);
+                try {
+                    Desktop.getDesktop().open(f);
+                } catch (IOException ex) {
+                    Logger.getLogger(WOFrame.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+        else if(imageChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION){
             File [] files = imageChooser.getSelectedFiles();
             for(File f : files){
                 images.add(f.getAbsolutePath());
@@ -919,8 +1027,21 @@ public class WOFrame extends javax.swing.JInternalFrame {
             imageLabel.setText(files.length + (files.length > 1 ? " images" : " image") +" selected");
         }
     }//GEN-LAST:event_imageButtonActionPerformed
+
+    private void backPanelComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_backPanelComponentResized
+        datePicker.setSize(datePanel.getSize());
+    }//GEN-LAST:event_backPanelComponentResized
+
+    private void formComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentResized
+        backPanelComponentResized(null);
+        splitPane.setDividerLocation(0.66);
+        TableTools.resize(partsTable, 10);
+    }//GEN-LAST:event_formComponentResized
      
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextArea actionsArea;
+    private javax.swing.JLabel actionsLabel;
+    private javax.swing.JScrollPane actionsScroll;
     private javax.swing.JComboBox<String> assetCombo;
     private javax.swing.JLabel assetLabel;
     private javax.swing.JPanel backPanel;
@@ -938,28 +1059,26 @@ public class WOFrame extends javax.swing.JInternalFrame {
     private javax.swing.JTextField employeeField;
     private javax.swing.JLabel employeeLabel;
     private javax.swing.JPopupMenu employeePopup;
+    private javax.swing.JTextField endTimeField;
+    private javax.swing.JLabel endTimeLabel;
     private javax.swing.Box.Filler filler1;
     private javax.swing.JLabel freqLabel;
     private javax.swing.JButton imageButton;
     private javax.swing.JFileChooser imageChooser;
     private javax.swing.JLabel imageLabel;
     private javax.swing.JButton italicsButton;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
     private javax.swing.JPanel leftPanel;
     private javax.swing.JComboBox<String> locationCombo;
     private javax.swing.JLabel locationLabel;
     private javax.swing.JLabel nameLabel;
+    private javax.swing.JLabel partsLabel;
     private javax.swing.JScrollPane partsScroll;
     private javax.swing.JTable partsTable;
     private javax.swing.JComboBox<String> priorityCombo;
     private javax.swing.JPanel rightPanel;
+    private javax.swing.JSplitPane splitPane;
+    private javax.swing.JTextField startTimeField;
+    private javax.swing.JLabel startTimeLabel;
     private javax.swing.JToolBar textTools;
     private javax.swing.JPanel topPanel;
     private javax.swing.JComboBox<String> typeCombo;

@@ -20,7 +20,6 @@ import com.mms.MMS;
 import com.mms.MainFrame;
 import com.mms.dialogs.InternalDialog;
 import com.mms.iframes.ScheduleFrame;
-import com.mms.iframes.WOFrame;
 import com.mms.utilities.DateTools;
 import com.mms.utilities.TableTools;
 import java.sql.ResultSet;
@@ -95,7 +94,7 @@ public class Schedule {
                 } catch (SQLException ex) {
                     Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                TableTools.resize(table);
+                TableTools.resize(table, 20);
                 if(t.getRowCount() != 0) table.setRowSelectionInterval(row, row);
                 loadLabel.setVisible(false);
             }

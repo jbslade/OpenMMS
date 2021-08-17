@@ -351,12 +351,10 @@ public class MainFrame extends javax.swing.JFrame {
         employeeScroll = new javax.swing.JScrollPane();
         employeeTable = new javax.swing.JTable();
         reportPanel = new javax.swing.JPanel();
-        reportTools = new javax.swing.JToolBar();
-        jComboBox1 = new javax.swing.JComboBox<>();
-        jButton5 = new javax.swing.JButton();
-        filler7 = new javax.swing.Box.Filler(new java.awt.Dimension(300, 0), new java.awt.Dimension(300, 0), new java.awt.Dimension(300, 32767));
         reportScroll = new javax.swing.JScrollPane();
         reportTable = new javax.swing.JTable();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTree1 = new javax.swing.JTree();
         adminPanel = new javax.swing.JPanel();
         adminUserPanel = new javax.swing.JPanel();
         adminUserScroll = new javax.swing.JScrollPane();
@@ -1242,19 +1240,6 @@ public class MainFrame extends javax.swing.JFrame {
 
         tabbedPane.addTab("Employees", employeePanel);
 
-        reportTools.setFloatable(false);
-        reportTools.setRollover(true);
-
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        reportTools.add(jComboBox1);
-
-        jButton5.setText("jButton5");
-        jButton5.setFocusable(false);
-        jButton5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton5.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        reportTools.add(jButton5);
-        reportTools.add(filler7);
-
         reportScroll.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 0, 0, 0, new java.awt.Color(204, 204, 204)));
 
         reportTable.setAutoCreateRowSorter(true);
@@ -1263,7 +1248,7 @@ public class MainFrame extends javax.swing.JFrame {
 
             },
             new String [] {
-
+                "Title 1", "Title 2"
             }
         ));
         reportTable.setDragEnabled(true);
@@ -1274,19 +1259,25 @@ public class MainFrame extends javax.swing.JFrame {
         });
         reportScroll.setViewportView(reportTable);
 
+        jScrollPane2.setBackground(new java.awt.Color(255, 255, 255));
+        jScrollPane2.setBorder(null);
+        jScrollPane2.setViewportView(jTree1);
+
         javax.swing.GroupLayout reportPanelLayout = new javax.swing.GroupLayout(reportPanel);
         reportPanel.setLayout(reportPanelLayout);
         reportPanelLayout.setHorizontalGroup(
             reportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(reportTools, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(reportScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 1133, Short.MAX_VALUE)
+            .addGroup(reportPanelLayout.createSequentialGroup()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 74, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(reportScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 1053, Short.MAX_VALUE))
         );
         reportPanelLayout.setVerticalGroup(
             reportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(reportScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 708, Short.MAX_VALUE)
             .addGroup(reportPanelLayout.createSequentialGroup()
-                .addComponent(reportTools, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(reportScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 683, Short.MAX_VALUE))
+                .addComponent(jScrollPane2)
+                .addGap(42, 42, 42))
         );
 
         tabbedPane.addTab("Reports", reportPanel);
@@ -2199,10 +2190,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.Box.Filler filler4;
     private javax.swing.Box.Filler filler5;
     private javax.swing.Box.Filler filler6;
-    private javax.swing.Box.Filler filler7;
-    private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
-    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -2216,8 +2204,10 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JTree jTree1;
     private javax.swing.JLabel locationLoadLabel;
     private javax.swing.JPanel locationPanel;
     private javax.swing.JScrollPane locationScroll;
@@ -2255,7 +2245,6 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JPanel reportPanel;
     private javax.swing.JScrollPane reportScroll;
     private javax.swing.JTable reportTable;
-    private javax.swing.JToolBar reportTools;
     private javax.swing.JLabel scheduleLoadLabel;
     private javax.swing.JPanel schedulePanel;
     private javax.swing.JScrollPane scheduleScroll;
