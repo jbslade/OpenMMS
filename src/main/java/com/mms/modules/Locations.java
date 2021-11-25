@@ -100,7 +100,7 @@ public class Locations {
     public void deleteLocation(){
         String message, title;
         if(table.getSelectedRowCount() > 1){
-            message = "Are you sure you want to delete these "+table.getSelectedRowCount()+" Locations?";
+            message = "Are you sure you want to delete these ("+table.getSelectedRowCount()+") Locations?";
             title = "Delete Locations";
         }
         else{
@@ -129,7 +129,7 @@ public class Locations {
     public void archiveLocation(){
         String message, title;
         if(table.getSelectedRowCount() > 1){
-            message = "Are you sure you want to archive these "+table.getSelectedRowCount()+" Locations?";
+            message = "Are you sure you want to archive these ("+table.getSelectedRowCount()+") Locations?";
             title = "Archive Locations";
         }
         else{

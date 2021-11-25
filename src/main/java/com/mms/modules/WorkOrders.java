@@ -134,7 +134,7 @@ public class WorkOrders {
     public void deleteWO(){
         String message, title;
         if(table.getSelectedRowCount() > 1){
-            message = "Are you sure you want to delete these "+table.getSelectedRowCount()+" Work Orders?";
+            message = "Are you sure you want to delete these ("+table.getSelectedRowCount()+") Work Orders?";
             title = "Delete Work Orders";
         }
         else{
@@ -163,7 +163,7 @@ public class WorkOrders {
     public void archiveWO(){
         String message, title;
         if(table.getSelectedRowCount() > 1){
-            message = "Are you sure you want to archive these "+table.getSelectedRowCount()+" Work Orders?";
+            message = "Are you sure you want to archive these ("+table.getSelectedRowCount()+") Work Orders?";
             title = "Archive Work Orders";
         }
         else{

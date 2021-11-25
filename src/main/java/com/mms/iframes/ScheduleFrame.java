@@ -175,7 +175,6 @@ public class ScheduleFrame extends javax.swing.JInternalFrame {
         textTools = new javax.swing.JToolBar();
         boldButton = new javax.swing.JButton();
         italicsButton = new javax.swing.JButton();
-        bulletButton = new javax.swing.JButton();
         filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
         viewToggleButton = new javax.swing.JToggleButton();
         descPanel = new javax.swing.JPanel();
@@ -264,18 +263,6 @@ public class ScheduleFrame extends javax.swing.JInternalFrame {
             }
         });
         textTools.add(italicsButton);
-
-        bulletButton.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        bulletButton.setText("•");
-        bulletButton.setFocusable(false);
-        bulletButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        bulletButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        bulletButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bulletButtonActionPerformed(evt);
-            }
-        });
-        textTools.add(bulletButton);
         textTools.add(filler1);
 
         viewToggleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/eye.png"))); // NOI18N
@@ -574,10 +561,6 @@ public class ScheduleFrame extends javax.swing.JInternalFrame {
        }
     }//GEN-LAST:event_italicsButtonActionPerformed
 
-    private void bulletButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bulletButtonActionPerformed
-     
-    }//GEN-LAST:event_bulletButtonActionPerformed
-
     private void assetComboItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_assetComboItemStateChanged
         if(assetCombo.getSelectedItem().equals("No Asset")) locationCombo.setEnabled(true);
         else{
@@ -644,7 +627,6 @@ public class ScheduleFrame extends javax.swing.JInternalFrame {
     private javax.swing.JLabel assetLabel;
     private javax.swing.JPanel backPanel;
     private javax.swing.JButton boldButton;
-    private javax.swing.JButton bulletButton;
     private javax.swing.JButton continueButton;
     private javax.swing.JLabel dateLabel;
     private javax.swing.JPanel datePanel;

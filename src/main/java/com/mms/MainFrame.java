@@ -27,8 +27,15 @@ import com.mms.modules.Parts;
 import com.mms.modules.Schedule;
 import com.mms.modules.WorkOrders;
 import com.mms.utilities.OtherTools;
+import com.mms.utilities.Printer;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.Box;
 import javax.swing.DefaultListModel;
 import javax.swing.JDesktopPane;
@@ -68,29 +75,28 @@ public class MainFrame extends javax.swing.JFrame {
         //Tab panes
         tabbedPane.putClientProperty("JTabbedPane.tabWidthMode", "equal");
         tabbedPane.putClientProperty("JTabbedPane.tabIconPlacement", SwingConstants.TOP);
-        tabbedPane.setIconAt(0, MMS.dashboardIcon);
-        tabbedPane.setIconAt(1, MMS.workOrdersIcon);
-        tabbedPane.setIconAt(2, MMS.scheduleIcon);
-        tabbedPane.setIconAt(3, MMS.assetsIcon);
-        tabbedPane.setIconAt(4, MMS.locationIcon);
-        tabbedPane.setIconAt(5, MMS.partsIcon);
-        tabbedPane.setIconAt(6, MMS.employeesIcon);
-        tabbedPane.setIconAt(7, MMS.reportsIcon);
-        tabbedPane.setIconAt(8, MMS.systemIcon);
+        tabbedPane.setIconAt(0, MMS.workOrdersIcon);
+        tabbedPane.setIconAt(1, MMS.scheduleIcon);
+        tabbedPane.setIconAt(2, MMS.assetsIcon);
+        tabbedPane.setIconAt(3, MMS.locationIcon);
+        tabbedPane.setIconAt(4, MMS.partsIcon);
+        tabbedPane.setIconAt(5, MMS.employeesIcon);
+        tabbedPane.setIconAt(6, MMS.reportsIcon);
+        tabbedPane.setIconAt(7, MMS.systemIcon);
         
         //User levels
         switch(MMS.getUserLevel()){
             case 0: //Worker
                 isAdmin = false;
-                tabbedPane.remove(8);
+                tabbedPane.remove(7);
                 break;
             case 1: //Supervisor
                 isAdmin = false;
-                tabbedPane.remove(8);
+                tabbedPane.remove(7);
                 break;
             case 2: //Manager
                 isAdmin = false;
-                tabbedPane.remove(8);
+                tabbedPane.remove(7);
                 break;
             case 3: //Administrator
                 isAdmin = true;
@@ -271,19 +277,6 @@ public class MainFrame extends javax.swing.JFrame {
         backPanel = new javax.swing.JPanel();
         desktopPane = new javax.swing.JDesktopPane();
         tabbedPane = new javax.swing.JTabbedPane();
-        dashPanel = new javax.swing.JPanel();
-        dashButtonPanel = new javax.swing.JPanel();
-        jPanel3 = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        jPanel2 = new javax.swing.JPanel();
-        jPanel4 = new javax.swing.JPanel();
-        jPanel1 = new javax.swing.JPanel();
-        jPanel5 = new javax.swing.JPanel();
-        jPanel6 = new javax.swing.JPanel();
-        jPanel8 = new javax.swing.JPanel();
-        jPanel7 = new javax.swing.JPanel();
-        jPanel9 = new javax.swing.JPanel();
         workOrderPanel = new javax.swing.JPanel();
         workOrderTools = new javax.swing.JToolBar();
         newWOButton = new javax.swing.JButton();
@@ -362,7 +355,9 @@ public class MainFrame extends javax.swing.JFrame {
         adminUserAdd = new javax.swing.JButton();
         adminUserDelete = new javax.swing.JButton();
         adminUserReset = new javax.swing.JButton();
-        adminArchivePanel = new javax.swing.JPanel();
+        adminGeneralPanel = new javax.swing.JPanel();
+        jLabel5 = new javax.swing.JLabel();
+        jTextField1 = new javax.swing.JTextField();
         adminCusPanel = new javax.swing.JPanel();
         adminCusTab = new javax.swing.JTabbedPane();
         adminTypePanel = new javax.swing.JPanel();
@@ -444,178 +439,6 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
 
-        dashButtonPanel.setLayout(new java.awt.GridLayout(1, 6, 6, 0));
-
-        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-
-        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/tabs/workOrders.png"))); // NOI18N
-        jLabel2.setText("Work Orders");
-
-        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel3.setText("3 Open");
-
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 246, Short.MAX_VALUE)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel3)
-                .addContainerGap(56, Short.MAX_VALUE))
-        );
-
-        dashButtonPanel.add(jPanel3);
-
-        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-
-        dashButtonPanel.add(jPanel2);
-
-        jPanel4.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-
-        dashButtonPanel.add(jPanel4);
-
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-
-        dashButtonPanel.add(jPanel1);
-
-        jPanel5.setLayout(new java.awt.GridLayout(2, 2, 6, 6));
-
-        jPanel6.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-
-        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
-        jPanel6.setLayout(jPanel6Layout);
-        jPanel6Layout.setHorizontalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 549, Short.MAX_VALUE)
-        );
-        jPanel6Layout.setVerticalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 265, Short.MAX_VALUE)
-        );
-
-        jPanel5.add(jPanel6);
-
-        jPanel8.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel8.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-
-        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
-        jPanel8.setLayout(jPanel8Layout);
-        jPanel8Layout.setHorizontalGroup(
-            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 549, Short.MAX_VALUE)
-        );
-        jPanel8Layout.setVerticalGroup(
-            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 265, Short.MAX_VALUE)
-        );
-
-        jPanel5.add(jPanel8);
-
-        jPanel7.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-
-        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
-        jPanel7.setLayout(jPanel7Layout);
-        jPanel7Layout.setHorizontalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 549, Short.MAX_VALUE)
-        );
-        jPanel7Layout.setVerticalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 265, Short.MAX_VALUE)
-        );
-
-        jPanel5.add(jPanel7);
-
-        jPanel9.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel9.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-
-        javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
-        jPanel9.setLayout(jPanel9Layout);
-        jPanel9Layout.setHorizontalGroup(
-            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 549, Short.MAX_VALUE)
-        );
-        jPanel9Layout.setVerticalGroup(
-            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 265, Short.MAX_VALUE)
-        );
-
-        jPanel5.add(jPanel9);
-
-        javax.swing.GroupLayout dashPanelLayout = new javax.swing.GroupLayout(dashPanel);
-        dashPanel.setLayout(dashPanelLayout);
-        dashPanelLayout.setHorizontalGroup(
-            dashPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(dashPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(dashPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(dashButtonPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 1109, Short.MAX_VALUE)
-                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, 1109, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-        dashPanelLayout.setVerticalGroup(
-            dashPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(dashPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(dashButtonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, 541, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
-        tabbedPane.addTab("Dashboard", dashPanel);
-
         workOrderTools.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         workOrderTools.setFloatable(false);
         workOrderTools.setRollover(true);
@@ -682,6 +505,11 @@ public class MainFrame extends javax.swing.JFrame {
         printWOButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/print.png"))); // NOI18N
         printWOButton.setText("Print");
         printWOButton.setEnabled(false);
+        printWOButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                printWOButtonActionPerformed(evt);
+            }
+        });
         workOrderTools.add(printWOButton);
         workOrderTools.add(filler1);
 
@@ -1355,20 +1183,34 @@ public class MainFrame extends javax.swing.JFrame {
 
         adminPanel.add(adminUserPanel);
 
-        adminArchivePanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Archive"));
+        adminGeneralPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("General"));
 
-        javax.swing.GroupLayout adminArchivePanelLayout = new javax.swing.GroupLayout(adminArchivePanel);
-        adminArchivePanel.setLayout(adminArchivePanelLayout);
-        adminArchivePanelLayout.setHorizontalGroup(
-            adminArchivePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 539, Short.MAX_VALUE)
+        jLabel5.setText("Company Name:");
+
+        jTextField1.setText("OpenMMS");
+
+        javax.swing.GroupLayout adminGeneralPanelLayout = new javax.swing.GroupLayout(adminGeneralPanel);
+        adminGeneralPanel.setLayout(adminGeneralPanelLayout);
+        adminGeneralPanelLayout.setHorizontalGroup(
+            adminGeneralPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(adminGeneralPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel5)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 436, Short.MAX_VALUE)
+                .addContainerGap())
         );
-        adminArchivePanelLayout.setVerticalGroup(
-            adminArchivePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 314, Short.MAX_VALUE)
+        adminGeneralPanelLayout.setVerticalGroup(
+            adminGeneralPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(adminGeneralPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(adminGeneralPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(285, Short.MAX_VALUE))
         );
 
-        adminPanel.add(adminArchivePanel);
+        adminPanel.add(adminGeneralPanel);
 
         adminCusPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Custom Fields"));
 
@@ -1798,12 +1640,12 @@ public class MainFrame extends javax.swing.JFrame {
         JTable table = null;
         JPanel panel = null;
         switch(tabbedPane.getSelectedIndex()){
-            case 1: table = workOrderTable; panel = workOrderPanel; break;
-            case 2: table = scheduleTable; panel = schedulePanel; break;     
-            case 3: table = assetTable; panel = assetPanel; break;
-            case 4: table = locationTable; panel = locationPanel; break;
-            case 5: table = partTable; panel = partPanel; break;
-            case 6: table = employeeTable; panel = employeePanel; break;
+            case 0: table = workOrderTable; panel = workOrderPanel; break;
+            case 1: table = scheduleTable; panel = schedulePanel; break;     
+            case 2: table = assetTable; panel = assetPanel; break;
+            case 3: table = locationTable; panel = locationPanel; break;
+            case 4: table = partTable; panel = partPanel; break;
+            case 5: table = employeeTable; panel = employeePanel; break;
             default: break;
         }
         if(table != null && find == null) find = new FindPanel(table, panel, "");
@@ -2115,6 +1957,68 @@ public class MainFrame extends javax.swing.JFrame {
         admin.addCustomMaintType();
     }//GEN-LAST:event_adminAddCusScheduleActionPerformed
 
+    private void printWOButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printWOButtonActionPerformed
+    int [] rows = workOrderTable.getSelectedRows();
+        for(int y = 0; y < rows.length; y++){
+            //Get work order detail
+            int row = workOrderTable.getSelectedRow();
+            Object [] data = new Object[9];
+            for (int i = 0 ; i < data.length ; i++){
+                if(i < 3) data[i] = workOrderTable.getValueAt(row, i);
+                else if(i == 3){
+                    ResultSet rs = Database.select("SELECT wo_desc FROM work_orders WHERE id = ?",
+                            new Object[]{workOrderTable.getValueAt(row, 0)});
+                    try {
+                        if(rs.next()){
+                            data[i] = com.github.rjeschke.txtmark.Processor.process(rs.getString(1).trim());
+                        }
+                    } catch (SQLException ex) {
+                        Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                else data[i] = workOrderTable.getValueAt(row, i-1);
+            }
+
+            //Go printer
+            if(data[2].equals("Schedule")){
+                PrinterJob job = PrinterJob.getPrinterJob();
+                job.setPrintable(new Printer(data, true, false));
+                job.setJobName("MMS-WorkOrder-"+workOrderTable.getValueAt(row, 0));
+                boolean doPrint = job.printDialog();
+                if (doPrint) {
+                    try {
+                        job.print();
+                    } catch (PrinterException e) {
+                        InternalDialog.showInternalConfirmDialog(this, "Something went wrong. Please check your printer settings.", "Printing Error", -1, JOptionPane.ERROR_MESSAGE, null); 
+                    }
+                }
+                job.setPrintable(new Printer(data, true, true));
+                job.setJobName("MMS-WorkOrder-"+workOrderTable.getValueAt(row, 0)+"-Schedule");
+                //doPrint = job.printDialog();
+                if (doPrint) {
+                    try {
+                        job.print();
+                    } catch (PrinterException e) {
+                        InternalDialog.showInternalConfirmDialog(this, "Something went wrong. Please check your printer settings.", "Printing Error", -1, JOptionPane.ERROR_MESSAGE, null);
+                    }
+                }
+            }
+            else{
+                PrinterJob job = PrinterJob.getPrinterJob();
+                job.setPrintable(new Printer(data, false, false));
+                job.setJobName("MMS-WorkOrder-"+workOrderTable.getValueAt(row, 0));
+                boolean doPrint = job.printDialog();
+                if (doPrint) {
+                    try {
+                        job.print();
+                    } catch (PrinterException e) {
+                        InternalDialog.showInternalConfirmDialog(this, "Something went wrong. Please check your printer settings.", "Printing Error", -1, JOptionPane.ERROR_MESSAGE, null);
+                    }
+                }
+            }
+        }
+    }//GEN-LAST:event_printWOButtonActionPerformed
+
     //Load tables
     public void loadTables(){
         workOrders.load();
@@ -2124,7 +2028,7 @@ public class MainFrame extends javax.swing.JFrame {
         parts.load();
         employees.load();
         if(isAdmin) admin.load();
-    } 
+    }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JList<String> AssetCusList;
@@ -2133,7 +2037,6 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JButton adminAddCusAsset;
     private javax.swing.JButton adminAddCusEmployee;
     private javax.swing.JButton adminAddCusSchedule;
-    private javax.swing.JPanel adminArchivePanel;
     private javax.swing.JPanel adminAssetCusPanel;
     private javax.swing.JPanel adminCusPanel;
     private javax.swing.JTabbedPane adminCusTab;
@@ -2141,6 +2044,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JButton adminDelCusEmployee;
     private javax.swing.JButton adminDelCusSchedule;
     private javax.swing.JPanel adminDeptCusPanel;
+    private javax.swing.JPanel adminGeneralPanel;
     private javax.swing.JPanel adminPanel;
     private javax.swing.JPanel adminTypePanel;
     private javax.swing.JPanel adminUpdatePanel;
@@ -2164,8 +2068,6 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JPanel backPanel;
     private javax.swing.JButton completeScheduleButton;
     private javax.swing.JButton createWOButton;
-    private javax.swing.JPanel dashButtonPanel;
-    private javax.swing.JPanel dashPanel;
     private javax.swing.JButton deleteAssetButton;
     private javax.swing.JButton deleteEmployeeButton;
     private javax.swing.JButton deleteLocationButton;
@@ -2192,21 +2094,12 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.Box.Filler filler6;
     private javax.swing.JButton jButton6;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
-    private javax.swing.JPanel jPanel6;
-    private javax.swing.JPanel jPanel7;
-    private javax.swing.JPanel jPanel8;
-    private javax.swing.JPanel jPanel9;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JTextField jTextField1;
     private javax.swing.JTree jTree1;
     private javax.swing.JLabel locationLoadLabel;
     private javax.swing.JPanel locationPanel;

@@ -89,8 +89,8 @@ public class Database {
         //Assets
         Database.executeQuery("CREATE TABLE assets("
                 + "id INT PRIMARY KEY,"
-                + "asset_name VARCHAR(50),"
-                + "asset_desc VARCHAR(100),"
+                + "asset_name VARCHAR(100),"
+                + "asset_desc VARCHAR(200),"
                 + "asset_type VARCHAR(50),"
                 + "location_id INT,"
                 + "archived VARCHAR(1)"
@@ -161,12 +161,7 @@ public class Database {
                 + "part_id INT,"
                 + "qty INT"
                 + ")");
-        
-        //Work Order Images
-        Database.executeQuery("CREATE TABLE wo_images("
-                + "wo_id INT,"
-                + "img_link VARCHAR(100)"
-                + ")");
+       
         
         //CustomFields
         Database.executeQuery("CREATE TABLE custom_fields("

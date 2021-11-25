@@ -226,21 +226,22 @@ public class WOFrame extends javax.swing.JInternalFrame {
             continueButton.setVisible(false);
             for(Component c : textTools.getComponents())
                 c.setEnabled(false);
-            backPanel.setBorder(new MatteBorder(0,0,0,6, backPanel.getBackground()));
             
             //Images
-            rs = Database.select("SELECT img_link FROM wo_images WHERE wo_id = ?",
-                    new Object[]{table.getValueAt(row, 0)});
-            try {
-                while(rs.next()){
-                    images.add(rs.getString(1).trim());
-                }
-            } catch (SQLException ex) {
-                Logger.getLogger(WOFrame.class.getName()).log(Level.SEVERE, null, ex);
+            File [] i = new File(System.getProperty("user.dir")+"\\wo_images\\").listFiles();
+            for(File f : i){
+                if(f.getName().startsWith(table.getValueAt(row, 0).toString()))
+                    images.add(f.getName());
             }
             if(images.size() > 0){
                 imageButton.setText("Open Image(s)");
                 imageLabel.setText(images.size() > 1 ? images.size()+" images attached" : images.size()+" image attached");
+                backPanel.setBorder(new MatteBorder(0,0,0,6, backPanel.getBackground()));
+            }
+            else{
+                imageButton.setVisible(false);
+                imageLabel.setVisible(false);
+                backPanel.setBorder(new MatteBorder(0,0,6,0, backPanel.getBackground()));
             }
 
             //Closed panel
@@ -331,7 +332,6 @@ public class WOFrame extends javax.swing.JInternalFrame {
         textTools = new javax.swing.JToolBar();
         boldButton = new javax.swing.JButton();
         italicsButton = new javax.swing.JButton();
-        bulletButton = new javax.swing.JButton();
         filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
         viewToggleButton = new javax.swing.JToggleButton();
         descPanel = new javax.swing.JPanel();
@@ -405,7 +405,6 @@ public class WOFrame extends javax.swing.JInternalFrame {
         actionsLabel.setText("Actions Performed:");
 
         actionsArea.setEditable(false);
-        actionsArea.setColumns(20);
         actionsArea.setRows(3);
         actionsScroll.setViewportView(actionsArea);
 
@@ -534,18 +533,6 @@ public class WOFrame extends javax.swing.JInternalFrame {
             }
         });
         textTools.add(italicsButton);
-
-        bulletButton.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        bulletButton.setText("•");
-        bulletButton.setFocusable(false);
-        bulletButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        bulletButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        bulletButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bulletButtonActionPerformed(evt);
-            }
-        });
-        textTools.add(bulletButton);
         textTools.add(filler1);
 
         viewToggleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/eye.png"))); // NOI18N
@@ -860,9 +847,6 @@ public class WOFrame extends javax.swing.JInternalFrame {
                             } catch (IOException ex) {
                                 Logger.getLogger(WOFrame.class.getName()).log(Level.SEVERE, null, ex);
                             }
-                            //Insert into DB
-                            Database.executeQuery("INSERT INTO wo_images (wo_id, img_link) VALUES (?, ?)",
-                                    new Object[]{WONum, dest.getName()});
                             count++;
                         }
                     }
@@ -921,28 +905,6 @@ public class WOFrame extends javax.swing.JInternalFrame {
            descArea.setSelectionEnd(end+1);
        }
     }//GEN-LAST:event_italicsButtonActionPerformed
-
-    private void bulletButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bulletButtonActionPerformed
-    String text = descArea.getSelectedText();
-    if(text == null){
-        try {
-            String line = descArea.getText().split("\n")[descArea.getLineOfOffset(descArea.getCaretPosition())];
-            if(line.isEmpty()) descArea.replaceSelection("- ");
-            else if(line.startsWith("-")) descArea.replaceSelection("  \n- ");
-            else descArea.replaceSelection("  \n  \n- ");
-        } catch (BadLocationException ex) {
-            Logger.getLogger(WOFrame.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-    else{
-        String [] lines = text.split("\n");
-        String newText = "";
-        for(String line : lines){
-            newText += "- "+line+"\n";
-        }
-        descArea.replaceSelection(newText);
-    }
-    }//GEN-LAST:event_bulletButtonActionPerformed
 
     private void assetComboItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_assetComboItemStateChanged
         if(assetCombo.getSelectedItem().equals("No Asset")) locationCombo.setEnabled(true);
@@ -1046,7 +1008,6 @@ public class WOFrame extends javax.swing.JInternalFrame {
     private javax.swing.JLabel assetLabel;
     private javax.swing.JPanel backPanel;
     private javax.swing.JButton boldButton;
-    private javax.swing.JButton bulletButton;
     private javax.swing.JPanel closedPanel;
     private javax.swing.JButton continueButton;
     private javax.swing.JPanel datePanel;

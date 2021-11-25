@@ -60,8 +60,8 @@ public class EmployeeFrame extends javax.swing.JInternalFrame {
         if(row != -1){
             continueButton.setText("Save");
             deptCombo.setSelectedItem(table.getValueAt(row, 3));
-            nameField.setText(t.getModel().getValueAt(row, 1).toString());
-            descField.setText(t.getModel().getValueAt(row, 2).toString());
+            nameField.setText(table.getValueAt(row, 1).toString());
+            descField.setText(table.getValueAt(row, 2).toString());
             nameField.requestFocus();
             nameField.selectAll();
         }

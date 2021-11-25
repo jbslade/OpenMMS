@@ -102,7 +102,7 @@ public class Assets {
     public void deleteAsset(){
         String message, title;
         if(table.getSelectedRowCount() > 1){
-            message = "Are you sure you want to delete these "+table.getSelectedRowCount()+" Assets?";
+            message = "Are you sure you want to delete these ("+table.getSelectedRowCount()+") Assets?";
             title = "Delete Assets";
         }
         else{
@@ -131,7 +131,7 @@ public class Assets {
     public void archiveAsset(){
         String message, title;
         if(table.getSelectedRowCount() > 1){
-            message = "Are you sure you want to archive these "+table.getSelectedRowCount()+" Assets?";
+            message = "Are you sure you want to archive these ("+table.getSelectedRowCount()+") Assets?";
             title = "Archive Assets";
         }
         else{

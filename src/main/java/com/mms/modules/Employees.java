@@ -101,7 +101,7 @@ public class Employees {
     public void deleteEmployee(){
         String message, title;
         if(table.getSelectedRowCount() > 1){
-            message = "Are you sure you want to delete these "+table.getSelectedRowCount()+" Employees?";
+            message = "Are you sure you want to delete these ("+table.getSelectedRowCount()+") Employees?";
             title = "Delete Employees";
         }
         else{
@@ -130,7 +130,7 @@ public class Employees {
     public void archiveEmployee(){
         String message, title;
         if(table.getSelectedRowCount() > 1){
-            message = "Are you sure you want to archive these "+table.getSelectedRowCount()+" Employees?";
+            message = "Are you sure you want to archive these ("+table.getSelectedRowCount()+") Employees?";
             title = "Archive Employees";
         }
         else{

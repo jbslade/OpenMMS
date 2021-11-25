@@ -133,7 +133,7 @@ public class Schedule {
     public void deleteSchedule(){
         String message, title;
         if(table.getSelectedRowCount() > 1){
-            message = "Are you sure you want to delete these "+table.getSelectedRowCount()+" Scheduled Tasks?";
+            message = "Are you sure you want to delete these ("+table.getSelectedRowCount()+") Scheduled Tasks?";
             title = "Delete Scheduled Tasks";
         }
         else{
@@ -162,7 +162,7 @@ public class Schedule {
     public void archiveSchedule(){
         String message, title;
         if(table.getSelectedRowCount() > 1){
-            message = "Are you sure you want to archive these "+table.getSelectedRowCount()+" Scheduled Tasks?";
+            message = "Are you sure you want to archive these ("+table.getSelectedRowCount()+") Scheduled Tasks?";
             title = "Archive Scheduled Tasks";
         }
         else{

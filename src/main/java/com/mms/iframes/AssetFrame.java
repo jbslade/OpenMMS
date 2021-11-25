@@ -72,8 +72,8 @@ public class AssetFrame extends javax.swing.JInternalFrame {
             continueButton.setText("Save");
             typeCombo.setSelectedItem(table.getValueAt(row, 3));
             locationCombo.setSelectedItem(table.getValueAt(row, 4));
-            nameField.setText(t.getModel().getValueAt(r, 1).toString());
-            descField.setText(t.getModel().getValueAt(r, 2).toString());
+            nameField.setText(table.getValueAt(r, 1).toString());
+            descField.setText(table.getValueAt(r, 2).toString());
             nameField.requestFocus();
             nameField.selectAll();
         }

@@ -51,7 +51,6 @@ public class MMS {
     
     //Image icons
     public static final ImageIcon systemIcon = new ImageIcon(MMS.class.getResource("/icon.png"));
-    public static final ImageIcon dashboardIcon = new ImageIcon(MMS.class.getResource("/tabs/dashboard.png"));
     public static final ImageIcon workOrdersIcon = new ImageIcon(MMS.class.getResource("/tabs/workOrders.png"));
     public static final ImageIcon scheduleIcon = new ImageIcon(MMS.class.getResource("/tabs/schedule.png"));
     public static final ImageIcon locationIcon = new ImageIcon(MMS.class.getResource("/tabs/locations.png"));
@@ -74,7 +73,7 @@ public class MMS {
     
     //Main
     public static void main (String [] args){
-        if(DEBUG) if(JOptionPane.showConfirmDialog(null, "RUN IN DEBUG?") != 0) DEBUG = false;
+        if(DEBUG) if(JOptionPane.showConfirmDialog(null, "RUN IN DEBUG MODE?", "DEBUG", JOptionPane.YES_NO_OPTION) != 0) DEBUG = false;
         //L&F
         FlatGrayIJTheme.install();
         System.setProperty("flatlaf.menuBarEmbedded", "true");

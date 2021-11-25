@@ -101,7 +101,7 @@ public class Parts {
     public void deletePart(){
         String message, title;
         if(table.getSelectedRowCount() > 1){
-            message = "Are you sure you want to delete these "+table.getSelectedRowCount()+" Parts?";
+            message = "Are you sure you want to delete these ("+table.getSelectedRowCount()+") Parts?";
             title = "Delete Parts";
         }
         else{
@@ -130,7 +130,7 @@ public class Parts {
     public void archivePart(){
         String message, title;
         if(table.getSelectedRowCount() > 1){
-            message = "Are you sure you want to archive these "+table.getSelectedRowCount()+" Parts?";
+            message = "Are you sure you want to archive these ("+table.getSelectedRowCount()+") Parts?";
             title = "Archive Parts";
         }
         else{
