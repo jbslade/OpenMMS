@@ -356,8 +356,9 @@ public class MainFrame extends javax.swing.JFrame {
         adminUserDelete = new javax.swing.JButton();
         adminUserReset = new javax.swing.JButton();
         adminGeneralPanel = new javax.swing.JPanel();
-        jLabel5 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        adminGeneralNameLbl = new javax.swing.JLabel();
+        adminGeneralNameField = new javax.swing.JTextField();
+        adminGeneralSave = new javax.swing.JButton();
         adminCusPanel = new javax.swing.JPanel();
         adminCusTab = new javax.swing.JTabbedPane();
         adminTypePanel = new javax.swing.JPanel();
@@ -1125,7 +1126,15 @@ public class MainFrame extends javax.swing.JFrame {
             new String [] {
                 " Name", " Access Level"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         adminUserScroll.setViewportView(adminUserTable);
 
         adminUserAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/new.png"))); // NOI18N
@@ -1185,19 +1194,26 @@ public class MainFrame extends javax.swing.JFrame {
 
         adminGeneralPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("General"));
 
-        jLabel5.setText("Company Name:");
+        adminGeneralNameLbl.setText("Company Name:");
 
-        jTextField1.setText("OpenMMS");
+        adminGeneralNameField.setText("OpenMMS");
+
+        adminGeneralSave.setText("Save");
 
         javax.swing.GroupLayout adminGeneralPanelLayout = new javax.swing.GroupLayout(adminGeneralPanel);
         adminGeneralPanel.setLayout(adminGeneralPanelLayout);
         adminGeneralPanelLayout.setHorizontalGroup(
             adminGeneralPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(adminGeneralPanelLayout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, adminGeneralPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel5)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 436, Short.MAX_VALUE)
+                .addGroup(adminGeneralPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(adminGeneralPanelLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(adminGeneralSave))
+                    .addGroup(adminGeneralPanelLayout.createSequentialGroup()
+                        .addComponent(adminGeneralNameLbl)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(adminGeneralNameField, javax.swing.GroupLayout.DEFAULT_SIZE, 436, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         adminGeneralPanelLayout.setVerticalGroup(
@@ -1205,9 +1221,11 @@ public class MainFrame extends javax.swing.JFrame {
             .addGroup(adminGeneralPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(adminGeneralPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(285, Short.MAX_VALUE))
+                    .addComponent(adminGeneralNameLbl)
+                    .addComponent(adminGeneralNameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 251, Short.MAX_VALUE)
+                .addComponent(adminGeneralSave)
+                .addContainerGap())
         );
 
         adminPanel.add(adminGeneralPanel);
@@ -2044,7 +2062,10 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JButton adminDelCusEmployee;
     private javax.swing.JButton adminDelCusSchedule;
     private javax.swing.JPanel adminDeptCusPanel;
+    private javax.swing.JTextField adminGeneralNameField;
+    private javax.swing.JLabel adminGeneralNameLbl;
     private javax.swing.JPanel adminGeneralPanel;
+    private javax.swing.JButton adminGeneralSave;
     private javax.swing.JPanel adminPanel;
     private javax.swing.JPanel adminTypePanel;
     private javax.swing.JPanel adminUpdatePanel;
@@ -2094,12 +2115,10 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.Box.Filler filler6;
     private javax.swing.JButton jButton6;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JTree jTree1;
     private javax.swing.JLabel locationLoadLabel;
     private javax.swing.JPanel locationPanel;

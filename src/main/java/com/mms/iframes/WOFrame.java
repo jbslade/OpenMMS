@@ -51,10 +51,10 @@ import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.MenuElement;
 import javax.swing.border.MatteBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.text.BadLocationException;
 
 
 /**
@@ -68,6 +68,7 @@ public class WOFrame extends javax.swing.JInternalFrame {
     private final DatePicker datePicker;
     private ArrayList<Integer> assetLocations, employees;
     private ArrayList<String> images;
+    private ArrayList<JCheckBoxMenuItem> employeeNames;
     private final Schedule schedule;
     private int scheduleRow;
     
@@ -77,6 +78,7 @@ public class WOFrame extends javax.swing.JInternalFrame {
         row = r;
         assetLocations = new ArrayList<>();
         employees = new ArrayList<>();
+        employeeNames = new ArrayList<>();
         images = new ArrayList<>();
         schedule = s;
         if(schedule != null) scheduleRow = schedule.getTable().getSelectedRow();
@@ -149,6 +151,7 @@ public class WOFrame extends javax.swing.JInternalFrame {
                 JCheckBoxMenuItem j = new JCheckBoxMenuItem(rs.getString(2));
                 j.addActionListener(new EmployeeSelectListener());
                 employeePopup.add(j);
+                employeeNames.add(j);
                 employees.add(rs.getInt(1));
             }
             rs.close();
@@ -363,6 +366,15 @@ public class WOFrame extends javax.swing.JInternalFrame {
 
         employeePopup.setBackground(new java.awt.Color(255, 255, 255));
         employeePopup.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        employeePopup.addMenuKeyListener(new javax.swing.event.MenuKeyListener() {
+            public void menuKeyPressed(javax.swing.event.MenuKeyEvent evt) {
+                employeePopupMenuKeyPressed(evt);
+            }
+            public void menuKeyReleased(javax.swing.event.MenuKeyEvent evt) {
+            }
+            public void menuKeyTyped(javax.swing.event.MenuKeyEvent evt) {
+            }
+        });
 
         imageChooser.setAcceptAllFileFilterUsed(false);
         imageChooser.setApproveButtonText("Select");
@@ -652,6 +664,11 @@ public class WOFrame extends javax.swing.JInternalFrame {
 
         employeeField.setEditable(false);
         employeeField.setBackground(new java.awt.Color(255, 255, 255));
+        employeeField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                employeeFieldKeyPressed(evt);
+            }
+        });
 
         employeeButton.setText("...");
         employeeButton.setFocusable(false);
@@ -965,6 +982,7 @@ public class WOFrame extends javax.swing.JInternalFrame {
 
     private void employeeButtonMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_employeeButtonMousePressed
         if(employeeButton.isEnabled()){
+            addEmployees();
             employeeField.requestFocus();
             employeePopup.show(employeeButton, employeeButton.getWidth()-employeePopup.getWidth(), employeeButton.getHeight()+3);
         }
@@ -999,7 +1017,30 @@ public class WOFrame extends javax.swing.JInternalFrame {
         splitPane.setDividerLocation(0.66);
         TableTools.resize(partsTable, 10);
     }//GEN-LAST:event_formComponentResized
+
+    private void employeeFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_employeeFieldKeyPressed
+        if(employeeButton.isEnabled()){
+            addEmployees();
+            for(MenuElement m : employeePopup.getSubElements()){
+                String t = m.toString(), text = t.substring(t.indexOf("text=")+5, t.indexOf("text=")+6).toLowerCase();
+                if(!text.equals(evt.getKeyChar()+"")) employeePopup.remove(m.getComponent());
+            }
+            employeePopup.show(employeeButton, employeeButton.getWidth()-employeePopup.getWidth(), employeeButton.getHeight()+3);
+        }
+    }//GEN-LAST:event_employeeFieldKeyPressed
+
+    private void employeePopupMenuKeyPressed(javax.swing.event.MenuKeyEvent evt) {//GEN-FIRST:event_employeePopupMenuKeyPressed
+        employeePopup.setVisible(false);
+        employeeFieldKeyPressed(evt);
+    }//GEN-LAST:event_employeePopupMenuKeyPressed
      
+    private void addEmployees(){
+        employeePopup.removeAll();
+        for(JCheckBoxMenuItem e: employeeNames){
+            employeePopup.add(e);
+        }
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextArea actionsArea;
     private javax.swing.JLabel actionsLabel;

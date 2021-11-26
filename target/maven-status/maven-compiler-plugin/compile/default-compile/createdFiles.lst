@@ -81,7 +81,6 @@ com\mms\iframes\EmployeeFrame.class
 com\mms\dialogs\SetupDialog$5.class
 com\mms\MainFrame$38.class
 com\mms\MainFrame$20.class
-com\mms\iframes\ScheduleFrame$10.class
 com\mms\MainFrame$7.class
 com\mms\modules\Admin$2.class
 com\mms\dialogs\SetupDialog$13.class
@@ -151,6 +150,7 @@ com\mms\iframes\ScheduleFrame$7.class
 com\mms\MainFrame$2.class
 com\mms\modules\Admin$7.class
 com\mms\iframes\EmployeeFrame$3.class
+com\mms\iframes\WOFrame$15.class
 com\mms\MainFrame$33.class
 com\mms\MainFrame$53.class
 com\mms\utilities\Hasher.class

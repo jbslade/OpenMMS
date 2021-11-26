@@ -33,6 +33,9 @@
           </Border>
         </Property>
       </Properties>
+      <Events>
+        <EventHandler event="menuKeyPressed" listener="javax.swing.event.MenuKeyListener" parameters="javax.swing.event.MenuKeyEvent" handler="employeePopupMenuKeyPressed"/>
+      </Events>
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout">
         <Property name="useNullLayout" type="boolean" value="true"/>
@@ -624,6 +627,9 @@
                           <Color blue="ff" green="ff" red="ff" type="rgb"/>
                         </Property>
                       </Properties>
+                      <Events>
+                        <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="employeeFieldKeyPressed"/>
+                      </Events>
                     </Component>
                     <Component class="javax.swing.JButton" name="employeeButton">
                       <Properties>

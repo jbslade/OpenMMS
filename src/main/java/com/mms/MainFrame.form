@@ -1399,8 +1399,8 @@
                               <Properties>
                                 <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
                                   <Table columnCount="2" rowCount="0">
-                                    <Column editable="true" title=" Name" type="java.lang.Object"/>
-                                    <Column editable="true" title=" Access Level" type="java.lang.Object"/>
+                                    <Column editable="false" title=" Name" type="java.lang.Object"/>
+                                    <Column editable="false" title=" Access Level" type="java.lang.Object"/>
                                   </Table>
                                 </Property>
                               </Properties>
@@ -1451,11 +1451,19 @@
                       <Layout>
                         <DimensionLayout dim="0">
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" attributes="0">
+                              <Group type="102" alignment="1" attributes="0">
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="jTextField1" pref="436" max="32767" attributes="0"/>
+                                  <Group type="103" groupAlignment="1" attributes="0">
+                                      <Group type="102" attributes="0">
+                                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                                          <Component id="adminGeneralSave" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <Group type="102" attributes="0">
+                                          <Component id="adminGeneralNameLbl" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace max="-2" attributes="0"/>
+                                          <Component id="adminGeneralNameField" pref="436" max="32767" attributes="0"/>
+                                      </Group>
+                                  </Group>
                                   <EmptySpace max="-2" attributes="0"/>
                               </Group>
                           </Group>
@@ -1465,23 +1473,30 @@
                               <Group type="102" alignment="0" attributes="0">
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="3" attributes="0">
-                                      <Component id="jLabel5" alignment="3" min="-2" max="-2" attributes="0"/>
-                                      <Component id="jTextField1" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="adminGeneralNameLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="adminGeneralNameField" alignment="3" min="-2" max="-2" attributes="0"/>
                                   </Group>
-                                  <EmptySpace pref="285" max="32767" attributes="0"/>
+                                  <EmptySpace pref="251" max="32767" attributes="0"/>
+                                  <Component id="adminGeneralSave" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
                               </Group>
                           </Group>
                         </DimensionLayout>
                       </Layout>
                       <SubComponents>
-                        <Component class="javax.swing.JLabel" name="jLabel5">
+                        <Component class="javax.swing.JLabel" name="adminGeneralNameLbl">
                           <Properties>
                             <Property name="text" type="java.lang.String" value="Company Name:"/>
                           </Properties>
                         </Component>
-                        <Component class="javax.swing.JTextField" name="jTextField1">
+                        <Component class="javax.swing.JTextField" name="adminGeneralNameField">
                           <Properties>
                             <Property name="text" type="java.lang.String" value="OpenMMS"/>
+                          </Properties>
+                        </Component>
+                        <Component class="javax.swing.JButton" name="adminGeneralSave">
+                          <Properties>
+                            <Property name="text" type="java.lang.String" value="Save"/>
                           </Properties>
                         </Component>
                       </SubComponents>
