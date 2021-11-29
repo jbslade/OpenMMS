@@ -31,6 +31,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -41,12 +42,14 @@ public class Admin {
     
     private final JTable userTable;
     private final JList maintTypeList, assetList, employeeList;
+    private final JTextField companyName;
     
-    public Admin(JTable u, JList m, JList a, JList e){
+    public Admin(JTable u, JList m, JList a, JList e, JTextField n){
         userTable = u;
         maintTypeList = m;
         assetList = a;
         employeeList = e;
+        companyName = n;
         TableTools.format(userTable);
         maintTypeList.setBackground(Color.WHITE);
         assetList.setBackground(Color.WHITE);
@@ -58,6 +61,7 @@ public class Admin {
         loadCustomMaintType();
         loadCustomAssets();
         loadCustomEmployees();
+        loadGeneralSettings();
     }
     
     //Users
@@ -261,5 +265,32 @@ public class Admin {
                 }
             }.start();
         }
+    }
+    
+    //General settings
+    private void loadGeneralSettings(){
+        new Thread(){
+            @Override
+            public void run(){
+                try {
+                    try (ResultSet rs = Database.select("SELECT custom_value FROM custom_fields WHERE custom_type = 'system_name'")) {
+                        if(rs.next()) companyName.setText(rs.getString(1));
+                    }
+                } catch (SQLException ex) {
+                    Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }.start();
+    }
+    public void saveGeneralSettings(){
+        new Thread(){
+            @Override
+            public void run(){
+                Database.executeQuery("UPDATE custom_fields SET custom_value = ? WHERE custom_type = 'system_name'",
+                        new Object[]{companyName.getText()});
+                MMS.getMainFrame().setTitle(MMS.NAME+" - "+companyName.getText());
+                InternalDialog.showInternalConfirmDialog(MMS.getMainFrame().getDesktopPane(), "General settings saved.", "General Settings", -1, JOptionPane.INFORMATION_MESSAGE, null);
+            }
+        }.start();
     }
 }

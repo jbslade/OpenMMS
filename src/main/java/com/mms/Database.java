@@ -161,14 +161,14 @@ public class Database {
                 + "part_id INT,"
                 + "qty INT"
                 + ")");
-       
-        
+
         //CustomFields
         Database.executeQuery("CREATE TABLE custom_fields("
                 + "custom_type VARCHAR(50),"
                 + "custom_value VARCHAR(50)"
                 + ")");
         //Insert default values
+        Database.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES (?, ?)", new Object[]{"system_name", "OpenMMS"});
         Database.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES (?, ?)", new Object[]{"employee_dept", "Maintenance"});
         Database.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES (?, ?)", new Object[]{"employee_dept", "Technical"});
         Database.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES (?, ?)", new Object[]{"employee_dept", "Production"});

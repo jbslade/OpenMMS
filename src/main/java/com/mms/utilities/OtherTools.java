@@ -15,13 +15,18 @@
  */
 package com.mms.utilities;
 
+import com.mms.iframes.AboutFrame;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.MouseListener;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.AffineTransform;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.AbstractButton;
+import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -80,5 +85,21 @@ public class OtherTools {
         FontRenderContext frc = new FontRenderContext(affinetransform,true,true);     
         Font font = new Font("Tahoma", Font.PLAIN, 12);
         return (int)(font.getStringBounds(s, frc).getWidth());
+    }
+    
+    public static void barrelRoll(JLabel l, ImageIcon icon){
+        new Thread(){
+            @Override
+            public void run(){
+                for(int i = 2; i <= 360; i += 2){
+                    l.setIcon(new RotatedIcon(icon, i));
+                    try {
+                        Thread.sleep(2);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(OtherTools.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }               
+            }
+        }.start();
     }
 }

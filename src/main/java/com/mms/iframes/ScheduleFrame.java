@@ -39,6 +39,7 @@ import javax.swing.GroupLayout;
 import javax.swing.JTable;
 import javax.swing.border.MatteBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.DefaultCaret;
 
 
 /**
@@ -63,6 +64,8 @@ public class ScheduleFrame extends javax.swing.JInternalFrame {
         //Desc view area
         descViewScroll.setVisible(false);
         descViewPane.setBackground(Color.WHITE);
+        ((DefaultCaret)descViewPane.getCaret()).setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
+        ((DefaultCaret)descArea.getCaret()).setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
         
         //Set right click listeners
         nameField.addMouseListener(MMS.getMouseListener());
@@ -75,7 +78,7 @@ public class ScheduleFrame extends javax.swing.JInternalFrame {
         pickerSettings.setBorderCalendarPopup(nameField.getBorder());
         pickerSettings.setAllowEmptyDates(false);
         datePicker = new DatePicker(pickerSettings);
-        if(!view) pickerSettings.setDateRangeLimits(LocalDate.now(), LocalDate.MAX);
+        if(!view && !MMS.DEBUG && r == -1) pickerSettings.setDateRangeLimits(LocalDate.now(), LocalDate.MAX);
         datePicker.setDateToToday();
         datePicker.getComponentDateTextField().setBorder(nameField.getBorder());
         datePicker.getComponentDateTextField().setMargin(new Insets(2,5,2,2));
@@ -198,6 +201,7 @@ public class ScheduleFrame extends javax.swing.JInternalFrame {
 
         descViewPane.setEditable(false);
         descViewPane.setContentType("text/html"); // NOI18N
+        descViewPane.setAutoscrolls(false);
         descViewPane.setPreferredSize(descArea.getPreferredSize());
         descViewScroll.setViewportView(descViewPane);
 
@@ -279,6 +283,7 @@ public class ScheduleFrame extends javax.swing.JInternalFrame {
         descArea.setColumns(20);
         descArea.setLineWrap(true);
         descArea.setRows(10);
+        descArea.setAutoscrolls(false);
         descArea.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 descAreaKeyPressed(evt);

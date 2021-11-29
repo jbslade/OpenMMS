@@ -22,6 +22,7 @@ import com.mms.dialogs.LoginDialog;
 import java.awt.Color;
 import java.awt.Toolkit;
 import java.awt.event.MouseListener;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -192,9 +193,20 @@ public class MMS {
             //Dispose splash
             splash.dispose();
 
+            //Get company name
+            String cName = "";
+            try { 
+                ResultSet rs = Database.select("SELECT custom_value FROM custom_fields WHERE custom_type = 'system_name'");
+                if(rs.next()){
+                    cName = " - " + rs.getString(1);
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(MMS.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
             //MainFrame
             m = new MainFrame();
-            m.setTitle(NAME+" "+VERSION);
+            m.setTitle(NAME+cName);
             m.setIconImage(systemIcon.getImage());
             m.setLocationRelativeTo(null);
             m.setExtendedState(JFrame.MAXIMIZED_BOTH);

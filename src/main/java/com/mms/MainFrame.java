@@ -17,6 +17,7 @@ package com.mms;
 
 import com.mms.panels.FindPanel;
 import com.mms.dialogs.InternalDialog;
+import com.mms.iframes.AboutFrame;
 import com.mms.panels.PopupPanel;
 import com.mms.iframes.PasswordFrame;
 import com.mms.modules.Admin;
@@ -113,7 +114,7 @@ public class MainFrame extends javax.swing.JFrame {
         assets = new Assets(assetTable, assetLoadLabel);
         parts = new Parts(partTable, partLoadLabel);
         employees = new Employees(employeeTable, employeeLoadLabel);
-        if(isAdmin) admin = new Admin(adminUserTable, SchCusList, AssetCusList, EmpCusList);
+        if(isAdmin) admin = new Admin(adminUserTable, SchCusList, AssetCusList, EmpCusList, adminGenNameFld);
         else admin = null;
         
         //Table selection listeners
@@ -355,10 +356,10 @@ public class MainFrame extends javax.swing.JFrame {
         adminUserAdd = new javax.swing.JButton();
         adminUserDelete = new javax.swing.JButton();
         adminUserReset = new javax.swing.JButton();
-        adminGeneralPanel = new javax.swing.JPanel();
-        adminGeneralNameLbl = new javax.swing.JLabel();
-        adminGeneralNameField = new javax.swing.JTextField();
-        adminGeneralSave = new javax.swing.JButton();
+        adminGenPanel = new javax.swing.JPanel();
+        adminGenNameLbl = new javax.swing.JLabel();
+        adminGenNameFld = new javax.swing.JTextField();
+        adminGenSave = new javax.swing.JButton();
         adminCusPanel = new javax.swing.JPanel();
         adminCusTab = new javax.swing.JTabbedPane();
         adminTypePanel = new javax.swing.JPanel();
@@ -1192,43 +1193,48 @@ public class MainFrame extends javax.swing.JFrame {
 
         adminPanel.add(adminUserPanel);
 
-        adminGeneralPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("General"));
+        adminGenPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("General"));
 
-        adminGeneralNameLbl.setText("Company Name:");
+        adminGenNameLbl.setText("Company Name:");
 
-        adminGeneralNameField.setText("OpenMMS");
+        adminGenNameFld.setText("OpenMMS");
 
-        adminGeneralSave.setText("Save");
+        adminGenSave.setText("Save");
+        adminGenSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                adminGenSaveActionPerformed(evt);
+            }
+        });
 
-        javax.swing.GroupLayout adminGeneralPanelLayout = new javax.swing.GroupLayout(adminGeneralPanel);
-        adminGeneralPanel.setLayout(adminGeneralPanelLayout);
-        adminGeneralPanelLayout.setHorizontalGroup(
-            adminGeneralPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, adminGeneralPanelLayout.createSequentialGroup()
+        javax.swing.GroupLayout adminGenPanelLayout = new javax.swing.GroupLayout(adminGenPanel);
+        adminGenPanel.setLayout(adminGenPanelLayout);
+        adminGenPanelLayout.setHorizontalGroup(
+            adminGenPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, adminGenPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(adminGeneralPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(adminGeneralPanelLayout.createSequentialGroup()
+                .addGroup(adminGenPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(adminGenPanelLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(adminGeneralSave))
-                    .addGroup(adminGeneralPanelLayout.createSequentialGroup()
-                        .addComponent(adminGeneralNameLbl)
+                        .addComponent(adminGenSave))
+                    .addGroup(adminGenPanelLayout.createSequentialGroup()
+                        .addComponent(adminGenNameLbl)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(adminGeneralNameField, javax.swing.GroupLayout.DEFAULT_SIZE, 436, Short.MAX_VALUE)))
+                        .addComponent(adminGenNameFld, javax.swing.GroupLayout.DEFAULT_SIZE, 436, Short.MAX_VALUE)))
                 .addContainerGap())
         );
-        adminGeneralPanelLayout.setVerticalGroup(
-            adminGeneralPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(adminGeneralPanelLayout.createSequentialGroup()
+        adminGenPanelLayout.setVerticalGroup(
+            adminGenPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(adminGenPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(adminGeneralPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(adminGeneralNameLbl)
-                    .addComponent(adminGeneralNameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(adminGenPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(adminGenNameLbl)
+                    .addComponent(adminGenNameFld, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 251, Short.MAX_VALUE)
-                .addComponent(adminGeneralSave)
+                .addComponent(adminGenSave)
                 .addContainerGap())
         );
 
-        adminPanel.add(adminGeneralPanel);
+        adminPanel.add(adminGenPanel);
 
         adminCusPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Custom Fields"));
 
@@ -1521,7 +1527,12 @@ public class MainFrame extends javax.swing.JFrame {
 
         menuHelp.setText("Help");
 
-        menuHelpBug.setText("Report Bug");
+        menuHelpBug.setText("About");
+        menuHelpBug.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuHelpBugActionPerformed(evt);
+            }
+        });
         menuHelp.add(menuHelpBug);
 
         menuBar.add(menuHelp);
@@ -1617,17 +1628,17 @@ public class MainFrame extends javax.swing.JFrame {
     private void menuTableRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuTableRefreshActionPerformed
         int index = tabbedPane.getSelectedIndex();
         switch(index){
-            case 1: //Work orders
+            case 0: //Work orders
                 workOrders.load(); break;
-            case 2: //Schedule
+            case 1: //Schedule
                 schedule.load(); break;
-            case 3: //Assets
+            case 2: //Assets
                 assets.load(); break;
-            case 4: //Locations
+            case 3: //Locations
                 locations.load(); break;
-            case 5: //Parts
+            case 4: //Parts
                 parts.load(); break;
-            case 6: //Employees
+            case 5: //Employees
                 employees.load(); break;
             default: break;
         }
@@ -2037,6 +2048,18 @@ public class MainFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_printWOButtonActionPerformed
 
+    private void adminGenSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adminGenSaveActionPerformed
+        admin.saveGeneralSettings();
+    }//GEN-LAST:event_adminGenSaveActionPerformed
+
+    private void menuHelpBugActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuHelpBugActionPerformed
+        AboutFrame f = new AboutFrame();
+        f.setLocation(MMS.getMainFrame().getDesktopPane().getWidth()/2-f.getWidth()/2, MMS.getMainFrame().getDesktopPane().getHeight()/2-f.getHeight()/2-50);
+        MMS.getMainFrame().getDesktopPane().add(f);
+        MMS.getMainFrame().getDesktopPane().setLayer(f, 1);
+        f.setVisible(true);
+    }//GEN-LAST:event_menuHelpBugActionPerformed
+
     //Load tables
     public void loadTables(){
         workOrders.load();
@@ -2062,10 +2085,10 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JButton adminDelCusEmployee;
     private javax.swing.JButton adminDelCusSchedule;
     private javax.swing.JPanel adminDeptCusPanel;
-    private javax.swing.JTextField adminGeneralNameField;
-    private javax.swing.JLabel adminGeneralNameLbl;
-    private javax.swing.JPanel adminGeneralPanel;
-    private javax.swing.JButton adminGeneralSave;
+    private javax.swing.JTextField adminGenNameFld;
+    private javax.swing.JLabel adminGenNameLbl;
+    private javax.swing.JPanel adminGenPanel;
+    private javax.swing.JButton adminGenSave;
     private javax.swing.JPanel adminPanel;
     private javax.swing.JPanel adminTypePanel;
     private javax.swing.JPanel adminUpdatePanel;

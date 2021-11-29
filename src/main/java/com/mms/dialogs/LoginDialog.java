@@ -17,16 +17,11 @@ package com.mms.dialogs;
 
 import com.mms.Database;
 import com.mms.utilities.Hasher;
-import com.mms.utilities.RotatedIcon;
 import com.mms.MMS;
 import com.mms.MainFrame;
 import com.mms.utilities.OtherTools;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import static java.awt.SystemColor.text;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
@@ -201,19 +196,7 @@ public class LoginDialog extends javax.swing.JDialog {
     }
     
     private void logoLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_logoLabelMouseClicked
-        new Thread(){
-            @Override
-            public void run(){
-                for(int i = 2; i <= 360; i += 2){
-                    logoLabel.setIcon(new RotatedIcon(toolbox, i));
-                    try {
-                        Thread.sleep(2);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(LoginDialog.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }               
-            }
-        }.start();
+        OtherTools.barrelRoll(logoLabel, toolbox);
     }//GEN-LAST:event_logoLabelMouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

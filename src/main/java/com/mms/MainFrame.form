@@ -170,8 +170,11 @@
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="menuHelpBug">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Report Bug"/>
+                <Property name="text" type="java.lang.String" value="About"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuHelpBugActionPerformed"/>
+              </Events>
             </MenuItem>
           </SubComponents>
         </Menu>
@@ -1439,7 +1442,7 @@
                         </Component>
                       </SubComponents>
                     </Container>
-                    <Container class="javax.swing.JPanel" name="adminGeneralPanel">
+                    <Container class="javax.swing.JPanel" name="adminGenPanel">
                       <Properties>
                         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
@@ -1456,12 +1459,12 @@
                                   <Group type="103" groupAlignment="1" attributes="0">
                                       <Group type="102" attributes="0">
                                           <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                                          <Component id="adminGeneralSave" min="-2" max="-2" attributes="0"/>
+                                          <Component id="adminGenSave" min="-2" max="-2" attributes="0"/>
                                       </Group>
                                       <Group type="102" attributes="0">
-                                          <Component id="adminGeneralNameLbl" min="-2" max="-2" attributes="0"/>
+                                          <Component id="adminGenNameLbl" min="-2" max="-2" attributes="0"/>
                                           <EmptySpace max="-2" attributes="0"/>
-                                          <Component id="adminGeneralNameField" pref="436" max="32767" attributes="0"/>
+                                          <Component id="adminGenNameFld" pref="436" max="32767" attributes="0"/>
                                       </Group>
                                   </Group>
                                   <EmptySpace max="-2" attributes="0"/>
@@ -1473,31 +1476,34 @@
                               <Group type="102" alignment="0" attributes="0">
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="3" attributes="0">
-                                      <Component id="adminGeneralNameLbl" alignment="3" min="-2" max="-2" attributes="0"/>
-                                      <Component id="adminGeneralNameField" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="adminGenNameLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="adminGenNameFld" alignment="3" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <EmptySpace pref="251" max="32767" attributes="0"/>
-                                  <Component id="adminGeneralSave" min="-2" max="-2" attributes="0"/>
+                                  <Component id="adminGenSave" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
                               </Group>
                           </Group>
                         </DimensionLayout>
                       </Layout>
                       <SubComponents>
-                        <Component class="javax.swing.JLabel" name="adminGeneralNameLbl">
+                        <Component class="javax.swing.JLabel" name="adminGenNameLbl">
                           <Properties>
                             <Property name="text" type="java.lang.String" value="Company Name:"/>
                           </Properties>
                         </Component>
-                        <Component class="javax.swing.JTextField" name="adminGeneralNameField">
+                        <Component class="javax.swing.JTextField" name="adminGenNameFld">
                           <Properties>
                             <Property name="text" type="java.lang.String" value="OpenMMS"/>
                           </Properties>
                         </Component>
-                        <Component class="javax.swing.JButton" name="adminGeneralSave">
+                        <Component class="javax.swing.JButton" name="adminGenSave">
                           <Properties>
                             <Property name="text" type="java.lang.String" value="Save"/>
                           </Properties>
+                          <Events>
+                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="adminGenSaveActionPerformed"/>
+                          </Events>
                         </Component>
                       </SubComponents>
                     </Container>

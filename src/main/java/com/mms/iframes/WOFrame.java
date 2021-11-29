@@ -55,6 +55,7 @@ import javax.swing.MenuElement;
 import javax.swing.border.MatteBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.DefaultCaret;
 
 
 /**
@@ -92,6 +93,8 @@ public class WOFrame extends javax.swing.JInternalFrame {
         //Desc view area
         descViewScroll.setVisible(false);
         descViewPane.setBackground(Color.WHITE);
+        ((DefaultCaret)descViewPane.getCaret()).setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
+        ((DefaultCaret)descArea.getCaret()).setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
         
         //Set right click listeners
         descArea.addMouseListener(MMS.getMouseListener());
@@ -145,7 +148,7 @@ public class WOFrame extends javax.swing.JInternalFrame {
         }
         
         //Set employees
-        rs = Database.select("SELECT id, employee_name FROM employees");
+        rs = Database.select("SELECT id, employee_name FROM employees ORDER BY employee_name");
         try {
             while(rs.next()){
                 JCheckBoxMenuItem j = new JCheckBoxMenuItem(rs.getString(2));
@@ -561,6 +564,7 @@ public class WOFrame extends javax.swing.JInternalFrame {
         descArea.setColumns(20);
         descArea.setLineWrap(true);
         descArea.setRows(10);
+        descArea.setAutoscrolls(false);
         descArea.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 descAreaKeyPressed(evt);
