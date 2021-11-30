@@ -15,6 +15,10 @@
  */
 package com.mms.iframes;
 
+import com.mms.MMS;
+import com.mms.dialogs.InternalDialog;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author J.B. Slade
@@ -49,6 +53,7 @@ public class ReportFrame extends javax.swing.JInternalFrame {
 
         setClosable(true);
         setIconifiable(true);
+        setResizable(true);
         setTitle("New Report");
         setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/dialogs/reports.png"))); // NOI18N
 
@@ -64,6 +69,11 @@ public class ReportFrame extends javax.swing.JInternalFrame {
         saveButton.setText("Save");
 
         testButton.setText("Test Run");
+        testButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                testButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout backPanelLayout = new javax.swing.GroupLayout(backPanel);
         backPanel.setLayout(backPanelLayout);
@@ -122,6 +132,10 @@ public class ReportFrame extends javax.swing.JInternalFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void testButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_testButtonActionPerformed
+        InternalDialog.showInternalConfirmDialog(MMS.getMainFrame().getDesktopPane(), "It runs! Does it do what you expect? Who knows!", "Test Successful", -1, JOptionPane.INFORMATION_MESSAGE, null);
+    }//GEN-LAST:event_testButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -1103,9 +1103,10 @@ public class MainFrame extends javax.swing.JFrame {
         reportTools.setRollover(true);
 
         newReportButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/new.png"))); // NOI18N
-        newReportButton.setToolTipText("New");
+        newReportButton.setText("New");
+        newReportButton.setToolTipText("");
         newReportButton.setFocusable(false);
-        newReportButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        newReportButton.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         newReportButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         newReportButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1115,9 +1116,10 @@ public class MainFrame extends javax.swing.JFrame {
         reportTools.add(newReportButton);
 
         editReportButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/edit.png"))); // NOI18N
-        editReportButton.setToolTipText("Edit");
+        editReportButton.setText("Edit");
+        editReportButton.setToolTipText("");
         editReportButton.setFocusable(false);
-        editReportButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        editReportButton.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         editReportButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         editReportButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1127,9 +1129,10 @@ public class MainFrame extends javax.swing.JFrame {
         reportTools.add(editReportButton);
 
         deleteReportButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/delete.png"))); // NOI18N
-        deleteReportButton.setToolTipText("Delete");
+        deleteReportButton.setText("Delete");
+        deleteReportButton.setToolTipText("");
         deleteReportButton.setFocusable(false);
-        deleteReportButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        deleteReportButton.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         deleteReportButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         deleteReportButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

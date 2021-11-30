@@ -4,6 +4,7 @@
   <Properties>
     <Property name="closable" type="boolean" value="true"/>
     <Property name="iconifiable" type="boolean" value="true"/>
+    <Property name="resizable" type="boolean" value="true"/>
     <Property name="title" type="java.lang.String" value="New Report"/>
     <Property name="frameIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
       <Image iconType="3" name="/dialogs/reports.png"/>
@@ -131,6 +132,9 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Test Run"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="testButtonActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>
