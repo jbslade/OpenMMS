@@ -65,7 +65,7 @@ public class Database {
     public static void createTables(String adminPass){
         //Users
         Database.executeQuery("CREATE TABLE users("
-                + "user_name VARCHAR(50) PRIMARY KEY,"
+                + "user_name VARCHAR(100) PRIMARY KEY,"
                 + "password VARCHAR(50),"
                 + "salt VARCHAR(16),"
                 + "user_level int"
@@ -79,8 +79,8 @@ public class Database {
         //Locations
         Database.executeQuery("CREATE TABLE locations("
                 + "id INT PRIMARY KEY,"
-                + "location_name VARCHAR(50),"
-                + "location_desc VARCHAR(100),"
+                + "location_name VARCHAR(100),"
+                + "location_desc VARCHAR(200),"
                 + "archived VARCHAR(1)"
                 + ")");
         //Insert No Location
@@ -101,7 +101,7 @@ public class Database {
         //Parts
         Database.executeQuery("CREATE TABLE parts("
                 + "id INT PRIMARY KEY,"
-                + "part_name VARCHAR(50),"
+                + "part_name VARCHAR(100),"
                 + "part_qty INT,"
                 + "part_cost DECIMAL(19, 2),"
                 + "archived VARCHAR(1)"
@@ -110,7 +110,7 @@ public class Database {
         //Employees
         Database.executeQuery("CREATE TABLE employees("
                 + "id INT PRIMARY KEY,"
-                + "employee_name VARCHAR(50),"
+                + "employee_name VARCHAR(100),"
                 + "employee_desc VARCHAR(50),"
                 + "employee_dept VARCHAR(50),"
                 + "archived VARCHAR(1)"
@@ -119,7 +119,7 @@ public class Database {
         //Schedule
         Database.executeQuery("CREATE TABLE schedule("
                 + "id INT PRIMARY KEY,"
-                + "schedule_name VARCHAR(50),"
+                + "schedule_name VARCHAR(100),"
                 + "schedule_type VARCHAR(50),"
                 + "schedule_from_date DATE,"
                 + "schedule_last_date DATE,"
@@ -145,7 +145,7 @@ public class Database {
                 + "wo_action VARCHAR(1000),"
                 + "location_id INT,"
                 + "asset_id INT,"
-                + "user_name VARCHAR(50),"
+                + "user_name VARCHAR(100),"
                 + "archived VARCHAR(1)"
                 + ")");
         
@@ -165,7 +165,7 @@ public class Database {
         //CustomFields
         Database.executeQuery("CREATE TABLE custom_fields("
                 + "custom_type VARCHAR(50),"
-                + "custom_value VARCHAR(50)"
+                + "custom_value VARCHAR(100)"
                 + ")");
         //Insert default values
         Database.executeQuery("INSERT INTO custom_fields (custom_type, custom_value) VALUES (?, ?)", new Object[]{"system_name", "OpenMMS"});

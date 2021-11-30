@@ -70,6 +70,7 @@ public class ScheduleFrame extends javax.swing.JInternalFrame {
         //Set right click listeners
         nameField.addMouseListener(MMS.getMouseListener());
         descArea.addMouseListener(MMS.getMouseListener());
+        descViewPane.addMouseListener(MMS.getMouseListener());
         
         //Set date picker
         datePanel.setPreferredSize(nameField.getPreferredSize());

@@ -25,6 +25,7 @@ import com.mms.modules.Assets;
 import com.mms.modules.Employees;
 import com.mms.modules.Locations;
 import com.mms.modules.Parts;
+import com.mms.modules.Reports;
 import com.mms.modules.Schedule;
 import com.mms.modules.WorkOrders;
 import com.mms.utilities.OtherTools;
@@ -60,6 +61,7 @@ public class MainFrame extends javax.swing.JFrame {
     private final Parts parts;
     private final Employees employees;
     private final Admin admin;
+    private final Reports reports;
     private final boolean isAdmin;
     
     public JDesktopPane getDesktopPane(){return desktopPane;}
@@ -89,15 +91,12 @@ public class MainFrame extends javax.swing.JFrame {
         switch(MMS.getUserLevel()){
             case 0: //Worker
                 isAdmin = false;
-                tabbedPane.remove(7);
                 break;
             case 1: //Supervisor
                 isAdmin = false;
-                tabbedPane.remove(7);
                 break;
             case 2: //Manager
                 isAdmin = false;
-                tabbedPane.remove(7);
                 break;
             case 3: //Administrator
                 isAdmin = true;
@@ -105,6 +104,12 @@ public class MainFrame extends javax.swing.JFrame {
             default:
                 isAdmin = false;
                 break;
+        }
+        if(!isAdmin){
+            tabbedPane.remove(7);
+            newReportButton.setVisible(false);
+            editReportButton.setVisible(false);
+            deleteReportButton.setVisible(false);
         }
         
         //Modules
@@ -114,6 +119,7 @@ public class MainFrame extends javax.swing.JFrame {
         assets = new Assets(assetTable, assetLoadLabel);
         parts = new Parts(partTable, partLoadLabel);
         employees = new Employees(employeeTable, employeeLoadLabel);
+        reports = new Reports(reportTable, reportCombo);
         if(isAdmin) admin = new Admin(adminUserTable, SchCusList, AssetCusList, EmpCusList, adminGenNameFld);
         else admin = null;
         
@@ -347,8 +353,12 @@ public class MainFrame extends javax.swing.JFrame {
         reportPanel = new javax.swing.JPanel();
         reportScroll = new javax.swing.JScrollPane();
         reportTable = new javax.swing.JTable();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jTree1 = new javax.swing.JTree();
+        reportTools = new javax.swing.JToolBar();
+        newReportButton = new javax.swing.JButton();
+        editReportButton = new javax.swing.JButton();
+        deleteReportButton = new javax.swing.JButton();
+        runReportButton = new javax.swing.JButton();
+        reportCombo = new javax.swing.JComboBox<>();
         adminPanel = new javax.swing.JPanel();
         adminUserPanel = new javax.swing.JPanel();
         adminUserScroll = new javax.swing.JScrollPane();
@@ -1089,25 +1099,74 @@ public class MainFrame extends javax.swing.JFrame {
         });
         reportScroll.setViewportView(reportTable);
 
-        jScrollPane2.setBackground(new java.awt.Color(255, 255, 255));
-        jScrollPane2.setBorder(null);
-        jScrollPane2.setViewportView(jTree1);
+        reportTools.setFloatable(false);
+        reportTools.setRollover(true);
+
+        newReportButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/new.png"))); // NOI18N
+        newReportButton.setToolTipText("New");
+        newReportButton.setFocusable(false);
+        newReportButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        newReportButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        newReportButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                newReportButtonActionPerformed(evt);
+            }
+        });
+        reportTools.add(newReportButton);
+
+        editReportButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/edit.png"))); // NOI18N
+        editReportButton.setToolTipText("Edit");
+        editReportButton.setFocusable(false);
+        editReportButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        editReportButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        editReportButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editReportButtonActionPerformed(evt);
+            }
+        });
+        reportTools.add(editReportButton);
+
+        deleteReportButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/delete.png"))); // NOI18N
+        deleteReportButton.setToolTipText("Delete");
+        deleteReportButton.setFocusable(false);
+        deleteReportButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        deleteReportButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        deleteReportButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteReportButtonActionPerformed(evt);
+            }
+        });
+        reportTools.add(deleteReportButton);
+
+        runReportButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buttons/run.png"))); // NOI18N
+        runReportButton.setText("Run");
+        runReportButton.setToolTipText("");
+        runReportButton.setFocusable(false);
+        runReportButton.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        runReportButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        runReportButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                runReportButtonActionPerformed(evt);
+            }
+        });
+        reportTools.add(runReportButton);
+
+        reportCombo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        reportTools.add(reportCombo);
 
         javax.swing.GroupLayout reportPanelLayout = new javax.swing.GroupLayout(reportPanel);
         reportPanel.setLayout(reportPanelLayout);
         reportPanelLayout.setHorizontalGroup(
             reportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(reportPanelLayout.createSequentialGroup()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 74, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(reportScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 1053, Short.MAX_VALUE))
+            .addComponent(reportScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 1133, Short.MAX_VALUE)
+            .addComponent(reportTools, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         reportPanelLayout.setVerticalGroup(
             reportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(reportScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 708, Short.MAX_VALUE)
-            .addGroup(reportPanelLayout.createSequentialGroup()
-                .addComponent(jScrollPane2)
-                .addGap(42, 42, 42))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, reportPanelLayout.createSequentialGroup()
+                .addComponent(reportTools, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(reportScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 683, Short.MAX_VALUE))
         );
 
         tabbedPane.addTab("Reports", reportPanel);
@@ -2060,6 +2119,22 @@ public class MainFrame extends javax.swing.JFrame {
         f.setVisible(true);
     }//GEN-LAST:event_menuHelpBugActionPerformed
 
+    private void newReportButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newReportButtonActionPerformed
+        reports.newReport();
+    }//GEN-LAST:event_newReportButtonActionPerformed
+
+    private void editReportButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editReportButtonActionPerformed
+        reports.editReport();
+    }//GEN-LAST:event_editReportButtonActionPerformed
+
+    private void deleteReportButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteReportButtonActionPerformed
+        reports.deleteReport();
+    }//GEN-LAST:event_deleteReportButtonActionPerformed
+
+    private void runReportButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_runReportButtonActionPerformed
+        reports.runReport();
+    }//GEN-LAST:event_runReportButtonActionPerformed
+
     //Load tables
     public void loadTables(){
         workOrders.load();
@@ -2068,6 +2143,7 @@ public class MainFrame extends javax.swing.JFrame {
         locations.load();
         parts.load();
         employees.load();
+        reports.load();
         if(isAdmin) admin.load();
     }
     
@@ -2116,6 +2192,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JButton deleteEmployeeButton;
     private javax.swing.JButton deleteLocationButton;
     private javax.swing.JButton deletePartButton;
+    private javax.swing.JButton deleteReportButton;
     private javax.swing.JButton deleteScheduleButton;
     private javax.swing.JButton deleteWOButton;
     private javax.swing.JDesktopPane desktopPane;
@@ -2123,6 +2200,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JButton editEmployeeButton;
     private javax.swing.JButton editLocationButton;
     private javax.swing.JButton editPartButton;
+    private javax.swing.JButton editReportButton;
     private javax.swing.JButton editScheduleButton;
     private javax.swing.JButton editWOButton;
     private javax.swing.JLabel employeeLoadLabel;
@@ -2139,10 +2217,8 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JButton jButton6;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
-    private javax.swing.JTree jTree1;
     private javax.swing.JLabel locationLoadLabel;
     private javax.swing.JPanel locationPanel;
     private javax.swing.JScrollPane locationScroll;
@@ -2169,6 +2245,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JButton newEmployeeButton;
     private javax.swing.JButton newLocationButton;
     private javax.swing.JButton newPartButton;
+    private javax.swing.JButton newReportButton;
     private javax.swing.JButton newScheduleButton;
     private javax.swing.JButton newWOButton;
     private javax.swing.JLabel partLoadLabel;
@@ -2177,9 +2254,12 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JTable partTable;
     private javax.swing.JToolBar partTools;
     private javax.swing.JButton printWOButton;
+    private javax.swing.JComboBox<String> reportCombo;
     private javax.swing.JPanel reportPanel;
     private javax.swing.JScrollPane reportScroll;
     private javax.swing.JTable reportTable;
+    private javax.swing.JToolBar reportTools;
+    private javax.swing.JButton runReportButton;
     private javax.swing.JLabel scheduleLoadLabel;
     private javax.swing.JPanel schedulePanel;
     private javax.swing.JScrollPane scheduleScroll;

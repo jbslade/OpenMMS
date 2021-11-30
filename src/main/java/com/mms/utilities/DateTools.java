@@ -60,7 +60,6 @@ public class DateTools {
                 break;
             case "Bianually":
                 c.add(Calendar.MONTH, i*6);
-                System.out.println(c.getTime());
                 d = getLocalDate(c.getTime());
                 break;
             case "Anually":

@@ -105,11 +105,6 @@ public class MMS {
        
         //Setup & login
         setup();
-        
-        //RESET OLD ADMIN PASSWORD MSSQL (REMOVE ONCE FIXED)
-//        String salt = Hasher.getSalt(), pass = Hasher.getHash("admin", salt);
-//        MMS.executeQuery("UPDATE Users SET Password = ?, Salt = ? WHERE Username = ?",
-//                new Object[]{pass, salt, "Administrator"});
     }
 
     //Setup

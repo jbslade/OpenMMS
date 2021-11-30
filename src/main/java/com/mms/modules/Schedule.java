@@ -192,6 +192,7 @@ public class Schedule {
     public void completeTask(int row){
         int id = Integer.parseInt(table.getValueAt(row, 0).toString());
         String freq = table.getValueAt(row, 3).toString();
+        boolean overdue = table.getValueAt(row, 5).toString().contains("Overdue");
         //Get last date
         ResultSet rs = Database.select("SELECT schedule_last_date FROM schedule WHERE id = ?",
                 new Object[]{id});
@@ -203,7 +204,8 @@ public class Schedule {
                 while(DateTools.isPassed(doneDate)){
                     doneDate = DateTools.getDueDate(doneDate, freq , 1);
                 }
-                //Update last date (increase by one increment)
+                if(overdue) doneDate = DateTools.getDueDate(doneDate, freq , -1);
+                //Update last date
                 Database.executeQuery("UPDATE schedule SET schedule_last_date = ? WHERE id = ?",
                     new Object[]{DateTools.convertToSQLDate(doneDate), id});
                 //Update table

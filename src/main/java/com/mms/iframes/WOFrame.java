@@ -98,6 +98,7 @@ public class WOFrame extends javax.swing.JInternalFrame {
         
         //Set right click listeners
         descArea.addMouseListener(MMS.getMouseListener());
+        descViewPane.addMouseListener(MMS.getMouseListener());
         
         //Set date picker
         datePanel.setPreferredSize(employeeField.getPreferredSize());

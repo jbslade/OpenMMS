@@ -2,6 +2,7 @@ com\mms\dialogs\SetupDialog$3.class
 com\mms\iframes\WOFrame$11.class
 com\mms\MainFrame$32.class
 com\mms\MainFrame$52.class
+com\mms\MainFrame$72.class
 com\mms\MainFrame$12.class
 com\mms\iframes\PasswordFrame$1.class
 com\mms\MainFrame$65.class
@@ -15,6 +16,7 @@ com\mms\iframes\WOCloseFrame.class
 com\mms\MainFrame$6.class
 com\mms\Database.class
 com\mms\dialogs\SetupDialog$11.class
+com\mms\modules\Reports.class
 com\mms\iframes\WOFrame$4.class
 com\mms\iframes\UserFrame$2.class
 com\mms\MainFrame$24.class
@@ -58,6 +60,7 @@ com\mms\dialogs\LoginDialog.class
 com\mms\dialogs\InternalDialog.class
 com\mms\utilities\MenuScroller$MenuScrollItem.class
 com\mms\utilities\OtherTools.class
+com\mms\MainFrame$73.class
 com\mms\modules\Parts$1.class
 com\mms\modules\Admin$1.class
 com\mms\dialogs\SetupDialog$7.class
@@ -106,6 +109,7 @@ com\mms\MainFrame$42.class
 com\mms\iframes\WOFrame$14.class
 com\mms\MainFrame$62.class
 com\mms\MainFrame$9.class
+com\mms\MainFrame$75.class
 com\mms\MainFrame$55.class
 com\mms\modules\Employees.class
 com\mms\utilities\ContextMenuMouseListener$1.class
@@ -143,6 +147,7 @@ com\mms\iframes\PartFrame$2.class
 com\mms\dialogs\InternalDialog$1.class
 com\mms\MainFrame$23.class
 com\mms\iframes\AboutFrame$1.class
+com\mms\MainFrame$74.class
 com\mms\MainFrame$69.class
 com\mms\iframes\PartFrame.class
 com\mms\modules\Parts.class
@@ -165,6 +170,7 @@ com\mms\utilities\ContextMenuMouseListener$2.class
 com\mms\iframes\WOCloseFrame$1.class
 com\mms\MainFrame$56.class
 com\mms\MainFrame$61.class
+com\mms\iframes\ReportFrame.class
 com\mms\modules\Admin$11.class
 com\mms\MainFrame$19.class
 com\mms\iframes\WOFrame$12.class
